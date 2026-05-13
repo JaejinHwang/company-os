@@ -1,0 +1,51 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background-color: #f7f4ed;
+  color: #1c1c1c;
+  font-family: "Camera Plain Variable", ui-sans-serif, system-ui, -apple-system,
+    "Segoe UI", Roboto, sans-serif;
+  font-feature-settings: "ss01" on, "cv11" on;
+}
+
+::selection {
+  background-color: rgba(28, 28, 28, 0.12);
+}
+
+@layer components {
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 rounded-md bg-charcoal px-4 py-2 text-[15px] text-charcoal-offwhite shadow-inset-dark transition active:opacity-80 focus:outline-none focus-visible:shadow-focus;
+  }
+  .btn-ghost {
+    @apply inline-flex items-center justify-center gap-2 rounded-md border border-[rgba(28,28,28,0.4)] bg-transparent px-4 py-2 text-[15px] text-charcoal transition active:opacity-80 focus:outline-none focus-visible:shadow-focus;
+  }
+  .btn-surface {
+    @apply inline-flex items-center justify-center gap-2 rounded-md bg-cream px-4 py-2 text-[15px] text-charcoal transition hover:bg-cream-light active:opacity-80 focus:outline-none focus-visible:shadow-focus;
+  }
+  .btn-pill {
+    @apply inline-flex items-center justify-center gap-2 rounded-pill bg-cream px-3 py-1.5 text-[14px] text-charcoal shadow-inset-dark transition active:opacity-80;
+  }
+  .card {
+    @apply rounded-card border border-cream-light bg-cream;
+  }
+  .input-base {
+    @apply w-full rounded-md border border-cream-light bg-cream px-3 py-2 text-[15px] text-charcoal placeholder:text-charcoal-muted focus:outline-none focus:ring-2 focus:ring-blue-500/50;
+  }
+}
