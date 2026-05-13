@@ -3,11 +3,23 @@ import { AppShell } from "./components/AppShell";
 import {
   NewIssueModal,
   type NewIssueSeed,
+  type NewIssuePayload,
 } from "./components/NewIssueModal";
 import { Dashboard } from "./pages/Dashboard";
 import { Placeholder } from "./pages/Placeholder";
 import { ProjectDetail } from "./pages/ProjectDetail";
 import { Signals } from "./pages/Signals";
+import { Backlogs, BacklogToast } from "./pages/Backlogs";
+import { Routines } from "./pages/Routines";
+import { Goals } from "./pages/Goals";
+import {
+  INITIAL_BACKLOGS,
+  PROJECT_HREF,
+  nextBacklogId,
+  priorityFromLabel,
+  type BacklogItem,
+  type BacklogStatus,
+} from "./lib/backlog";
 
 const PAGES: Record<string, { title: string; description: string }> = {
   "#new-issue": {
@@ -38,7 +50,8 @@ const PAGES: Record<string, { title: string; description: string }> = {
   },
   "#goals": {
     title: "Goals",
-    description: "Quarterly objectives and the work that ladders up to them.",
+    description:
+      "Q2 2026 objectives와 그에 ladder up되는 Key Results · Projects.",
   },
   "#proj-onboarding": {
     title: "Onboarding flow v2",
@@ -133,6 +146,8 @@ function App() {
   );
   const [newIssueOpen, setNewIssueOpen] = useState(false);
   const [issueSeed, setIssueSeed] = useState<NewIssueSeed | undefined>(undefined);
+  const [backlogs, setBacklogs] = useState<BacklogItem[]>(INITIAL_BACKLOGS);
+  const [newBacklogCount, setNewBacklogCount] = useState(0);
 
   useEffect(() => {
     const onHashChange = () =>
@@ -156,15 +171,60 @@ function App() {
     setNewIssueOpen(true);
   };
 
+  const handleCreateIssue = (p: NewIssuePayload) => {
+    const projectHref = p.project ? PROJECT_HREF[p.project] : undefined;
+    const status = (p.status as BacklogStatus) || "todo";
+    const item: BacklogItem = {
+      id: nextBacklogId(),
+      title: p.title.trim(),
+      description: p.description.trim() || undefined,
+      sourceLabel: p.sourceLabel ?? "Manual",
+      project: p.project || undefined,
+      projectHref,
+      agent: p.assignee || undefined,
+      product: p.product || undefined,
+      priority: priorityFromLabel(p.priority),
+      status,
+      createdAt: Date.now(),
+    };
+    setBacklogs((prev) => [item, ...prev]);
+    setNewBacklogCount((c) => c + 1);
+  };
+
+  const handleExecute = (id: string) => {
+    setBacklogs((prev) =>
+      prev.map((b) => (b.id === id ? { ...b, status: "in_progress" } : b))
+    );
+  };
+
   const meta = PAGES[hash] ?? PAGES["#dashboard"];
 
   return (
     <>
       <AppShell title={meta.title} activeHref={hash} onNavigate={navigate}>
         {hash === "#dashboard" ? (
-          <Dashboard />
+          <Dashboard
+            backlogs={backlogs}
+            onNavigate={navigate}
+            onPlan={openPlanFromSignal}
+            onExecute={handleExecute}
+            onNewIssue={() => {
+              setIssueSeed(undefined);
+              setNewIssueOpen(true);
+            }}
+          />
         ) : hash === "#signals" ? (
           <Signals onPlan={openPlanFromSignal} />
+        ) : hash === "#backlogs" ? (
+          <Backlogs
+            items={backlogs}
+            onExecute={handleExecute}
+            onNavigate={navigate}
+          />
+        ) : hash === "#routines" ? (
+          <Routines />
+        ) : hash === "#goals" ? (
+          <Goals backlogs={backlogs} onNavigate={navigate} />
         ) : hash.startsWith("#proj-") ? (
           <ProjectDetail title={meta.title} description={meta.description} />
         ) : (
@@ -175,6 +235,15 @@ function App() {
         open={newIssueOpen}
         onClose={() => setNewIssueOpen(false)}
         seed={issueSeed}
+        onCreate={handleCreateIssue}
+      />
+      <BacklogToast
+        count={hash === "#backlogs" ? 0 : newBacklogCount}
+        onNavigate={() => {
+          setNewBacklogCount(0);
+          navigate("#backlogs");
+        }}
+        onDismiss={() => setNewBacklogCount(0)}
       />
     </>
   );

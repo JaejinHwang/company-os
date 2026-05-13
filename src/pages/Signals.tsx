@@ -195,17 +195,9 @@ export function Signals({ onPlan }: Props) {
   return (
     <div className="mx-auto max-w-[1200px]">
       <header className="mb-8">
-        <p className="text-[13px] uppercase tracking-[0.08em] text-charcoal-muted">
+        <h2 className="text-sub font-[600] tracking-[-0.9px] text-charcoal">
           Signals
-        </p>
-        <h2 className="mt-2 text-sub font-[600] tracking-[-0.9px] text-charcoal">
-          오늘 우리 회사가 알아야 할 것들
         </h2>
-        <p className="mt-3 max-w-2xl text-[15.5px] leading-[1.55] text-charcoal-muted">
-          CS·버그 리포트·내부 발견·경쟁사 동향·시장 조사·세일즈 등 다양한
-          소스에서 자동 수집된 시그널이 한 자리에 모입니다. 시그널 하나를 골라
-          플래닝하면 Backlogs에 항목이 만들어집니다.
-        </p>
       </header>
 
       <section className="mt-2">

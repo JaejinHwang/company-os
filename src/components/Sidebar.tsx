@@ -99,13 +99,17 @@ const sections: Section[] = [
     ],
   },
   {
+    id: "strategy",
+    label: "Strategy",
+    items: [{ label: "Goals", href: "#goals", icon: Target }],
+  },
+  {
     id: "work",
     label: "Work",
     items: [
       { label: "Signals", href: "#signals", icon: Radio },
       { label: "Backlogs", href: "#backlogs", icon: Layers },
       { label: "Routines", href: "#routines", icon: Repeat },
-      { label: "Goals", href: "#goals", icon: Target },
     ],
   },
   {
