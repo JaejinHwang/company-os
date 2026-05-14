@@ -19,6 +19,12 @@ import {
   Users,
 } from "lucide-react";
 import { cn } from "../lib/cn";
+import {
+  getExperimentByHref,
+  NEXT_ACTION_CONFIG,
+  VERDICT_CONFIG,
+  type Experiment,
+} from "../lib/experiments";
 
 type PhaseStatus = "todo" | "in_progress" | "done" | "blocked";
 
@@ -76,11 +82,16 @@ const STATUS_CONFIG: Record<
 type Props = {
   title: string;
   description: string;
+  href?: string;
 };
 
-export function ProjectDetail({ title, description }: Props) {
-  const groups = useMemo<LoopGroup[]>(
-    () => [
+export function ProjectDetail({ title, description, href }: Props) {
+  const experiment = href ? getExperimentByHref(href) : undefined;
+  const closed = experiment?.status === "done";
+
+  const groups = useMemo<LoopGroup[]>(() => {
+    const learnPhaseStatus: PhaseStatus = closed ? "done" : "todo";
+    return [
       {
         id: "cast",
         label: "Cast Loop — Plan",
@@ -127,9 +138,35 @@ export function ProjectDetail({ title, description }: Props) {
           { id: 16, name: "Launch", status: "todo", owner: "Eng" },
         ],
       },
-    ],
-    []
-  );
+      {
+        id: "learn",
+        label: "Learn Loop — Close",
+        phases: [
+          {
+            id: 17,
+            name: "Outcome",
+            status: learnPhaseStatus,
+            owner: "PM",
+            artifact: experiment ? buildOutcomeArtifact(experiment) : undefined,
+          },
+          {
+            id: 18,
+            name: "Learnings",
+            status: learnPhaseStatus,
+            owner: "PM · UX",
+            artifact: experiment ? buildLearningsArtifact(experiment) : undefined,
+          },
+          {
+            id: 19,
+            name: "Next Actions",
+            status: learnPhaseStatus,
+            owner: "PM",
+            artifact: experiment ? buildNextActionsArtifact(experiment) : undefined,
+          },
+        ],
+      },
+    ];
+  }, [experiment, closed]);
 
   const flatPhases = groups.flatMap((g) => g.phases);
   const defaultPhaseId =
@@ -641,6 +678,124 @@ function EmptyArtifact({ phase }: { phase: Phase }) {
       </div>
     </article>
   );
+}
+
+function buildOutcomeArtifact(e: Experiment): Artifact {
+  const verdict = VERDICT_CONFIG[e.verdict];
+  const closed = e.status === "done";
+  const verdictLine = closed
+    ? `${verdict.label}${e.resultDelta ? ` · ${e.resultDelta}` : ""}`
+    : `${verdict.label} · 진행 중`;
+
+  return {
+    kind: "report",
+    title: closed
+      ? `Outcome: ${e.title}`
+      : `Outcome (in flight): ${e.title}`,
+    createdAt: e.closedAt ?? e.startedAt,
+    phaseLabel: "Phase 17 — Outcome",
+    summary: closed
+      ? "이 프로젝트가 던졌던 질문과, 실제로 측정된 결과를 한 면에 정렬한 클로즈아웃 리포트."
+      : "프로젝트는 아직 클로즈되지 않았어요. 가설과 현재 측정 중인 지표를 보여줍니다. 종료 시 자동으로 결과/판정이 채워집니다.",
+    sections: [
+      {
+        kind: "kv",
+        title: "Hypothesis & Metric",
+        rows: [
+          ["Hypothesis", e.hypothesis],
+          ["Primary metric", e.metric],
+          ["Target", e.target],
+          ["Baseline", e.baseline ?? "—"],
+        ],
+      },
+      {
+        kind: "kv",
+        title: "Result",
+        rows: [
+          ["Result", e.result ?? "측정 중"],
+          ["Delta", e.resultDelta ?? "—"],
+          ["Verdict", verdictLine],
+          [
+            "Closed",
+            e.closedAt
+              ? e.closedAt
+              : `진행 중 · ${e.startedAt} 시작`,
+          ],
+        ],
+      },
+    ],
+  };
+}
+
+function buildLearningsArtifact(e: Experiment): Artifact {
+  const hasLearnings = e.learnings.length > 0;
+  return {
+    kind: "doc",
+    title: `Learnings: ${e.title}`,
+    createdAt: e.closedAt ?? e.startedAt,
+    phaseLabel: "Phase 18 — Learnings",
+    summary: hasLearnings
+      ? "결과 자체보다 더 중요한 — '왜 그렇게 됐는지'에 대한 정제된 학습. 다음 프로젝트의 가설 입력으로 직접 사용됩니다."
+      : "아직 정제된 학습이 등록되지 않았어요. 프로젝트가 종료되면 PM 에이전트가 측정 결과와 인터뷰 메모를 정리합니다.",
+    sections: hasLearnings
+      ? [
+          {
+            kind: "table",
+            title: "Distilled learnings",
+            caption: `${e.learnings.length} items`,
+            columns: ["#", "Learning"],
+            rows: e.learnings.map((l, i) => [String(i + 1), l]),
+          },
+        ]
+      : [
+          {
+            kind: "callout",
+            title: "Pending",
+            body: "Outcome 페이즈가 완료되면 Learnings는 자동 초안이 생성되고, PM/UX 에이전트가 검토 후 확정합니다.",
+          },
+        ],
+  };
+}
+
+function buildNextActionsArtifact(e: Experiment): Artifact {
+  const has = e.nextActions.length > 0;
+  return {
+    kind: "spec",
+    title: `Next Actions: ${e.title}`,
+    createdAt: e.closedAt ?? e.startedAt,
+    phaseLabel: "Phase 19 — Next Actions",
+    summary: has
+      ? "학습을 바탕으로 즉시 백로그/실험으로 전환된 액션. 'Ship'은 결정 사항, 'New experiment'는 새 가설, 'Investigate'는 추가 조사가 필요한 항목입니다."
+      : "아직 후속 액션이 도출되지 않았어요. Learnings가 확정되면 PM 에이전트가 액션 후보를 제안합니다.",
+    sections: has
+      ? [
+          {
+            kind: "table",
+            title: "Derived actions",
+            caption: `${e.nextActions.length} actions`,
+            columns: ["Action", "Kind", "Owner", "Status"],
+            rows: e.nextActions.map((a) => [
+              a.title,
+              NEXT_ACTION_CONFIG[a.kind].label,
+              a.owner ?? "—",
+              a.status ?? "queued",
+            ]),
+          },
+          {
+            kind: "callout",
+            title: "Closing the loop",
+            body:
+              "여기서 만들어진 'New experiment' 액션은 새 프로젝트의 Hypothesis 입력이 됩니다. Product SSOT → Experiments 탭에서 이 흐름을 한눈에 볼 수 있어요.",
+          },
+        ]
+      : [
+          {
+            kind: "callout",
+            title: "Pending",
+            body: "Learnings가 확정되면 액션 후보가 자동 생성됩니다.",
+          },
+        ],
+  };
 }
 
 const COMPONENTS_REPORT: Artifact = {

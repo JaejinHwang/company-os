@@ -13,13 +13,13 @@ import {
   Gem,
   Megaphone,
   Wrench,
+  User,
   Network,
   Boxes,
   DollarSign,
   History,
   Settings as SettingsIcon,
   ChevronsUpDown,
-  Search,
   ChevronDown,
   Plus,
   MoreHorizontal,
@@ -30,11 +30,19 @@ import {
   Aperture,
   ShieldCheck,
   LineChart,
+  FlaskConical,
   Circle,
   CircleDashed,
   CheckCircle2,
+  Sparkles,
 } from "lucide-react";
 import { cn } from "../lib/cn";
+import { AtlasAvatar } from "./AtlasAvatar";
+import {
+  AGENT_STATUS_CONFIG,
+  AGENT_STATUSES,
+  type AgentStatus,
+} from "../lib/agents";
 
 type IconType = ComponentType<{
   className?: string;
@@ -53,6 +61,8 @@ type NavItem = {
   kebab?: boolean;
   description?: string;
   status?: ItemStatus;
+  agentStatus?: AgentStatus;
+  children?: NavItem[];
 };
 
 const STATUS_CONFIG: Record<
@@ -86,6 +96,7 @@ type Section = {
   label?: string;
   collapsible?: boolean;
   addable?: boolean;
+  tree?: boolean;
   items: NavItem[];
 };
 
@@ -94,6 +105,7 @@ const sections: Section[] = [
     id: "top",
     items: [
       { label: "New Issue", href: "#new-issue", icon: SquarePen },
+      { label: "Atlas", href: "#atlas", icon: Sparkles },
       { label: "Dashboard", href: "#dashboard", icon: LayoutGrid },
       { label: "Inbox", href: "#inbox", icon: Inbox, badge: "2" },
     ],
@@ -101,7 +113,10 @@ const sections: Section[] = [
   {
     id: "strategy",
     label: "Strategy",
-    items: [{ label: "Goals", href: "#goals", icon: Target }],
+    items: [
+      { label: "Goals", href: "#goals", icon: Target },
+      { label: "OKRs", href: "#okrs", icon: Workflow },
+    ],
   },
   {
     id: "work",
@@ -146,16 +161,91 @@ const sections: Section[] = [
     ],
   },
   {
-    id: "agents",
-    label: "Agents",
+    id: "workforces",
+    label: "Workforces",
     collapsible: true,
     addable: true,
+    tree: true,
     items: [
-      { label: "CEO", href: "#ceo", icon: Bot, kebab: true },
-      { label: "CTO", href: "#cto", icon: BrainCircuit, kebab: true },
-      { label: "UXDesigner", href: "#ux", icon: Gem, kebab: true },
-      { label: "Marketer", href: "#marketer", icon: Megaphone, kebab: true },
-      { label: "Engineer", href: "#engineer", icon: Wrench, kebab: true },
+      {
+        label: "Jazz Hwang",
+        href: "#m-jazz",
+        icon: User,
+        kebab: true,
+        description: "CEO",
+        children: [
+          {
+            label: "CEO",
+            href: "#ceo",
+            icon: Bot,
+            kebab: true,
+            agentStatus: AGENT_STATUSES.CEO,
+          },
+        ],
+      },
+      {
+        label: "Daniel Kim",
+        href: "#m-daniel",
+        icon: User,
+        kebab: true,
+        description: "CTO",
+        children: [
+          {
+            label: "CTO",
+            href: "#cto",
+            icon: BrainCircuit,
+            kebab: true,
+            agentStatus: AGENT_STATUSES.CTO,
+          },
+          {
+            label: "Engineer",
+            href: "#engineer",
+            icon: Wrench,
+            kebab: true,
+            agentStatus: AGENT_STATUSES.Engineer,
+          },
+        ],
+      },
+      {
+        label: "Minji Park",
+        href: "#m-minji",
+        icon: User,
+        kebab: true,
+        description: "CPO",
+        children: [
+          {
+            label: "UXDesigner",
+            href: "#ux",
+            icon: Gem,
+            kebab: true,
+            agentStatus: AGENT_STATUSES.UXDesigner,
+          },
+        ],
+      },
+      {
+        label: "Sora Lee",
+        href: "#m-sora",
+        icon: User,
+        kebab: true,
+        description: "CMO",
+        children: [
+          {
+            label: "Marketer",
+            href: "#marketer",
+            icon: Megaphone,
+            kebab: true,
+            agentStatus: AGENT_STATUSES.Marketer,
+          },
+        ],
+      },
+      {
+        label: "Hyunwoo Choi",
+        href: "#m-hyunwoo",
+        icon: User,
+        kebab: true,
+        description: "Sales Manager",
+        children: [],
+      },
     ],
   },
   {
@@ -167,6 +257,7 @@ const sections: Section[] = [
       { label: "Design System", href: "#design-system", icon: Aperture },
       { label: "Policies", href: "#policies", icon: ShieldCheck },
       { label: "Data", href: "#data", icon: LineChart },
+      { label: "Experiments", href: "#experiments", icon: FlaskConical },
     ],
   },
   {
@@ -188,6 +279,8 @@ type Props = {
   onCloseMobile: () => void;
   onToggleCollapsed: () => void;
   activeHref: string;
+  workspaceName: string;
+  sampleData: boolean;
   onNavigate: (href: string) => void;
 };
 
@@ -197,6 +290,8 @@ export function Sidebar({
   onCloseMobile,
   onToggleCollapsed,
   activeHref,
+  workspaceName,
+  sampleData,
   onNavigate,
 }: Props) {
   const widthClass = collapsed ? "lg:w-[76px]" : "lg:w-[260px]";
@@ -223,19 +318,22 @@ export function Sidebar({
         <SidebarHeader
           collapsed={collapsed}
           onToggleCollapsed={onToggleCollapsed}
+          workspaceName={workspaceName}
         />
 
         <nav className="flex-1 overflow-y-auto px-2 pb-3">
-          {sections.map((section, i) => (
-            <SidebarSection
-              key={section.id}
-              section={section}
-              collapsed={collapsed}
-              activeHref={activeHref}
-              onNavigate={onNavigate}
-              isFirst={i === 0}
-            />
-          ))}
+          {sections
+            .filter((section) => !(section.id === "projects" && !sampleData))
+            .map((section, i) => (
+              <SidebarSection
+                key={section.id}
+                section={section}
+                collapsed={collapsed}
+                activeHref={activeHref}
+                onNavigate={onNavigate}
+                isFirst={i === 0}
+              />
+            ))}
         </nav>
 
         <SidebarFooter collapsed={collapsed} />
@@ -247,14 +345,17 @@ export function Sidebar({
 function SidebarHeader({
   collapsed,
   onToggleCollapsed,
+  workspaceName,
 }: {
   collapsed: boolean;
   onToggleCollapsed: () => void;
+  workspaceName: string;
 }) {
+  const initial = workspaceName.trim().charAt(0).toUpperCase() || "S";
   return (
     <div
       className={cn(
-        "flex h-14 items-center gap-1.5 border-b border-cream-light px-3",
+        "relative flex h-16 items-center gap-1.5 border-b border-cream-light px-3",
         collapsed && "lg:justify-center lg:px-2"
       )}
     >
@@ -264,10 +365,10 @@ function SidebarHeader({
           "flex min-w-0 flex-1 items-center gap-2 rounded-md px-1.5 py-1 text-left transition hover:bg-[rgba(28,28,28,0.04)]",
           collapsed && "lg:flex-none lg:px-0"
         )}
-        title="Switch workspace"
+        title={`Switch workspace · ${workspaceName}`}
       >
         <span className="grid h-7 w-7 shrink-0 place-items-center overflow-hidden rounded-md bg-charcoal text-[12px] font-[600] text-charcoal-offwhite shadow-inset-dark">
-          S
+          {initial}
         </span>
         <span
           className={cn(
@@ -275,7 +376,7 @@ function SidebarHeader({
             collapsed && "lg:hidden"
           )}
         >
-          Sprint Org
+          {workspaceName}
         </span>
         <ChevronsUpDown
           className={cn(
@@ -288,19 +389,9 @@ function SidebarHeader({
 
       <button
         type="button"
-        aria-label="Search"
-        className={cn(
-          "inline-flex h-7 w-7 items-center justify-center rounded-md text-charcoal/70 transition hover:bg-[rgba(28,28,28,0.04)] hover:text-charcoal",
-          collapsed && "lg:hidden"
-        )}
-      >
-        <Search className="h-4 w-4" strokeWidth={1.6} />
-      </button>
-
-      <button
-        type="button"
         onClick={onToggleCollapsed}
-        aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+        aria-label="Collapse sidebar"
+        title="Collapse sidebar"
         className={cn(
           "hidden h-7 w-7 items-center justify-center rounded-md text-charcoal/70 transition hover:bg-[rgba(28,28,28,0.04)] hover:text-charcoal lg:inline-flex",
           collapsed && "lg:hidden"
@@ -314,7 +405,8 @@ function SidebarHeader({
           type="button"
           onClick={onToggleCollapsed}
           aria-label="Expand sidebar"
-          className="absolute left-1/2 top-16 hidden h-7 w-7 -translate-x-1/2 items-center justify-center rounded-pill border border-cream-light bg-cream text-charcoal/70 shadow-focus transition hover:text-charcoal lg:inline-flex"
+          title="Expand sidebar"
+          className="absolute right-0 top-1/2 hidden h-7 w-7 -translate-y-1/2 translate-x-1/2 items-center justify-center rounded-pill border border-cream-light bg-cream text-charcoal/70 shadow-focus transition hover:text-charcoal lg:inline-flex"
         >
           <PanelLeftOpen className="h-3.5 w-3.5" strokeWidth={1.6} />
         </button>
@@ -388,8 +480,9 @@ function SidebarSection({
               key={item.href}
               item={item}
               collapsed={collapsed}
-              active={activeHref === item.href}
+              activeHref={activeHref}
               onNavigate={onNavigate}
+              tree={section.tree}
             />
           ))}
         </ul>
@@ -401,18 +494,24 @@ function SidebarSection({
 function SidebarItem({
   item,
   collapsed,
-  active,
+  activeHref,
   onNavigate,
+  tree,
 }: {
   item: NavItem;
   collapsed: boolean;
-  active: boolean;
+  activeHref: string;
   onNavigate: (href: string) => void;
+  tree?: boolean;
 }) {
+  const active = activeHref === item.href;
   const Icon = item.icon;
   const status = item.status ? STATUS_CONFIG[item.status] : null;
   const StatusIcon = status?.icon;
   const hasDescription = !!item.description && !collapsed;
+  const childItems = tree ? item.children ?? [] : [];
+  const hasChildren = childItems.length > 0;
+  const [expanded, setExpanded] = useState(true);
   return (
     <li>
       <a
@@ -422,41 +521,94 @@ function SidebarItem({
           onNavigate(item.href);
         }}
         title={
-          collapsed
+          item.agentStatus
+            ? `${item.label} · ${AGENT_STATUS_CONFIG[item.agentStatus].label}`
+            : collapsed
             ? status
               ? `${item.label} · ${status.label}`
               : item.label
             : status?.label
         }
         className={cn(
-          "group relative flex rounded-md px-2 transition",
+          "group relative flex rounded-md transition text-[14px]",
           hasDescription
-            ? "items-start gap-3 py-2"
+            ? "items-start gap-2.5 py-2"
             : "items-center gap-2.5 py-1.5",
-          "text-[14px]",
+          tree && !collapsed ? "pl-1.5 pr-2" : "px-2",
           active
             ? "bg-[rgba(28,28,28,0.06)] text-charcoal"
             : "text-charcoal/80 hover:bg-[rgba(28,28,28,0.04)] hover:text-charcoal",
           collapsed && "lg:justify-center lg:px-0"
         )}
       >
+        {tree && !collapsed &&
+          (hasChildren ? (
+            <button
+              type="button"
+              aria-label={expanded ? "Collapse" : "Expand"}
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                setExpanded((v) => !v);
+              }}
+              className={cn(
+                "inline-flex h-4 w-4 shrink-0 items-center justify-center rounded text-charcoal-muted transition hover:bg-[rgba(28,28,28,0.08)] hover:text-charcoal",
+                hasDescription && "mt-1"
+              )}
+            >
+              <ChevronDown
+                className={cn(
+                  "h-3 w-3 transition-transform",
+                  !expanded && "-rotate-90"
+                )}
+                strokeWidth={2}
+              />
+            </button>
+          ) : (
+            <span
+              className={cn(
+                "inline-block h-4 w-4 shrink-0",
+                hasDescription && "mt-1"
+              )}
+            />
+          ))}
         {StatusIcon && status ? (
           <StatusIcon
             className="h-[16px] w-[16px] shrink-0"
             style={{ color: status.color }}
             strokeWidth={1.8}
           />
+        ) : item.href === "#atlas" ? (
+          <AtlasAvatar size="xs" />
         ) : Icon ? (
-          <Icon
-            className={cn(
-              "shrink-0",
-              hasDescription
-                ? "mt-0.5 h-[20px] w-[20px]"
-                : "h-[18px] w-[18px]",
-              active ? "text-charcoal" : "text-charcoal/70"
-            )}
-            strokeWidth={1.6}
-          />
+          item.agentStatus ? (
+            <span
+              className={cn(
+                "relative shrink-0",
+                hasDescription ? "mt-0.5 h-[20px] w-[20px]" : "h-[18px] w-[18px]"
+              )}
+            >
+              <Icon
+                className={cn(
+                  hasDescription ? "h-[20px] w-[20px]" : "h-[18px] w-[18px]",
+                  active ? "text-charcoal" : "text-charcoal/70"
+                )}
+                strokeWidth={1.6}
+              />
+              <AgentPresenceDot status={item.agentStatus} />
+            </span>
+          ) : (
+            <Icon
+              className={cn(
+                "shrink-0",
+                hasDescription
+                  ? "mt-0.5 h-[20px] w-[20px]"
+                  : "h-[18px] w-[18px]",
+                active ? "text-charcoal" : "text-charcoal/70"
+              )}
+              strokeWidth={1.6}
+            />
+          )
         ) : item.dotColor ? (
           <span
             className="ml-0.5 h-2.5 w-2.5 shrink-0 rounded-full"
@@ -498,7 +650,48 @@ function SidebarItem({
           </button>
         )}
       </a>
+      {hasChildren && expanded && !collapsed && (
+        <ul className="ml-[18px] mt-0.5 flex flex-col gap-0.5 border-l border-cream-light pl-2">
+          {childItems.map((child) => (
+            <SidebarItem
+              key={child.href}
+              item={child}
+              collapsed={collapsed}
+              activeHref={activeHref}
+              onNavigate={onNavigate}
+            />
+          ))}
+        </ul>
+      )}
     </li>
+  );
+}
+
+function AgentPresenceDot({ status }: { status: AgentStatus }) {
+  const cfg = AGENT_STATUS_CONFIG[status];
+  return (
+    <span
+      aria-label={cfg.label}
+      className="absolute -bottom-0.5 -right-0.5 grid h-[10px] w-[10px] place-items-center rounded-full bg-cream"
+    >
+      {cfg.pulse ? (
+        <span className="relative grid h-1.5 w-1.5 place-items-center">
+          <span
+            className="absolute inset-0 animate-ping rounded-full opacity-60"
+            style={{ backgroundColor: cfg.color }}
+          />
+          <span
+            className="relative h-1.5 w-1.5 rounded-full"
+            style={{ backgroundColor: cfg.color }}
+          />
+        </span>
+      ) : (
+        <span
+          className="h-1.5 w-1.5 rounded-full"
+          style={{ backgroundColor: cfg.color }}
+        />
+      )}
+    </span>
   );
 }
 
@@ -506,8 +699,8 @@ function SidebarFooter({ collapsed }: { collapsed: boolean }) {
   return (
     <div
       className={cn(
-        "flex items-center gap-3 border-t border-cream-light px-3 py-3",
-        collapsed && "lg:justify-center"
+        "flex items-center gap-2.5 border-t border-cream-light px-3 py-3",
+        collapsed && "lg:justify-center lg:px-2"
       )}
     >
       <span className="grid h-8 w-8 shrink-0 place-items-center rounded-pill bg-charcoal text-[12px] font-[480] text-charcoal-offwhite shadow-inset-dark">

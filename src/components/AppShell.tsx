@@ -7,11 +7,22 @@ const STORAGE_KEY = "cream.sidebar.collapsed";
 type Props = {
   title: string;
   activeHref: string;
+  workspaceName: string;
+  sampleData: boolean;
   onNavigate: (href: string) => void;
+  onOpenChoS: () => void;
   children: ReactNode;
 };
 
-export function AppShell({ title, activeHref, onNavigate, children }: Props) {
+export function AppShell({
+  title,
+  activeHref,
+  workspaceName,
+  sampleData,
+  onNavigate,
+  onOpenChoS,
+  children,
+}: Props) {
   const [collapsed, setCollapsed] = useState<boolean>(() => {
     if (typeof window === "undefined") return false;
     return window.localStorage.getItem(STORAGE_KEY) === "1";
@@ -28,11 +39,15 @@ export function AppShell({ title, activeHref, onNavigate, children }: Props) {
         e.preventDefault();
         setCollapsed((v) => !v);
       }
+      if ((e.metaKey || e.ctrlKey) && e.key === "j") {
+        e.preventDefault();
+        onOpenChoS();
+      }
       if (e.key === "Escape") setMobileOpen(false);
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, []);
+  }, [onOpenChoS]);
 
   return (
     <div className="flex h-screen overflow-hidden bg-cream text-charcoal">
@@ -42,6 +57,8 @@ export function AppShell({ title, activeHref, onNavigate, children }: Props) {
         onCloseMobile={() => setMobileOpen(false)}
         onToggleCollapsed={() => setCollapsed((v) => !v)}
         activeHref={activeHref}
+        workspaceName={workspaceName}
+        sampleData={sampleData}
         onNavigate={(href) => {
           onNavigate(href);
           setMobileOpen(false);

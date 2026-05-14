@@ -5,6 +5,11 @@ import {
   type NewIssueSeed,
   type NewIssuePayload,
 } from "./components/NewIssueModal";
+import { ChiefOfStaff } from "./components/ChiefOfStaff";
+import {
+  Onboarding,
+  type OnboardingResult,
+} from "./components/onboarding/Onboarding";
 import { Dashboard } from "./pages/Dashboard";
 import { Placeholder } from "./pages/Placeholder";
 import { ProjectDetail } from "./pages/ProjectDetail";
@@ -12,6 +17,10 @@ import { Signals } from "./pages/Signals";
 import { Backlogs, BacklogToast } from "./pages/Backlogs";
 import { Routines } from "./pages/Routines";
 import { Goals } from "./pages/Goals";
+import { Okrs } from "./pages/Okrs";
+import { Settings } from "./pages/Settings";
+import { AgentDetail } from "./pages/AgentDetail";
+import { Experiments } from "./pages/Experiments";
 import {
   INITIAL_BACKLOGS,
   PROJECT_HREF,
@@ -51,7 +60,12 @@ const PAGES: Record<string, { title: string; description: string }> = {
   "#goals": {
     title: "Goals",
     description:
-      "Q2 2026 objectives와 그에 ladder up되는 Key Results · Projects.",
+      "회사 비전 · 미션 · spirits manifesto · anti-goals · 장기 horizon.",
+  },
+  "#okrs": {
+    title: "OKRs",
+    description:
+      "Q2 2026 objectives + Key Results. 테이블 · 그래프 두 가지 뷰.",
   },
   "#proj-onboarding": {
     title: "Onboarding flow v2",
@@ -118,6 +132,11 @@ const PAGES: Record<string, { title: string; description: string }> = {
     title: "Data",
     description: "Data definitions — qdp repo의 metric/event 정의.",
   },
+  "#experiments": {
+    title: "Experiments",
+    description:
+      "이 제품에서 돌아간 실험과 결과·학습·다음 액션의 집계 뷰. 각 Project의 Learn Loop 산출물에서 자동 집계됩니다.",
+  },
   "#org": {
     title: "Org",
     description: "People, teams, and reporting structure.",
@@ -140,14 +159,52 @@ const PAGES: Record<string, { title: string; description: string }> = {
   },
 };
 
+const ONBOARDED_KEY = "cream.onboarded";
+const WORKSPACE_KEY = "cream.workspace.name";
+const VISION_KEY = "cream.workspace.vision";
+const FIRST_AGENT_KEY = "cream.workspace.firstAgent";
+const SAMPLE_DATA_KEY = "cream.sample_data";
+
+const SAMPLE_BACKLOG_IDS = new Set(INITIAL_BACKLOGS.map((b) => b.id));
+
+function readSampleDataDefault(): boolean {
+  if (typeof window === "undefined") return true;
+  const v = window.localStorage.getItem(SAMPLE_DATA_KEY);
+  if (v === "1") return true;
+  if (v === "0") return false;
+  // First-time visit (no flag, no onboarded): demo on for richness.
+  // Onboarded but no flag (shouldn't happen): default clean.
+  return window.localStorage.getItem(ONBOARDED_KEY) !== "1";
+}
+
 function App() {
   const [hash, setHash] = useState<string>(
     () => window.location.hash || "#dashboard"
   );
   const [newIssueOpen, setNewIssueOpen] = useState(false);
   const [issueSeed, setIssueSeed] = useState<NewIssueSeed | undefined>(undefined);
-  const [backlogs, setBacklogs] = useState<BacklogItem[]>(INITIAL_BACKLOGS);
   const [newBacklogCount, setNewBacklogCount] = useState(0);
+  const [chosOpen, setChosOpen] = useState(false);
+  const [onboarded, setOnboarded] = useState<boolean>(() => {
+    if (typeof window === "undefined") return true;
+    return window.localStorage.getItem(ONBOARDED_KEY) === "1";
+  });
+  const [workspaceName, setWorkspaceName] = useState<string>(() => {
+    if (typeof window === "undefined") return "Sprint Org";
+    return window.localStorage.getItem(WORKSPACE_KEY) || "Sprint Org";
+  });
+  const [workspaceVision, setWorkspaceVision] = useState<string>(() => {
+    if (typeof window === "undefined") return "";
+    return window.localStorage.getItem(VISION_KEY) || "";
+  });
+  const [firstAgent, setFirstAgent] = useState<string>(() => {
+    if (typeof window === "undefined") return "";
+    return window.localStorage.getItem(FIRST_AGENT_KEY) || "";
+  });
+  const [sampleData, setSampleData] = useState<boolean>(readSampleDataDefault);
+  const [backlogs, setBacklogs] = useState<BacklogItem[]>(() =>
+    readSampleDataDefault() ? INITIAL_BACKLOGS : []
+  );
 
   useEffect(() => {
     const onHashChange = () =>
@@ -162,12 +219,21 @@ function App() {
       setNewIssueOpen(true);
       return;
     }
+    if (href === "#atlas") {
+      setChosOpen(true);
+      return;
+    }
     window.location.hash = href;
     setHash(href);
   };
 
   const openPlanFromSignal = (seed: NewIssueSeed) => {
     setIssueSeed(seed);
+    setNewIssueOpen(true);
+  };
+
+  const openNewBacklogForKr = (krId: string) => {
+    setIssueSeed({ krId });
     setNewIssueOpen(true);
   };
 
@@ -183,6 +249,7 @@ function App() {
       projectHref,
       agent: p.assignee || undefined,
       product: p.product || undefined,
+      krId: p.krId || undefined,
       priority: priorityFromLabel(p.priority),
       status,
       createdAt: Date.now(),
@@ -197,14 +264,73 @@ function App() {
     );
   };
 
+  const handleOnboardingDone = (r: OnboardingResult) => {
+    window.localStorage.setItem(ONBOARDED_KEY, "1");
+    window.localStorage.setItem(WORKSPACE_KEY, r.companyName);
+    window.localStorage.setItem(VISION_KEY, r.vision || "");
+    window.localStorage.setItem(FIRST_AGENT_KEY, r.firstAgent || "");
+    window.localStorage.setItem(SAMPLE_DATA_KEY, "0");
+    setWorkspaceName(r.companyName);
+    setWorkspaceVision(r.vision || "");
+    setFirstAgent(r.firstAgent || "");
+    setSampleData(false);
+    const fresh: BacklogItem[] = r.firstTask
+      ? [
+          {
+            id: nextBacklogId(),
+            title: r.firstTask,
+            description: r.vision ? `> Vision · ${r.vision}` : undefined,
+            sourceLabel: "Onboarding",
+            agent: r.firstAgent || undefined,
+            priority: "high",
+            status: "todo",
+            createdAt: Date.now(),
+          },
+        ]
+      : [];
+    setBacklogs(fresh);
+    setOnboarded(true);
+    window.location.hash = "#backlogs";
+    setHash("#backlogs");
+  };
+
+  const handleLoadSamples = () => {
+    window.localStorage.setItem(SAMPLE_DATA_KEY, "1");
+    setSampleData(true);
+    setBacklogs((prev) => {
+      const userOnly = prev.filter((b) => !SAMPLE_BACKLOG_IDS.has(b.id));
+      return [...INITIAL_BACKLOGS, ...userOnly];
+    });
+  };
+
+  const handleClearSamples = () => {
+    window.localStorage.setItem(SAMPLE_DATA_KEY, "0");
+    setSampleData(false);
+    setBacklogs((prev) => prev.filter((b) => !SAMPLE_BACKLOG_IDS.has(b.id)));
+  };
+
   const meta = PAGES[hash] ?? PAGES["#dashboard"];
+
+  if (!onboarded) {
+    return <Onboarding onComplete={handleOnboardingDone} />;
+  }
 
   return (
     <>
-      <AppShell title={meta.title} activeHref={hash} onNavigate={navigate}>
+      <AppShell
+        title={meta.title}
+        activeHref={hash}
+        workspaceName={workspaceName}
+        sampleData={sampleData}
+        onNavigate={navigate}
+        onOpenChoS={() => setChosOpen(true)}
+      >
         {hash === "#dashboard" ? (
           <Dashboard
             backlogs={backlogs}
+            sampleData={sampleData}
+            firstAgent={firstAgent}
+            onLoadSamples={handleLoadSamples}
             onNavigate={navigate}
             onPlan={openPlanFromSignal}
             onExecute={handleExecute}
@@ -214,19 +340,92 @@ function App() {
             }}
           />
         ) : hash === "#signals" ? (
-          <Signals onPlan={openPlanFromSignal} />
+          <Signals
+            sampleData={sampleData}
+            onLoadSamples={handleLoadSamples}
+            onPlan={openPlanFromSignal}
+          />
         ) : hash === "#backlogs" ? (
           <Backlogs
             items={backlogs}
+            sampleData={sampleData}
+            onLoadSamples={handleLoadSamples}
+            onNewIssue={() => {
+              setIssueSeed(undefined);
+              setNewIssueOpen(true);
+            }}
             onExecute={handleExecute}
             onNavigate={navigate}
           />
         ) : hash === "#routines" ? (
-          <Routines />
+          <Routines
+            sampleData={sampleData}
+            onLoadSamples={handleLoadSamples}
+          />
         ) : hash === "#goals" ? (
-          <Goals backlogs={backlogs} onNavigate={navigate} />
+          <Goals
+            sampleData={sampleData}
+            workspaceVision={workspaceVision}
+            onLoadSamples={handleLoadSamples}
+          />
+        ) : hash === "#okrs" ? (
+          <Okrs
+            backlogs={backlogs}
+            sampleData={sampleData}
+            onLoadSamples={handleLoadSamples}
+            onNavigate={navigate}
+            onAddBacklog={openNewBacklogForKr}
+          />
+        ) : hash === "#settings" ? (
+          <Settings
+            sampleData={sampleData}
+            workspaceName={workspaceName}
+            onLoadSamples={handleLoadSamples}
+            onClearSamples={handleClearSamples}
+          />
+        ) : hash === "#experiments" ? (
+          <Experiments onNavigate={navigate} onPlan={openPlanFromSignal} />
         ) : hash.startsWith("#proj-") ? (
-          <ProjectDetail title={meta.title} description={meta.description} />
+          <ProjectDetail
+            title={meta.title}
+            description={meta.description}
+            href={hash}
+          />
+        ) : hash === "#ceo" ? (
+          <AgentDetail
+            agentName="CEO"
+            backlogs={backlogs}
+            onNavigate={navigate}
+            onExecute={handleExecute}
+          />
+        ) : hash === "#cto" ? (
+          <AgentDetail
+            agentName="CTO"
+            backlogs={backlogs}
+            onNavigate={navigate}
+            onExecute={handleExecute}
+          />
+        ) : hash === "#ux" ? (
+          <AgentDetail
+            agentName="UXDesigner"
+            backlogs={backlogs}
+            onNavigate={navigate}
+            onExecute={handleExecute}
+          />
+        ) : hash === "#marketer" ? (
+          <AgentDetail
+            agentName="Marketer"
+            backlogs={backlogs}
+            onNavigate={navigate}
+            onExecute={handleExecute}
+          />
+        ) : hash === "#engineer" ? (
+          <AgentDetail
+            agentName="Engineer"
+            backlogs={backlogs}
+            onNavigate={navigate}
+            onExecute={handleExecute}
+          />
         ) : (
           <Placeholder title={meta.title} description={meta.description} />
         )}
@@ -244,6 +443,11 @@ function App() {
           navigate("#backlogs");
         }}
         onDismiss={() => setNewBacklogCount(0)}
+      />
+      <ChiefOfStaff
+        open={chosOpen}
+        onClose={() => setChosOpen(false)}
+        onNavigate={navigate}
       />
     </>
   );

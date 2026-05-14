@@ -11,8 +11,20 @@ import {
   Minus,
 } from "lucide-react";
 import { cn } from "../lib/cn";
+import {
+  KR_BY_ID,
+  OBJECTIVE_BY_ID,
+  OBJECTIVES_LITE,
+  KRS,
+} from "../lib/krs";
 
-const AGENTS = ["CEO", "CTO", "UXDesigner"];
+const ASSIGNEE_GROUPS = [
+  { label: "People", options: ["Hanna Kim", "Min Park", "Jazz Hwang"] },
+  {
+    label: "Agents",
+    options: ["CEO", "CTO", "UXDesigner", "Marketer", "Engineer"],
+  },
+];
 
 const PROJECTS = [
   "Onboarding flow v2",
@@ -37,6 +49,7 @@ export type NewIssueSeed = {
   title?: string;
   description?: string;
   sourceLabel?: string;
+  krId?: string;
 };
 
 export type NewIssuePayload = {
@@ -45,6 +58,7 @@ export type NewIssuePayload = {
   assignee: string;
   project: string;
   product: string;
+  krId: string;
   status: string;
   priority: string;
   sourceLabel?: string;
@@ -63,6 +77,7 @@ export function NewIssueModal({ open, onClose, seed, onCreate }: Props) {
   const [assignee, setAssignee] = useState("");
   const [project, setProject] = useState("");
   const [product, setProduct] = useState("");
+  const [krId, setKrId] = useState("");
   const [status, setStatus] = useState("todo");
   const [priority, setPriority] = useState("");
 
@@ -81,6 +96,7 @@ export function NewIssueModal({ open, onClose, seed, onCreate }: Props) {
     if (open) {
       setTitle(seed?.title ?? "");
       setDescription(seed?.description ?? "");
+      setKrId(seed?.krId ?? "");
       const t = setTimeout(() => titleRef.current?.focus(), 50);
       return () => clearTimeout(t);
     }
@@ -95,6 +111,7 @@ export function NewIssueModal({ open, onClose, seed, onCreate }: Props) {
       assignee,
       project,
       product,
+      krId,
       status,
       priority,
       sourceLabel: seed?.sourceLabel,
@@ -109,6 +126,7 @@ export function NewIssueModal({ open, onClose, seed, onCreate }: Props) {
     setAssignee("");
     setProject("");
     setProduct("");
+    setKrId("");
     setStatus("todo");
     setPriority("");
   };
@@ -195,7 +213,7 @@ export function NewIssueModal({ open, onClose, seed, onCreate }: Props) {
             <InlineSelect
               value={assignee}
               onChange={setAssignee}
-              options={AGENTS}
+              groups={ASSIGNEE_GROUPS}
               placeholder="Assignee"
             />
             <span>in</span>
@@ -219,6 +237,20 @@ export function NewIssueModal({ open, onClose, seed, onCreate }: Props) {
             >
               <MoreHorizontal className="h-3.5 w-3.5" strokeWidth={1.8} />
             </button>
+          </div>
+
+          <div className="mt-2 flex flex-wrap items-center gap-1.5 text-[13.5px] text-charcoal-muted">
+            <span>Toward</span>
+            <KrSelect value={krId} onChange={setKrId} />
+            <span
+              className={cn(
+                "text-[11.5px]",
+                krId ? "text-charcoal-muted" : "text-[#b8443a]"
+              )}
+              title="모든 이슈는 Key Result에 연결되어야 합니다"
+            >
+              {krId ? "·  KR 연결됨" : "·  KR 연결 필수"}
+            </span>
           </div>
 
           <textarea
@@ -298,11 +330,18 @@ export function NewIssueModal({ open, onClose, seed, onCreate }: Props) {
           <button
             type="button"
             onClick={handleSubmit}
-            disabled={!title.trim()}
+            disabled={!title.trim() || !krId}
             className={cn(
               "btn-primary h-9 px-4 text-[14px]",
-              !title.trim() && "cursor-not-allowed opacity-50"
+              (!title.trim() || !krId) && "cursor-not-allowed opacity-50"
             )}
+            title={
+              !title.trim()
+                ? "제목을 입력해주세요"
+                : !krId
+                ? "Toward [KR]을 선택해주세요"
+                : undefined
+            }
           >
             Create Issue
           </button>
@@ -334,11 +373,13 @@ function InlineSelect({
   value,
   onChange,
   options,
+  groups,
   placeholder,
 }: {
   value: string;
   onChange: (v: string) => void;
-  options: string[];
+  options?: string[];
+  groups?: { label: string; options: string[] }[];
   placeholder: string;
 }) {
   return (
@@ -354,10 +395,68 @@ function InlineSelect({
         <option value="" disabled>
           {placeholder}
         </option>
-        {options.map((o) => (
+        {options?.map((o) => (
           <option key={o} value={o}>
             {o}
           </option>
+        ))}
+        {groups?.map((g) => (
+          <optgroup key={g.label} label={g.label}>
+            {g.options.map((o) => (
+              <option key={o} value={o}>
+                {o}
+              </option>
+            ))}
+          </optgroup>
+        ))}
+      </select>
+      <ChevronDown
+        className="pointer-events-none absolute right-2 top-1/2 h-3 w-3 -translate-y-1/2 text-charcoal-muted"
+        strokeWidth={1.8}
+      />
+    </div>
+  );
+}
+
+function KrSelect({
+  value,
+  onChange,
+}: {
+  value: string;
+  onChange: (v: string) => void;
+}) {
+  const selected = value ? KR_BY_ID[value] : undefined;
+  const selectedObj = selected
+    ? OBJECTIVE_BY_ID[selected.objectiveId]
+    : undefined;
+
+  return (
+    <div className="relative inline-flex">
+      <select
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        className={cn(
+          "appearance-none rounded-md border bg-cream py-1 pl-2.5 pr-7 text-[13px] focus:outline-none focus-visible:shadow-focus",
+          value
+            ? "border-cream-light text-charcoal"
+            : "border-[rgba(184,68,58,0.35)] text-charcoal-muted"
+        )}
+        title={selected ? `${selectedObj?.full} · ${selected.label}` : "KR 선택"}
+      >
+        <option value="" disabled>
+          Key Result
+        </option>
+        {OBJECTIVES_LITE.map((obj) => (
+          <optgroup
+            key={obj.id}
+            label={`${obj.emoji}  ${obj.short} — ${obj.full}`}
+          >
+            {KRS.filter((k) => k.objectiveId === obj.id).map((k) => (
+              <option key={k.id} value={k.id}>
+                {k.label}
+              </option>
+            ))}
+          </optgroup>
         ))}
       </select>
       <ChevronDown

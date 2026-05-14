@@ -1,4 +1,4 @@
-import { Menu, Search, Bell, Plus } from "lucide-react";
+import { Menu, Search } from "lucide-react";
 
 type Props = {
   onOpenMobileSidebar: () => void;
@@ -29,27 +29,13 @@ export function Topbar({ onOpenMobileSidebar, title }: Props) {
           />
           <input
             type="text"
-            placeholder="Search…"
-            className="h-9 w-64 rounded-md border border-cream-light bg-cream pl-9 pr-3 text-[14px] text-charcoal placeholder:text-charcoal-muted focus:outline-none focus:ring-2 focus:ring-blue-500/50"
+            placeholder="Search workspace…"
+            className="h-9 w-72 rounded-md border border-cream-light bg-cream pl-9 pr-12 text-[14px] text-charcoal placeholder:text-charcoal-muted focus:outline-none focus:ring-2 focus:ring-blue-500/50"
           />
           <kbd className="absolute right-2 top-1/2 hidden -translate-y-1/2 items-center gap-1 rounded border border-cream-light bg-cream px-1.5 py-0.5 text-[10.5px] text-charcoal-muted md:inline-flex">
             ⌘K
           </kbd>
         </div>
-
-        <button
-          type="button"
-          aria-label="Notifications"
-          className="relative inline-flex h-9 w-9 items-center justify-center rounded-md text-charcoal/80 transition hover:bg-[rgba(28,28,28,0.04)] hover:text-charcoal"
-        >
-          <Bell className="h-[18px] w-[18px]" strokeWidth={1.6} />
-          <span className="absolute right-1.5 top-1.5 h-1.5 w-1.5 rounded-full bg-charcoal" />
-        </button>
-
-        <button type="button" className="btn-primary h-9 px-3 text-[13.5px]">
-          <Plus className="h-4 w-4" strokeWidth={1.8} />
-          <span className="hidden sm:inline">New project</span>
-        </button>
       </div>
     </header>
   );

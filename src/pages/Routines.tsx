@@ -14,10 +14,12 @@ import {
   User,
   Globe2,
   Wallet,
+  Repeat,
   Settings as SettingsIcon,
   ShieldCheck,
   MoreHorizontal,
 } from "lucide-react";
+import { EmptyState } from "../components/EmptyState";
 import { cn } from "../lib/cn";
 
 type IconType = ComponentType<{
@@ -254,8 +256,15 @@ const FILTERS: Array<{ id: "all" | RoutineCategory; label: string }> = [
   { id: "compliance", label: "Compliance" },
 ];
 
-export function Routines() {
-  const [routines, setRoutines] = useState<Routine[]>(INITIAL_ROUTINES);
+type Props = {
+  sampleData: boolean;
+  onLoadSamples: () => void;
+};
+
+export function Routines({ sampleData, onLoadSamples }: Props) {
+  const [routines, setRoutines] = useState<Routine[]>(
+    sampleData ? INITIAL_ROUTINES : []
+  );
   const [filter, setFilter] = useState<(typeof FILTERS)[number]["id"]>("all");
 
   const counts = useMemo(() => {
@@ -297,6 +306,24 @@ export function Routines() {
   const failedCount = routines.filter(
     (r) => r.enabled && r.lastStatus === "failed"
   ).length;
+
+  if (routines.length === 0) {
+    return (
+      <div className="mx-auto max-w-[1200px]">
+        <header className="mb-8">
+          <h2 className="text-sub font-[600] tracking-[-0.9px] text-charcoal">
+            Routines
+          </h2>
+        </header>
+        <EmptyState
+          icon={Repeat}
+          title="자동으로 도는 작업이 아직 없어요"
+          description="시장 리서치·운영 리포트·재무·컴플라이언스처럼 매번 같은 일을 cron으로 굳혀두는 곳이에요."
+          onLoadSamples={onLoadSamples}
+        />
+      </div>
+    );
+  }
 
   return (
     <div className="mx-auto max-w-[1200px]">

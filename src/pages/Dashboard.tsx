@@ -287,18 +287,24 @@ const CATEGORY_COLOR: Record<RoutineRun["category"], string> = {
 
 type Props = {
   backlogs: BacklogItem[];
+  sampleData: boolean;
+  firstAgent: string;
   onNavigate: (href: string) => void;
   onPlan: (seed: NewIssueSeed) => void;
   onExecute: (id: string) => void;
   onNewIssue: () => void;
+  onLoadSamples: () => void;
 };
 
 export function Dashboard({
   backlogs,
+  sampleData,
+  firstAgent,
   onNavigate,
   onPlan,
   onExecute,
   onNewIssue,
+  onLoadSamples,
 }: Props) {
   const today = useMemo(
     () =>
@@ -311,17 +317,48 @@ export function Dashboard({
     []
   );
 
-  const hotCount = HOT_SIGNALS.filter((s) => s.hot).length;
+  const hotSignals = sampleData ? HOT_SIGNALS : [];
+  const projects = sampleData ? PROJECTS : [];
+  const agentStates = sampleData
+    ? AGENT_STATES
+    : firstAgent
+    ? [
+        {
+          name: firstAgent,
+          status: "idle" as const,
+          doing: "첫 태스크를 들고 대기 중이에요.",
+        },
+      ]
+    : [];
+  const routineRuns = sampleData ? ROUTINE_RUNS : [];
+
+  const hotCount = hotSignals.filter((s) => s.hot).length;
   const urgentBacklogs = backlogs.filter(
     (b) => b.priority === "urgent" && b.status !== "done"
   ).length;
   const executingBacklogs = backlogs.filter(
     (b) => b.status === "in_progress"
   ).length;
-  const failedRoutines = ROUTINE_RUNS.filter((r) => r.status === "failed").length;
-  const executingAgents = AGENT_STATES.filter(
+  const failedRoutines = routineRuns.filter((r) => r.status === "failed").length;
+  const executingAgents = agentStates.filter(
     (a) => a.status === "executing"
   ).length;
+
+  if (!sampleData) {
+    return (
+      <div className="mx-auto max-w-[1200px]">
+        <FreshDashboard
+          today={today}
+          backlogs={backlogs}
+          firstAgent={firstAgent}
+          onNavigate={onNavigate}
+          onExecute={onExecute}
+          onNewIssue={onNewIssue}
+          onLoadSamples={onLoadSamples}
+        />
+      </div>
+    );
+  }
 
   return (
     <div className="mx-auto max-w-[1200px]">
@@ -338,7 +375,7 @@ export function Dashboard({
           icon={Radio}
           label="Hot signals"
           value={hotCount.toString()}
-          hint={`${HOT_SIGNALS.length} 신규 시그널 중`}
+          hint={`${hotSignals.length} 신규 시그널 중`}
           accent="#b8443a"
           onClick={() => onNavigate("#signals")}
         />
@@ -369,15 +406,15 @@ export function Dashboard({
 
       <section className="mt-6 grid grid-cols-1 gap-4 lg:grid-cols-3">
         <HotSignalsCard
-          signals={HOT_SIGNALS}
+          signals={hotSignals}
           onPlan={onPlan}
           onAll={() => onNavigate("#signals")}
         />
-        <AgentsCard agents={AGENT_STATES} onNavigate={onNavigate} />
+        <AgentsCard agents={agentStates} onNavigate={onNavigate} />
       </section>
 
       <section className="mt-6">
-        <ProjectsStrip projects={PROJECTS} onNavigate={onNavigate} />
+        <ProjectsStrip projects={projects} onNavigate={onNavigate} />
       </section>
 
       <section className="mt-6 grid grid-cols-1 gap-4 lg:grid-cols-3">
@@ -388,7 +425,7 @@ export function Dashboard({
           onExecute={onExecute}
         />
         <RoutinesDigestCard
-          runs={ROUTINE_RUNS}
+          runs={routineRuns}
           onAll={() => onNavigate("#routines")}
         />
       </section>
@@ -1037,5 +1074,202 @@ function CardHeader({
         </button>
       )}
     </div>
+  );
+}
+
+function FreshDashboard({
+  today,
+  backlogs,
+  firstAgent,
+  onNavigate,
+  onExecute,
+  onNewIssue,
+  onLoadSamples,
+}: {
+  today: string;
+  backlogs: BacklogItem[];
+  firstAgent: string;
+  onNavigate: (href: string) => void;
+  onExecute: (id: string) => void;
+  onNewIssue: () => void;
+  onLoadSamples: () => void;
+}) {
+  const firstTask = backlogs.find((b) => b.status !== "done");
+  const AgentIcon =
+    (firstAgent && AGENT_ICONS[firstAgent]) || User;
+
+  return (
+    <>
+      <section className="flex flex-wrap items-end justify-between gap-4">
+        <div className="min-w-0">
+          <p className="text-[13px] uppercase tracking-[0.08em] text-charcoal-muted">
+            {today}
+          </p>
+          <h2 className="mt-2 text-sub font-[600] tracking-[-0.9px] text-charcoal">
+            첫 출근, 환영합니다.
+          </h2>
+          <p className="mt-3 max-w-2xl text-[15px] leading-[1.55] text-charcoal-muted">
+            워크스페이스는 방금 막 시작됐어요. 오늘은 작게 시작해도 충분합니다 —
+            첫 태스크부터 굴려보거나, 새 일감을 추가해보세요.
+          </p>
+        </div>
+        <button
+          type="button"
+          onClick={onNewIssue}
+          className="btn-primary h-9 px-3 text-[13.5px]"
+        >
+          <Sparkles className="h-3.5 w-3.5" strokeWidth={1.8} />
+          New Issue
+        </button>
+      </section>
+
+      <section className="mt-6 grid grid-cols-1 gap-4 lg:grid-cols-3">
+        <div className="card overflow-hidden p-6 lg:col-span-2">
+          <p className="text-[12px] uppercase tracking-[0.08em] text-charcoal-muted">
+            오늘의 첫 태스크
+          </p>
+          {firstTask ? (
+            <>
+              <h3 className="mt-3 text-[22px] font-[600] tracking-[-0.5px] leading-[1.25] text-charcoal">
+                {firstTask.title}
+              </h3>
+              {firstTask.description && (
+                <p className="mt-2 line-clamp-2 text-[13.5px] leading-[1.55] text-charcoal-muted">
+                  {firstTask.description}
+                </p>
+              )}
+              <div className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-1.5 text-[12.5px] text-charcoal-muted">
+                {firstTask.agent && (
+                  <span className="inline-flex items-center gap-1.5">
+                    <span className="grid h-4 w-4 place-items-center rounded-pill border border-cream-light bg-cream text-charcoal">
+                      <AgentIcon className="h-2.5 w-2.5" strokeWidth={1.6} />
+                    </span>
+                    {firstTask.agent}
+                  </span>
+                )}
+                <span className="text-charcoal-muted/50">·</span>
+                <span>High priority</span>
+                <span className="text-charcoal-muted/50">·</span>
+                <span>Onboarding 시작 항목</span>
+              </div>
+              <div className="mt-6 flex items-center gap-2">
+                {firstTask.status === "in_progress" ? (
+                  <button
+                    type="button"
+                    onClick={() => onNavigate("#backlogs")}
+                    className="inline-flex h-9 items-center gap-1.5 rounded-pill border border-blue-500/30 bg-blue-500/10 px-3 text-[13px] text-[#2563eb]"
+                  >
+                    <span className="relative grid h-2 w-2 place-items-center">
+                      <span className="absolute inset-0 animate-ping rounded-full bg-blue-500/50" />
+                      <span className="relative h-1.5 w-1.5 rounded-full bg-blue-500" />
+                    </span>
+                    실행 중 · Backlogs에서 보기
+                  </button>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => onExecute(firstTask.id)}
+                    className="btn-primary h-9 px-3 text-[13.5px]"
+                  >
+                    <Play className="h-3.5 w-3.5" strokeWidth={1.8} />
+                    Execute
+                  </button>
+                )}
+                <button
+                  type="button"
+                  onClick={() => onNavigate("#backlogs")}
+                  className="inline-flex h-9 items-center gap-1.5 rounded-md border border-cream-light bg-cream px-3 text-[13.5px] text-charcoal transition hover:bg-[rgba(28,28,28,0.04)]"
+                >
+                  Backlog 전체 보기
+                  <ArrowRight className="h-3 w-3" strokeWidth={1.8} />
+                </button>
+              </div>
+            </>
+          ) : (
+            <div className="mt-4">
+              <h3 className="text-[20px] font-[600] tracking-[-0.4px] text-charcoal">
+                아직 일감이 없어요
+              </h3>
+              <p className="mt-2 text-[13.5px] text-charcoal-muted">
+                작은 한 줄짜리 메모도 좋아요. 첫 항목을 만들어보세요.
+              </p>
+              <button
+                type="button"
+                onClick={onNewIssue}
+                className="btn-primary mt-4 h-9 px-3 text-[13.5px]"
+              >
+                <Sparkles className="h-3.5 w-3.5" strokeWidth={1.8} />
+                New Issue
+              </button>
+            </div>
+          )}
+        </div>
+
+        <div className="card overflow-hidden p-6">
+          <p className="text-[12px] uppercase tracking-[0.08em] text-charcoal-muted">
+            워크스페이스 둘러보기
+          </p>
+          <ul className="mt-4 flex flex-col gap-2.5">
+            <ExploreLink
+              label="Goals"
+              hint="비전 · 미션을 적어두세요"
+              onClick={() => onNavigate("#goals")}
+            />
+            <ExploreLink
+              label="OKRs"
+              hint="분기 목표를 정의하세요"
+              onClick={() => onNavigate("#okrs")}
+            />
+            <ExploreLink
+              label="Signals"
+              hint="외부 신호를 연결해보세요"
+              onClick={() => onNavigate("#signals")}
+            />
+            <ExploreLink
+              label="Routines"
+              hint="반복 작업을 cron으로"
+              onClick={() => onNavigate("#routines")}
+            />
+          </ul>
+          <button
+            type="button"
+            onClick={onLoadSamples}
+            className="mt-5 inline-flex items-center gap-1.5 text-[12.5px] text-charcoal-muted underline-offset-4 transition hover:text-charcoal hover:underline"
+          >
+            <Sparkles className="h-3 w-3" strokeWidth={1.8} />
+            샘플 워크스페이스로 둘러보기
+          </button>
+        </div>
+      </section>
+    </>
+  );
+}
+
+function ExploreLink({
+  label,
+  hint,
+  onClick,
+}: {
+  label: string;
+  hint: string;
+  onClick: () => void;
+}) {
+  return (
+    <li>
+      <button
+        type="button"
+        onClick={onClick}
+        className="group flex w-full items-center justify-between rounded-md border border-cream-light bg-cream px-3 py-2 text-left transition hover:bg-[rgba(28,28,28,0.04)]"
+      >
+        <div className="min-w-0">
+          <p className="text-[13.5px] font-[480] text-charcoal">{label}</p>
+          <p className="truncate text-[11.5px] text-charcoal-muted">{hint}</p>
+        </div>
+        <ArrowRight
+          className="h-3.5 w-3.5 text-charcoal-muted transition-transform group-hover:translate-x-1"
+          strokeWidth={1.8}
+        />
+      </button>
+    </li>
   );
 }

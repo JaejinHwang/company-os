@@ -4,7 +4,9 @@ import {
   CircleDashed,
   CircleDot,
   CheckCircle2,
+  Layers,
   Play,
+  Plus,
   ArrowRight,
   Bot,
   BrainCircuit,
@@ -19,6 +21,8 @@ import type {
   BacklogPriority,
   BacklogStatus,
 } from "../lib/backlog";
+import { KR_BY_ID, OBJECTIVE_BY_ID } from "../lib/krs";
+import { EmptyState } from "../components/EmptyState";
 import { cn } from "../lib/cn";
 
 type IconType = ComponentType<{
@@ -66,11 +70,21 @@ const FILTERS: Array<{ id: "all" | BacklogStatus; label: string }> = [
 
 type Props = {
   items: BacklogItem[];
+  sampleData: boolean;
   onExecute: (id: string) => void;
   onNavigate: (href: string) => void;
+  onLoadSamples: () => void;
+  onNewIssue: () => void;
 };
 
-export function Backlogs({ items, onExecute, onNavigate }: Props) {
+export function Backlogs({
+  items,
+  sampleData,
+  onExecute,
+  onNavigate,
+  onLoadSamples,
+  onNewIssue,
+}: Props) {
   const [filter, setFilter] = useState<(typeof FILTERS)[number]["id"]>("all");
 
   const counts = useMemo(() => {
@@ -104,12 +118,42 @@ export function Backlogs({ items, onExecute, onNavigate }: Props) {
     });
   }, [items, filter]);
 
+  if (items.length === 0) {
+    return (
+      <div className="mx-auto max-w-[1200px]">
+        <header className="mb-8">
+          <h2 className="text-sub font-[600] tracking-[-0.9px] text-charcoal">
+            Backlogs
+          </h2>
+        </header>
+        <EmptyState
+          icon={Layers}
+          title="아직 백로그가 없어요"
+          description="시그널에서 정리되거나 직접 추가한 일감이 여기 쌓여요. 첫 항목을 만들어보세요."
+          primaryAction={{
+            label: "New Issue",
+            onClick: onNewIssue,
+          }}
+          onLoadSamples={sampleData ? undefined : onLoadSamples}
+        />
+      </div>
+    );
+  }
+
   return (
     <div className="mx-auto max-w-[1200px]">
-      <header className="mb-8">
+      <header className="mb-8 flex items-center justify-between gap-3">
         <h2 className="text-sub font-[600] tracking-[-0.9px] text-charcoal">
           Backlogs
         </h2>
+        <button
+          type="button"
+          onClick={onNewIssue}
+          className="btn-primary h-9 px-3 text-[13.5px]"
+        >
+          <Plus className="h-3.5 w-3.5" strokeWidth={1.8} />
+          New Issue
+        </button>
       </header>
 
       <section>
@@ -213,6 +257,7 @@ function BacklogRow({
               {item.sourceLabel}
             </span>
           )}
+          <KrChip krId={item.krId} onClick={() => onNavigate("#okrs")} />
           <p className="truncate text-[14.5px] font-[480] text-charcoal">
             {item.title}
           </p>
@@ -284,6 +329,43 @@ function BacklogRow({
         )}
       </div>
     </li>
+  );
+}
+
+function KrChip({
+  krId,
+  onClick,
+}: {
+  krId?: string;
+  onClick: () => void;
+}) {
+  if (!krId) {
+    return (
+      <button
+        type="button"
+        onClick={onClick}
+        title="이 백로그는 어떤 KR도 가리키지 않습니다 — 연결하세요"
+        className="inline-flex items-center gap-1 rounded-pill border border-[rgba(184,68,58,0.35)] bg-[rgba(184,68,58,0.06)] px-1.5 py-0.5 text-[10.5px] font-[480] text-[#b8443a] transition hover:bg-[rgba(184,68,58,0.10)]"
+      >
+        ⚠ No KR
+      </button>
+    );
+  }
+  const kr = KR_BY_ID[krId];
+  if (!kr) return null;
+  const obj = OBJECTIVE_BY_ID[kr.objectiveId];
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      title={`${obj?.full ?? ""} · ${kr.label}`}
+      className="inline-flex items-center gap-1 rounded-pill border border-cream-light bg-cream px-1.5 py-0.5 text-[10.5px] font-[480] text-charcoal transition hover:bg-[rgba(28,28,28,0.04)]"
+    >
+      <span>⊙</span>
+      <span className="text-charcoal-muted">{obj?.short ?? ""}</span>
+      <span>·</span>
+      <span>{kr.label}</span>
+    </button>
   );
 }
 

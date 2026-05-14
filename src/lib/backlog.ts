@@ -10,6 +10,7 @@ export type BacklogItem = {
   projectHref?: string;
   agent?: string;
   product?: string;
+  krId?: string;
   priority: BacklogPriority;
   status: BacklogStatus;
   createdAt: number;
@@ -58,6 +59,7 @@ export const INITIAL_BACKLOGS: BacklogItem[] = [
     projectHref: "#proj-pricing",
     agent: "CTO",
     product: "Sprint",
+    krId: "kr-2-3",
     priority: "urgent",
     status: "todo",
     createdAt: h(2),
@@ -72,6 +74,7 @@ export const INITIAL_BACKLOGS: BacklogItem[] = [
     projectHref: "#proj-mobile",
     agent: "CTO",
     product: "Sprint",
+    krId: "kr-4-3",
     priority: "high",
     status: "todo",
     createdAt: h(5),
@@ -86,6 +89,7 @@ export const INITIAL_BACKLOGS: BacklogItem[] = [
     projectHref: "#proj-marketplace",
     agent: "CTO",
     product: "Agents Cloud",
+    krId: "kr-3-2",
     priority: "urgent",
     status: "in_progress",
     createdAt: h(8),
@@ -100,6 +104,7 @@ export const INITIAL_BACKLOGS: BacklogItem[] = [
     projectHref: "#proj-marketplace",
     agent: "CEO",
     product: "Agents Cloud",
+    krId: "kr-3-1",
     priority: "high",
     status: "in_progress",
     createdAt: h(26),
@@ -113,6 +118,7 @@ export const INITIAL_BACKLOGS: BacklogItem[] = [
     projectHref: "#proj-onboarding",
     agent: "UXDesigner",
     product: "Sprint",
+    krId: "kr-1-3",
     priority: "high",
     status: "todo",
     createdAt: h(28),
@@ -127,6 +133,7 @@ export const INITIAL_BACKLOGS: BacklogItem[] = [
     projectHref: "#proj-health",
     agent: "CEO",
     product: "Sprint",
+    krId: "kr-2-1",
     priority: "medium",
     status: "pending",
     createdAt: h(48),

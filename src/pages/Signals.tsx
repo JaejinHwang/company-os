@@ -8,8 +8,12 @@ import {
   Briefcase,
   ArrowRight,
   Flame,
+  Radio,
+  Target,
 } from "lucide-react";
+import { KR_BY_ID, OBJECTIVE_BY_ID } from "../lib/krs";
 import type { NewIssueSeed } from "../components/NewIssueModal";
+import { EmptyState } from "../components/EmptyState";
 import { cn } from "../lib/cn";
 
 type SignalSource =
@@ -31,6 +35,7 @@ type Signal = {
   timeAgo: string;
   status: SignalStatus;
   hot?: boolean;
+  suggestedKrId?: string;
 };
 
 type IconType = ComponentType<{
@@ -89,6 +94,7 @@ const SIGNALS: Signal[] = [
     timeAgo: "방금 전",
     status: "new",
     hot: true,
+    suggestedKrId: "kr-2-3",
   },
   {
     id: "s-2",
@@ -99,6 +105,7 @@ const SIGNALS: Signal[] = [
     channel: "Sentry · production",
     timeAgo: "32분 전",
     status: "new",
+    suggestedKrId: "kr-4-1",
   },
   {
     id: "s-3",
@@ -109,6 +116,7 @@ const SIGNALS: Signal[] = [
     channel: "Amplitude · this week",
     timeAgo: "2시간 전",
     status: "triaging",
+    suggestedKrId: "kr-1-3",
   },
   {
     id: "s-4",
@@ -120,6 +128,7 @@ const SIGNALS: Signal[] = [
     timeAgo: "어제",
     status: "new",
     hot: true,
+    suggestedKrId: "kr-3-1",
   },
   {
     id: "s-5",
@@ -130,6 +139,7 @@ const SIGNALS: Signal[] = [
     channel: "User interviews · W19",
     timeAgo: "2일 전",
     status: "triaging",
+    suggestedKrId: "kr-1-1",
   },
   {
     id: "s-6",
@@ -140,6 +150,7 @@ const SIGNALS: Signal[] = [
     channel: "Salesforce · deal $48K",
     timeAgo: "3일 전",
     status: "planned",
+    suggestedKrId: "kr-2-2",
   },
   {
     id: "s-7",
@@ -150,6 +161,7 @@ const SIGNALS: Signal[] = [
     channel: "Intercom · 8 mentions",
     timeAgo: "이번 주",
     status: "new",
+    suggestedKrId: "kr-1-1",
   },
   {
     id: "s-8",
@@ -161,6 +173,7 @@ const SIGNALS: Signal[] = [
     timeAgo: "오늘 09:14",
     status: "triaging",
     hot: true,
+    suggestedKrId: "kr-3-2",
   },
 ];
 
@@ -175,22 +188,44 @@ const FILTERS: Array<{ id: "all" | SignalSource; label: string }> = [
 ];
 
 type Props = {
+  sampleData: boolean;
   onPlan: (seed: NewIssueSeed) => void;
+  onLoadSamples: () => void;
 };
 
-export function Signals({ onPlan }: Props) {
+export function Signals({ sampleData, onPlan, onLoadSamples }: Props) {
   const [filter, setFilter] = useState<(typeof FILTERS)[number]["id"]>("all");
 
+  const source = sampleData ? SIGNALS : [];
+
   const counts = useMemo(() => {
-    const c: Record<string, number> = { all: SIGNALS.length };
-    for (const s of SIGNALS) c[s.source] = (c[s.source] ?? 0) + 1;
+    const c: Record<string, number> = { all: source.length };
+    for (const s of source) c[s.source] = (c[s.source] ?? 0) + 1;
     return c;
-  }, []);
+  }, [source]);
 
   const visible = useMemo(
-    () => (filter === "all" ? SIGNALS : SIGNALS.filter((s) => s.source === filter)),
-    [filter]
+    () => (filter === "all" ? source : source.filter((s) => s.source === filter)),
+    [filter, source]
   );
+
+  if (!sampleData) {
+    return (
+      <div className="mx-auto max-w-[1200px]">
+        <header className="mb-8">
+          <h2 className="text-sub font-[600] tracking-[-0.9px] text-charcoal">
+            Signals
+          </h2>
+        </header>
+        <EmptyState
+          icon={Radio}
+          title="아직 도착한 시그널이 없어요"
+          description="CS · 버그 · 내부 발견 · 경쟁사 · 시장 · 세일즈 6개 채널에서 자동 수집된 신호가 여기 모입니다. 통합을 연결하면 자동으로 흘러들어와요."
+          onLoadSamples={onLoadSamples}
+        />
+      </div>
+    );
+  }
 
   return (
     <div className="mx-auto max-w-[1200px]">
@@ -303,6 +338,27 @@ function SignalRow({
                 Escalate
               </span>
             )}
+            {signal.suggestedKrId &&
+              KR_BY_ID[signal.suggestedKrId] &&
+              (() => {
+                const kr = KR_BY_ID[signal.suggestedKrId]!;
+                const obj = OBJECTIVE_BY_ID[kr.objectiveId];
+                return (
+                  <span
+                    title={`추천 KR · ${obj?.full ?? ""} · ${kr.label}`}
+                    className="inline-flex items-center gap-1 rounded-pill border border-cream-light bg-cream px-2 py-0.5 text-[11px] font-[480] text-charcoal"
+                  >
+                    <Target
+                      className="h-3 w-3 text-charcoal-muted"
+                      strokeWidth={1.8}
+                    />
+                    <span className="text-charcoal-muted">
+                      {obj?.short ?? ""}
+                    </span>
+                    <span>· {kr.label}</span>
+                  </span>
+                );
+              })()}
             <span className="text-[12px] text-charcoal-muted">
               {signal.channel} · {signal.timeAgo}
             </span>
@@ -324,6 +380,7 @@ function SignalRow({
                 title: signal.title,
                 description: `> Signal · ${src.label} · ${signal.channel}\n\n${signal.detail}`,
                 sourceLabel: `${src.short} signal`,
+                krId: signal.suggestedKrId,
               })
             }
             className="btn-primary h-8 px-3 text-[13px]"
