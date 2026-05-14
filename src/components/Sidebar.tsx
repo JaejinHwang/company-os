@@ -13,7 +13,6 @@ import {
   Gem,
   Megaphone,
   Wrench,
-  User,
   Network,
   Boxes,
   DollarSign,
@@ -38,6 +37,7 @@ import {
 } from "lucide-react";
 import { cn } from "../lib/cn";
 import { AtlasAvatar } from "./AtlasAvatar";
+import { PersonAvatar } from "./PersonAvatar";
 import {
   AGENT_STATUS_CONFIG,
   AGENT_STATUSES,
@@ -56,6 +56,7 @@ type NavItem = {
   label: string;
   href: string;
   icon?: IconType;
+  avatar?: string;
   badge?: string;
   dotColor?: string;
   kebab?: boolean;
@@ -170,9 +171,8 @@ const sections: Section[] = [
       {
         label: "Jazz Hwang",
         href: "#m-jazz",
-        icon: User,
+        avatar: "Jazz Hwang",
         kebab: true,
-        description: "CEO",
         children: [
           {
             label: "CEO",
@@ -186,9 +186,8 @@ const sections: Section[] = [
       {
         label: "Daniel Kim",
         href: "#m-daniel",
-        icon: User,
+        avatar: "Daniel Kim",
         kebab: true,
-        description: "CTO",
         children: [
           {
             label: "CTO",
@@ -209,9 +208,8 @@ const sections: Section[] = [
       {
         label: "Minji Park",
         href: "#m-minji",
-        icon: User,
+        avatar: "Minji Park",
         kebab: true,
-        description: "CPO",
         children: [
           {
             label: "UXDesigner",
@@ -225,9 +223,8 @@ const sections: Section[] = [
       {
         label: "Sora Lee",
         href: "#m-sora",
-        icon: User,
+        avatar: "Sora Lee",
         kebab: true,
-        description: "CMO",
         children: [
           {
             label: "Marketer",
@@ -241,9 +238,8 @@ const sections: Section[] = [
       {
         label: "Hyunwoo Choi",
         href: "#m-hyunwoo",
-        icon: User,
+        avatar: "Hyunwoo Choi",
         kebab: true,
-        description: "Sales Manager",
         children: [],
       },
     ],
@@ -580,6 +576,8 @@ function SidebarItem({
           />
         ) : item.href === "#atlas" ? (
           <AtlasAvatar size="xs" />
+        ) : item.avatar ? (
+          <PersonAvatar seed={item.avatar} size="xs" />
         ) : Icon ? (
           item.agentStatus ? (
             <span

@@ -20,7 +20,9 @@ import { Goals } from "./pages/Goals";
 import { Okrs } from "./pages/Okrs";
 import { Settings } from "./pages/Settings";
 import { AgentDetail } from "./pages/AgentDetail";
+import { PersonDetail } from "./pages/PersonDetail";
 import { Experiments } from "./pages/Experiments";
+import { PEOPLE, type PersonId } from "./lib/people";
 import {
   INITIAL_BACKLOGS,
   PROJECT_HREF,
@@ -111,6 +113,26 @@ const PAGES: Record<string, { title: string; description: string }> = {
   "#engineer": {
     title: "Engineer Agent",
     description: "Implementation, code review, and shipping work end-to-end.",
+  },
+  "#m-jazz": {
+    title: "Jazz Hwang",
+    description: "CEO · 본인이 점유한 에이전트, 직접 작업, 목표, 휴가/미팅을 한 곳에서.",
+  },
+  "#m-daniel": {
+    title: "Daniel Kim",
+    description: "CTO · 본인이 점유한 에이전트, 직접 작업, 목표, 휴가/미팅을 한 곳에서.",
+  },
+  "#m-minji": {
+    title: "Minji Park",
+    description: "CPO · 본인이 점유한 에이전트, 직접 작업, 목표, 휴가/미팅을 한 곳에서.",
+  },
+  "#m-sora": {
+    title: "Sora Lee",
+    description: "CMO · 본인이 점유한 에이전트, 직접 작업, 목표, 휴가/미팅을 한 곳에서.",
+  },
+  "#m-hyunwoo": {
+    title: "Hyunwoo Choi",
+    description: "Sales Manager · 본인이 점유한 에이전트, 직접 작업, 목표, 휴가/미팅을 한 곳에서.",
   },
   "#screens": {
     title: "Screens",
@@ -425,6 +447,15 @@ function App() {
             backlogs={backlogs}
             onNavigate={navigate}
             onExecute={handleExecute}
+          />
+        ) : hash.startsWith("#m-") &&
+          Object.values(PEOPLE).some((p) => p.href === hash) ? (
+          <PersonDetail
+            personId={
+              Object.values(PEOPLE).find((p) => p.href === hash)!.id as PersonId
+            }
+            backlogs={backlogs}
+            onNavigate={navigate}
           />
         ) : (
           <Placeholder title={meta.title} description={meta.description} />
