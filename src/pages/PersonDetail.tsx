@@ -147,12 +147,42 @@ type TabId = "overview" | "pool" | "direct" | "goals" | "human";
 type Props = {
   personId: PersonId;
   backlogs: BacklogItem[];
+  sampleData: boolean;
   onNavigate: (href: string) => void;
+  onLoadSamples: () => void;
 };
 
-export function PersonDetail({ personId, backlogs, onNavigate }: Props) {
+export function PersonDetail({
+  personId,
+  backlogs,
+  sampleData,
+  onNavigate,
+  onLoadSamples,
+}: Props) {
   const person = PEOPLE[personId];
   const [activeTab, setActiveTab] = useState<TabId>("overview");
+
+  if (!sampleData) {
+    return (
+      <div className="mx-auto flex max-w-[760px] flex-col items-center justify-center gap-3 py-24 text-center">
+        <PersonAvatar seed={person.name} size="xl" />
+        <h2 className="text-[20px] font-[600] tracking-[-0.3px] text-charcoal">
+          {person.name}
+        </h2>
+        <p className="max-w-md text-[13.5px] leading-[1.55] text-charcoal-muted">
+          이 사람의 점유 에이전트·직접 작업·OKR·미팅 데이터는 샘플 데이터에 포함되어 있습니다.
+          샘플을 켜면 채워집니다.
+        </p>
+        <button
+          type="button"
+          onClick={onLoadSamples}
+          className="btn-primary mt-2 inline-flex h-9 items-center gap-1.5 px-3.5 text-[13px]"
+        >
+          샘플 데이터 채우기
+        </button>
+      </div>
+    );
+  }
 
   const ownedBacklogs = useMemo(
     () =>

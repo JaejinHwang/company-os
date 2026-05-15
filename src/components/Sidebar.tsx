@@ -319,7 +319,13 @@ export function Sidebar({
 
         <nav className="flex-1 overflow-y-auto px-2 pb-3">
           {sections
-            .filter((section) => !(section.id === "projects" && !sampleData))
+            .filter(
+              (section) =>
+                !(
+                  (section.id === "projects" || section.id === "workforces") &&
+                  !sampleData
+                )
+            )
             .map((section, i) => (
               <SidebarSection
                 key={section.id}

@@ -647,11 +647,19 @@ type Tab = "today" | "log" | "chat";
 
 type Props = {
   open: boolean;
+  sampleData: boolean;
   onClose: () => void;
   onNavigate: (href: string) => void;
+  onLoadSamples: () => void;
 };
 
-export function ChiefOfStaff({ open, onClose, onNavigate }: Props) {
+export function ChiefOfStaff({
+  open,
+  sampleData,
+  onClose,
+  onNavigate,
+  onLoadSamples,
+}: Props) {
   const [tab, setTab] = useState<Tab>("today");
   const [recording, setRecording] = useState(false);
   const [input, setInput] = useState("");
@@ -766,9 +774,13 @@ export function ChiefOfStaff({ open, onClose, onNavigate }: Props) {
           {tab === "today" && (
             <TodayPane
               today={today}
+              sampleData={sampleData}
               recording={recording}
               onRecord={() => setRecording((v) => !v)}
               onAskAtlas={askAtlas}
+              onLoadSamples={() => {
+                onLoadSamples();
+              }}
               onNavigate={(h) => {
                 onClose();
                 onNavigate(h);
@@ -776,7 +788,12 @@ export function ChiefOfStaff({ open, onClose, onNavigate }: Props) {
             />
           )}
           {tab === "log" && (
-            <LogPane log={MEETING_LOG} onAsk={(m) => askAtlas(`${m.title} 후속 액션 정리해줘`)} />
+            <LogPane
+              log={sampleData ? MEETING_LOG : []}
+              sampleData={sampleData}
+              onAsk={(m) => askAtlas(`${m.title} 후속 액션 정리해줘`)}
+              onLoadSamples={onLoadSamples}
+            />
           )}
           {tab === "chat" && (
             <ChatPane
@@ -798,20 +815,57 @@ export function ChiefOfStaff({ open, onClose, onNavigate }: Props) {
 }
 
 // ──────────────────────────────────────────────────────────────────────────
+// Atlas empty state (when sampleData = false)
+// ──────────────────────────────────────────────────────────────────────────
+
+function AtlasEmpty({
+  title,
+  body,
+  onLoadSamples,
+}: {
+  title: string;
+  body: string;
+  onLoadSamples: () => void;
+}) {
+  return (
+    <div className="flex flex-1 items-center justify-center px-8 py-12">
+      <div className="max-w-md text-center">
+        <p className="text-[15.5px] font-[480] text-charcoal">{title}</p>
+        <p className="mt-2 text-[13px] leading-[1.55] text-charcoal-muted">
+          {body}
+        </p>
+        <button
+          type="button"
+          onClick={onLoadSamples}
+          className="btn-primary mt-5 inline-flex h-9 items-center gap-1.5 px-3.5 text-[13px]"
+        >
+          <Plus className="h-3.5 w-3.5" strokeWidth={1.8} />
+          샘플 데이터 채우기
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// ──────────────────────────────────────────────────────────────────────────
 // Today pane (calendar-first)
 // ──────────────────────────────────────────────────────────────────────────
 
 function TodayPane({
   today,
+  sampleData,
   recording,
   onRecord,
   onAskAtlas,
+  onLoadSamples,
   onNavigate,
 }: {
   today: string;
+  sampleData: boolean;
   recording: boolean;
   onRecord: () => void;
   onAskAtlas: (prompt: string) => void;
+  onLoadSamples: () => void;
   onNavigate: (href: string) => void;
 }) {
   const [selectedEventId, setSelectedEventId] = useState<string>(() =>
@@ -820,6 +874,17 @@ function TodayPane({
   const selectedEvent =
     EVENTS.find((e) => e.id === selectedEventId) ??
     EVENTS.find((e) => e.id === pickActiveEventId());
+
+  if (!sampleData) {
+    return (
+      <AtlasEmpty
+        title="오늘 일정이 비어 있습니다"
+        body="샘플 데이터를 켜면 오늘 일정 · prep brief · checklist · delegations가 모두 채워집니다."
+        onLoadSamples={onLoadSamples}
+      />
+    );
+  }
+
   return (
     <div className="flex h-full min-h-0 flex-col">
       {/* Day header */}
@@ -1414,11 +1479,24 @@ function PrepTaskRow({
 
 function LogPane({
   log,
+  sampleData,
   onAsk,
+  onLoadSamples,
 }: {
   log: MeetingLogItem[];
+  sampleData: boolean;
   onAsk: (m: MeetingLogItem) => void;
+  onLoadSamples: () => void;
 }) {
+  if (!sampleData) {
+    return (
+      <AtlasEmpty
+        title="아직 기록된 미팅이 없습니다"
+        body="샘플 데이터를 켜면 Atlas가 자동 기록한 미팅과 follow-up 액션이 표시됩니다."
+        onLoadSamples={onLoadSamples}
+      />
+    );
+  }
   return (
     <div className="flex-1 overflow-y-auto px-5 py-5">
       <p className="mb-4 text-[12.5px] text-charcoal-muted">

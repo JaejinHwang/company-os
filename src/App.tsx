@@ -417,36 +417,46 @@ function App() {
           <AgentDetail
             agentName="CEO"
             backlogs={backlogs}
+            sampleData={sampleData}
             onNavigate={navigate}
             onExecute={handleExecute}
+            onLoadSamples={handleLoadSamples}
           />
         ) : hash === "#cto" ? (
           <AgentDetail
             agentName="CTO"
             backlogs={backlogs}
+            sampleData={sampleData}
             onNavigate={navigate}
             onExecute={handleExecute}
+            onLoadSamples={handleLoadSamples}
           />
         ) : hash === "#ux" ? (
           <AgentDetail
             agentName="UXDesigner"
             backlogs={backlogs}
+            sampleData={sampleData}
             onNavigate={navigate}
             onExecute={handleExecute}
+            onLoadSamples={handleLoadSamples}
           />
         ) : hash === "#marketer" ? (
           <AgentDetail
             agentName="Marketer"
             backlogs={backlogs}
+            sampleData={sampleData}
             onNavigate={navigate}
             onExecute={handleExecute}
+            onLoadSamples={handleLoadSamples}
           />
         ) : hash === "#engineer" ? (
           <AgentDetail
             agentName="Engineer"
             backlogs={backlogs}
+            sampleData={sampleData}
             onNavigate={navigate}
             onExecute={handleExecute}
+            onLoadSamples={handleLoadSamples}
           />
         ) : hash.startsWith("#m-") &&
           Object.values(PEOPLE).some((p) => p.href === hash) ? (
@@ -455,7 +465,9 @@ function App() {
               Object.values(PEOPLE).find((p) => p.href === hash)!.id as PersonId
             }
             backlogs={backlogs}
+            sampleData={sampleData}
             onNavigate={navigate}
+            onLoadSamples={handleLoadSamples}
           />
         ) : (
           <Placeholder title={meta.title} description={meta.description} />
@@ -477,8 +489,10 @@ function App() {
       />
       <ChiefOfStaff
         open={chosOpen}
+        sampleData={sampleData}
         onClose={() => setChosOpen(false)}
         onNavigate={navigate}
+        onLoadSamples={handleLoadSamples}
       />
     </>
   );

@@ -2273,8 +2273,10 @@ const PROJECT_STATUS_META: Record<
 type Props = {
   agentName: AgentName;
   backlogs: BacklogItem[];
+  sampleData: boolean;
   onNavigate: (href: string) => void;
   onExecute: (id: string) => void;
+  onLoadSamples: () => void;
 };
 
 type TabId =
@@ -2288,14 +2290,40 @@ type TabId =
 export function AgentDetail({
   agentName,
   backlogs,
+  sampleData,
   onNavigate,
   onExecute,
+  onLoadSamples,
 }: Props) {
   const agent = PROFILES[agentName];
   const Icon = AGENT_ICONS[agentName];
   const pitch = AGENT_PITCH[agentName];
 
   const [activeTab, setActiveTab] = useState<TabId>("overview");
+
+  if (!sampleData) {
+    return (
+      <div className="mx-auto flex max-w-[760px] flex-col items-center justify-center gap-3 py-24 text-center">
+        <span className="grid h-16 w-16 place-items-center rounded-pill bg-cream-light text-charcoal">
+          <Icon className="h-7 w-7" strokeWidth={1.5} />
+        </span>
+        <h2 className="text-[20px] font-[600] tracking-[-0.3px] text-charcoal">
+          {agentName} Agent
+        </h2>
+        <p className="max-w-md text-[13.5px] leading-[1.55] text-charcoal-muted">
+          {pitch}. 이 에이전트의 활동·routines·projects·skills는 샘플 데이터에 포함되어 있습니다.
+          샘플을 켜면 채워집니다.
+        </p>
+        <button
+          type="button"
+          onClick={onLoadSamples}
+          className="btn-primary mt-2 inline-flex h-9 items-center gap-1.5 px-3.5 text-[13px]"
+        >
+          샘플 데이터 채우기
+        </button>
+      </div>
+    );
+  }
 
   const myBacklogs = useMemo(
     () => backlogs.filter((b) => b.agent === agentName),
