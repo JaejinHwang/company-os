@@ -6,10 +6,9 @@ import {
   Crosshair,
   Globe2,
   Briefcase,
-  ArrowRight,
+  Plus,
   Flame,
   Radio,
-  Target,
 } from "lucide-react";
 import { KR_BY_ID, OBJECTIVE_BY_ID } from "../lib/krs";
 import type { NewIssueSeed } from "../components/NewIssueModal";
@@ -71,18 +70,6 @@ const SOURCE_META: Record<
   sales: { label: "Sales", short: "Sales", color: "#1f8a4c", icon: Briefcase },
 };
 
-const STATUS_META: Record<SignalStatus, { label: string; tone: string }> = {
-  new: { label: "New", tone: "text-charcoal bg-cream border-cream-light" },
-  triaging: {
-    label: "Triaging",
-    tone: "text-charcoal bg-[rgba(28,28,28,0.06)] border-transparent",
-  },
-  planned: {
-    label: "Planned",
-    tone: "text-[#1f8a4c] bg-[rgba(31,138,76,0.08)] border-[rgba(31,138,76,0.25)]",
-  },
-};
-
 const SIGNALS: Signal[] = [
   {
     id: "s-1",
@@ -124,7 +111,7 @@ const SIGNALS: Signal[] = [
     title: "Linear shipped 'Agents Marketplace' — overlaps our Q3 plan",
     detail:
       "Linear 0.32 릴리스에서 외부 에이전트 등록·과금 흐름을 선공개. 우리 marketplace 프로젝트와 기능 범위 중복.",
-    channel: "Linear changelog · 2d ago",
+    channel: "Linear changelog",
     timeAgo: "어제",
     status: "new",
     hot: true,
@@ -147,7 +134,7 @@ const SIGNALS: Signal[] = [
     title: "Vercel 파일럿, SOC2 문서 요청",
     detail:
       "딜 금액 $48K · 계약 전 보안 문서 패키지 필요. 현재 Type II 미보유, Type I만 공유 가능.",
-    channel: "Salesforce · deal $48K",
+    channel: "Salesforce · $48K",
     timeAgo: "3일 전",
     status: "planned",
     suggestedKrId: "kr-2-2",
@@ -169,7 +156,7 @@ const SIGNALS: Signal[] = [
     title: "/workflows p95 latency 1.8s로 급등 (Mon 09:14 이후)",
     detail:
       "deploy 0.241 이후 워크플로우 트리거 API의 p95가 평소 320ms → 1.8s. background job 큐 길이가 함께 증가.",
-    channel: "Grafana · since Mon 09:14",
+    channel: "Grafana",
     timeAgo: "오늘 09:14",
     status: "triaging",
     hot: true,
@@ -205,7 +192,8 @@ export function Signals({ sampleData, onPlan, onLoadSamples }: Props) {
   }, [source]);
 
   const visible = useMemo(
-    () => (filter === "all" ? source : source.filter((s) => s.source === filter)),
+    () =>
+      filter === "all" ? source : source.filter((s) => s.source === filter),
     [filter, source]
   );
 
@@ -220,7 +208,7 @@ export function Signals({ sampleData, onPlan, onLoadSamples }: Props) {
         <EmptyState
           icon={Radio}
           title="아직 도착한 시그널이 없어요"
-          description="CS · 버그 · 내부 발견 · 경쟁사 · 시장 · 세일즈 6개 채널에서 자동 수집된 신호가 여기 모입니다. 통합을 연결하면 자동으로 흘러들어와요."
+          description="외부 채널에서 들어온 신호가 여기 모입니다. Plan을 누르면 Backlog로 승격됩니다."
           onLoadSamples={onLoadSamples}
         />
       </div>
@@ -235,7 +223,7 @@ export function Signals({ sampleData, onPlan, onLoadSamples }: Props) {
         </h2>
       </header>
 
-      <section className="mt-2">
+      <section>
         <div className="flex flex-wrap items-center gap-1.5">
           {FILTERS.map((f) => {
             const active = filter === f.id;
@@ -280,7 +268,7 @@ export function Signals({ sampleData, onPlan, onLoadSamples }: Props) {
         {visible.length === 0 && (
           <div className="card mt-3 grid h-32 place-items-center">
             <p className="text-[14px] text-charcoal-muted">
-              해당 소스의 새 시그널이 아직 없습니다.
+              해당 소스의 새 시그널이 없습니다.
             </p>
           </div>
         )}
@@ -298,104 +286,79 @@ function SignalRow({
 }) {
   const src = SOURCE_META[signal.source];
   const Icon = src.icon;
-  const status = STATUS_META[signal.status];
 
   return (
-    <li className="group">
-      <div className="grid grid-cols-[auto_1fr_auto] items-start gap-4 px-5 py-4 transition hover:bg-[rgba(28,28,28,0.025)]">
-        <span
-          aria-label={src.label}
-          title={src.label}
-          className="mt-0.5 grid h-9 w-9 shrink-0 place-items-center rounded-md border border-cream-light bg-cream"
-          style={{ color: src.color }}
-        >
-          <Icon className="h-[18px] w-[18px]" strokeWidth={1.6} />
-        </span>
+    <li className="grid grid-cols-[24px_minmax(0,1fr)_auto] items-start gap-3 px-5 py-3.5 transition hover:bg-[rgba(28,28,28,0.025)]">
+      <span
+        className="mt-0.5 grid h-5 w-5 place-items-center"
+        style={{ color: src.color }}
+        title={src.label}
+      >
+        <Icon className="h-[18px] w-[18px]" strokeWidth={1.7} />
+      </span>
 
-        <div className="min-w-0">
-          <div className="flex flex-wrap items-center gap-2">
-            <span
-              className="rounded-pill px-2 py-0.5 text-[11px] font-[480] uppercase tracking-[0.06em]"
-              style={{
-                color: src.color,
-                backgroundColor: `${src.color}14`,
-                border: `1px solid ${src.color}33`,
-              }}
-            >
-              {src.short}
-            </span>
-            <span
-              className={cn(
-                "rounded-pill border px-2 py-0.5 text-[11px] font-[480]",
-                status.tone
-              )}
-            >
-              {status.label}
-            </span>
-            {signal.hot && (
-              <span className="inline-flex items-center gap-1 rounded-pill border border-[rgba(184,68,58,0.25)] bg-[rgba(184,68,58,0.08)] px-2 py-0.5 text-[11px] font-[480] text-[#b8443a]">
-                <Flame className="h-3 w-3" strokeWidth={1.8} />
-                Escalate
-              </span>
-            )}
-            {signal.suggestedKrId &&
-              KR_BY_ID[signal.suggestedKrId] &&
-              (() => {
-                const kr = KR_BY_ID[signal.suggestedKrId]!;
-                const obj = OBJECTIVE_BY_ID[kr.objectiveId];
-                return (
-                  <span
-                    title={`추천 KR · ${obj?.full ?? ""} · ${kr.label}`}
-                    className="inline-flex items-center gap-1 rounded-pill border border-cream-light bg-cream px-2 py-0.5 text-[11px] font-[480] text-charcoal"
-                  >
-                    <Target
-                      className="h-3 w-3 text-charcoal-muted"
-                      strokeWidth={1.8}
-                    />
-                    <span className="text-charcoal-muted">
-                      {obj?.short ?? ""}
-                    </span>
-                    <span>· {kr.label}</span>
-                  </span>
-                );
-              })()}
-            <span className="text-[12px] text-charcoal-muted">
-              {signal.channel} · {signal.timeAgo}
-            </span>
-          </div>
-
-          <p className="mt-2 text-[15px] font-[480] leading-[1.4] text-charcoal">
+      <div className="min-w-0">
+        <div className="flex flex-wrap items-center gap-1.5">
+          <span
+            className="rounded-pill border px-1.5 py-0.5 text-[10.5px] font-[480] uppercase tracking-[0.06em]"
+            style={{
+              color: src.color,
+              borderColor: `${src.color}33`,
+              backgroundColor: `${src.color}0f`,
+            }}
+          >
+            {src.short}
+          </span>
+          <KrChip krId={signal.suggestedKrId} />
+          <p className="truncate text-[14.5px] font-[480] text-charcoal">
             {signal.title}
           </p>
-          <p className="mt-1.5 line-clamp-2 text-[13.5px] leading-[1.55] text-charcoal-muted">
-            {signal.detail}
-          </p>
+          {signal.hot && (
+            <Flame
+              className="h-3.5 w-3.5 shrink-0 text-[#b8443a]"
+              strokeWidth={2}
+            />
+          )}
         </div>
-
-        <div className="flex shrink-0 flex-col items-end gap-2 self-center">
-          <button
-            type="button"
-            onClick={() =>
-              onPlan({
-                title: signal.title,
-                description: `> Signal · ${src.label} · ${signal.channel}\n\n${signal.detail}`,
-                sourceLabel: `${src.short} signal`,
-                krId: signal.suggestedKrId,
-              })
-            }
-            className="btn-primary h-8 px-3 text-[13px]"
-          >
-            Plan
-            <ArrowRight className="h-3.5 w-3.5" strokeWidth={1.8} />
-          </button>
-          <button
-            type="button"
-            className="text-[12px] text-charcoal-muted underline-offset-4 transition hover:underline"
-          >
-            Archive
-          </button>
-        </div>
+        <p className="mt-1 truncate text-[12.5px] text-charcoal-muted">
+          {signal.channel} · {signal.timeAgo}
+        </p>
       </div>
+
+      <button
+        type="button"
+        onClick={() =>
+          onPlan({
+            title: signal.title,
+            description: `> Signal · ${src.label} · ${signal.channel}\n\n${signal.detail}`,
+            sourceLabel: `${src.short} signal`,
+            krId: signal.suggestedKrId,
+          })
+        }
+        className="btn-primary h-8 shrink-0 self-center px-3 text-[12.5px]"
+        title="Plan하면 Backlog로 승격됩니다"
+      >
+        <Plus className="h-3 w-3" strokeWidth={1.8} />
+        Plan
+      </button>
     </li>
+  );
+}
+
+function KrChip({ krId }: { krId?: string }) {
+  if (!krId) return null;
+  const kr = KR_BY_ID[krId];
+  if (!kr) return null;
+  const obj = OBJECTIVE_BY_ID[kr.objectiveId];
+  return (
+    <span
+      title={`${obj?.full ?? ""} · ${kr.label}`}
+      className="inline-flex items-center gap-1 rounded-pill border border-cream-light bg-cream px-1.5 py-0.5 text-[10.5px] font-[480] text-charcoal"
+    >
+      <span>⊙</span>
+      <span className="text-charcoal-muted">{obj?.short ?? ""}</span>
+      <span>·</span>
+      <span>{kr.label}</span>
+    </span>
   );
 }

@@ -16,6 +16,7 @@ import { ProjectDetail } from "./pages/ProjectDetail";
 import { Signals } from "./pages/Signals";
 import { Backlogs, BacklogToast } from "./pages/Backlogs";
 import { Routines } from "./pages/Routines";
+import { Connectors } from "./pages/Connectors";
 import { Goals } from "./pages/Goals";
 import { Okrs } from "./pages/Okrs";
 import { Settings } from "./pages/Settings";
@@ -31,6 +32,8 @@ import {
   type BacklogItem,
   type BacklogStatus,
 } from "./lib/backlog";
+import { INITIAL_CONNECTORS, type Connector } from "./lib/connectors";
+import { INITIAL_ROUTINES, type Routine } from "./lib/routines";
 
 const PAGES: Record<string, { title: string; description: string }> = {
   "#new-issue": {
@@ -44,6 +47,11 @@ const PAGES: Record<string, { title: string; description: string }> = {
   "#inbox": {
     title: "Inbox",
     description: "Notifications, mentions, and assigned work — all in one quiet place.",
+  },
+  "#connectors": {
+    title: "Connectors",
+    description:
+      "Notion · Slack · GitHub · Stripe · Amplitude 등 외부 시스템을 연결해 시그널·루틴·태스크 동작을 활성화합니다.",
   },
   "#signals": {
     title: "Signals",
@@ -227,6 +235,12 @@ function App() {
   const [backlogs, setBacklogs] = useState<BacklogItem[]>(() =>
     readSampleDataDefault() ? INITIAL_BACKLOGS : []
   );
+  const [connectors, setConnectors] = useState<Connector[]>(() =>
+    readSampleDataDefault() ? INITIAL_CONNECTORS : []
+  );
+  const [routines, setRoutines] = useState<Routine[]>(() =>
+    readSampleDataDefault() ? INITIAL_ROUTINES : []
+  );
 
   useEffect(() => {
     const onHashChange = () =>
@@ -323,13 +337,101 @@ function App() {
       const userOnly = prev.filter((b) => !SAMPLE_BACKLOG_IDS.has(b.id));
       return [...INITIAL_BACKLOGS, ...userOnly];
     });
+    setConnectors(INITIAL_CONNECTORS);
+    setRoutines(INITIAL_ROUTINES);
   };
 
   const handleClearSamples = () => {
     window.localStorage.setItem(SAMPLE_DATA_KEY, "0");
     setSampleData(false);
     setBacklogs((prev) => prev.filter((b) => !SAMPLE_BACKLOG_IDS.has(b.id)));
+    setConnectors([]);
+    setRoutines([]);
   };
+
+  // Connector actions
+  const handleToggleCapability = (cid: string, capId: string) =>
+    setConnectors((prev) =>
+      prev.map((c) =>
+        c.id === cid
+          ? {
+              ...c,
+              capabilities: c.capabilities.map((cap) =>
+                cap.id === capId ? { ...cap, enabled: !cap.enabled } : cap
+              ),
+            }
+          : c
+      )
+    );
+
+  const handleConnectConnector = (id: string) =>
+    setConnectors((prev) =>
+      prev.map((c) =>
+        c.id === id
+          ? {
+              ...c,
+              status: "connected",
+              workspace: c.workspace ?? "sprint-org · just-now",
+              lastSync: "방금 전",
+              capabilities: c.capabilities.map((cap, i) => ({
+                ...cap,
+                enabled:
+                  cap.enabled ||
+                  c.capabilities.findIndex((x) => x.kind === cap.kind) === i,
+              })),
+            }
+          : c
+      )
+    );
+
+  const handleDisconnectConnector = (id: string) =>
+    setConnectors((prev) =>
+      prev.map((c) =>
+        c.id === id
+          ? {
+              ...c,
+              status: "available",
+              workspace: undefined,
+              lastSync: undefined,
+              capabilities: c.capabilities.map((cap) => ({
+                ...cap,
+                enabled: false,
+              })),
+            }
+          : c
+      )
+    );
+
+  const handleReconnectConnector = (id: string) =>
+    setConnectors((prev) =>
+      prev.map((c) =>
+        c.id === id ? { ...c, status: "syncing", errorReason: undefined } : c
+      )
+    );
+
+  // Routine actions
+  const handleToggleRoutine = (id: string) =>
+    setRoutines((prev) =>
+      prev.map((r) =>
+        r.id === id
+          ? {
+              ...r,
+              enabled: !r.enabled,
+              lastStatus: !r.enabled ? r.lastStatus : "scheduled",
+              nextRun: !r.enabled ? r.nextRun : "일시 정지",
+            }
+          : r
+      )
+    );
+
+  const handleRunRoutine = (id: string) =>
+    setRoutines((prev) =>
+      prev.map((r) =>
+        r.id === id
+          ? { ...r, lastStatus: "running", lastRun: "방금 실행" }
+          : r
+      )
+    );
 
   const meta = PAGES[hash] ?? PAGES["#dashboard"];
 
@@ -361,6 +463,18 @@ function App() {
               setNewIssueOpen(true);
             }}
           />
+        ) : hash === "#connectors" ? (
+          <Connectors
+            sampleData={sampleData}
+            connectors={connectors}
+            routines={routines}
+            onLoadSamples={handleLoadSamples}
+            onNavigate={navigate}
+            onToggleCapability={handleToggleCapability}
+            onConnect={handleConnectConnector}
+            onDisconnect={handleDisconnectConnector}
+            onReconnect={handleReconnectConnector}
+          />
         ) : hash === "#signals" ? (
           <Signals
             sampleData={sampleData}
@@ -381,8 +495,12 @@ function App() {
           />
         ) : hash === "#routines" ? (
           <Routines
-            sampleData={sampleData}
+            routines={routines}
+            connectors={connectors}
             onLoadSamples={handleLoadSamples}
+            onToggle={handleToggleRoutine}
+            onRun={handleRunRoutine}
+            onNavigate={navigate}
           />
         ) : hash === "#goals" ? (
           <Goals

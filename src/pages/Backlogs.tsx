@@ -192,14 +192,6 @@ export function Backlogs({
 
       <section className="mt-5">
         <div className="card overflow-hidden">
-          <div className="grid grid-cols-[24px_minmax(0,1fr)_120px_140px_120px_140px] items-center gap-3 border-b border-cream-light px-5 py-2.5 text-[11px] uppercase tracking-[0.06em] text-charcoal-muted">
-            <span />
-            <span>Title</span>
-            <span>Priority</span>
-            <span>Project</span>
-            <span>Agent</span>
-            <span className="text-right">Action</span>
-          </div>
           <ul className="divide-y divide-cream-light">
             {visible.map((item) => (
               <BacklogRow
@@ -241,12 +233,12 @@ function BacklogRow({
   const isDone = item.status === "done";
 
   return (
-    <li className="grid grid-cols-[24px_minmax(0,1fr)_120px_140px_120px_140px] items-center gap-3 px-5 py-3.5 transition hover:bg-[rgba(28,28,28,0.025)]">
-      <span className="grid h-5 w-5 place-items-center">
+    <li className="grid grid-cols-[24px_minmax(0,1fr)_auto] items-start gap-3 px-5 py-3.5 transition hover:bg-[rgba(28,28,28,0.025)]">
+      <span className="mt-0.5 grid h-5 w-5 place-items-center">
         <StatusIcon
-          className="h-[16px] w-[16px]"
+          className="h-[18px] w-[18px]"
           style={{ color: status.color }}
-          strokeWidth={1.8}
+          strokeWidth={1.7}
         />
       </span>
 
@@ -262,45 +254,52 @@ function BacklogRow({
             {item.title}
           </p>
         </div>
-        {item.description && (
-          <p className="mt-0.5 truncate text-[12.5px] text-charcoal-muted">
-            {item.description}
-          </p>
-        )}
+        <div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-[12.5px] text-charcoal-muted">
+          <span
+            className="inline-flex items-center gap-1"
+            style={{ color: priority.color }}
+          >
+            <span
+              className="h-1.5 w-1.5 rounded-full"
+              style={{ backgroundColor: priority.color }}
+            />
+            {priority.label}
+          </span>
+          {item.project && (
+            <>
+              <span className="text-charcoal-muted/40">·</span>
+              <button
+                type="button"
+                onClick={() =>
+                  item.projectHref && onNavigate(item.projectHref)
+                }
+                disabled={!item.projectHref}
+                className={cn(
+                  "truncate text-left",
+                  item.projectHref &&
+                    "underline-offset-2 transition hover:text-charcoal hover:underline"
+                )}
+                title={item.project}
+              >
+                {item.project}
+              </button>
+            </>
+          )}
+          {item.agent && (
+            <>
+              <span className="text-charcoal-muted/40">·</span>
+              <span className="inline-flex items-center gap-1">
+                <span className="grid h-3.5 w-3.5 place-items-center rounded-pill border border-cream-light bg-cream">
+                  <AgentIcon className="h-2 w-2" strokeWidth={1.6} />
+                </span>
+                {item.agent}
+              </span>
+            </>
+          )}
+        </div>
       </div>
 
-      <span
-        className="inline-flex items-center gap-1.5 text-[12.5px]"
-        style={{ color: priority.color }}
-      >
-        <span
-          className="h-1.5 w-1.5 rounded-full"
-          style={{ backgroundColor: priority.color }}
-        />
-        {priority.label}
-      </span>
-
-      <button
-        type="button"
-        onClick={() => item.projectHref && onNavigate(item.projectHref)}
-        disabled={!item.projectHref}
-        className={cn(
-          "truncate text-left text-[12.5px] text-charcoal",
-          item.projectHref && "underline-offset-2 hover:underline"
-        )}
-        title={item.project}
-      >
-        {item.project ?? "—"}
-      </button>
-
-      <span className="inline-flex items-center gap-1.5 text-[12.5px] text-charcoal">
-        <span className="grid h-5 w-5 place-items-center rounded-pill border border-cream-light bg-cream">
-          <AgentIcon className="h-3 w-3" strokeWidth={1.6} />
-        </span>
-        {item.agent ?? "Unassigned"}
-      </span>
-
-      <div className="flex justify-end">
+      <div className="flex shrink-0 items-center self-center">
         {isDone ? (
           <span className="text-[12.5px] text-charcoal-muted">Completed</span>
         ) : isExecuting ? (

@@ -8,6 +8,7 @@ import {
   Target,
   Radio,
   Layers,
+  Plug,
   Bot,
   BrainCircuit,
   Gem,
@@ -123,6 +124,7 @@ const sections: Section[] = [
     id: "work",
     label: "Work",
     items: [
+      { label: "Connectors", href: "#connectors", icon: Plug },
       { label: "Signals", href: "#signals", icon: Radio },
       { label: "Backlogs", href: "#backlogs", icon: Layers },
       { label: "Routines", href: "#routines", icon: Repeat },
