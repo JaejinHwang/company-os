@@ -33,6 +33,7 @@ import {
   type Person,
   type PersonDirectWork,
   type PersonId,
+  type PersonMeeting,
   type PersonOkr,
 } from "../lib/people";
 
@@ -1033,9 +1034,7 @@ function HumanTab({
   meetings,
 }: {
   person: Person;
-  meetings: ReturnType<typeof PERSON_MEETINGS[PersonId]> extends infer T
-    ? T
-    : never;
+  meetings: PersonMeeting[];
 }) {
   const pto = PERSON_PTO[person.id];
   return (
