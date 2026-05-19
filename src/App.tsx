@@ -14,9 +14,11 @@ import { Dashboard } from "./pages/Dashboard";
 import { Placeholder } from "./pages/Placeholder";
 import { ProjectDetail } from "./pages/ProjectDetail";
 import { Signals } from "./pages/Signals";
+import { INITIAL_SIGNALS, type Signal } from "./lib/signals";
 import { Backlogs, BacklogToast } from "./pages/Backlogs";
 import { Routines } from "./pages/Routines";
 import { Connectors } from "./pages/Connectors";
+import { Chat } from "./pages/Chat";
 import { Goals } from "./pages/Goals";
 import { Okrs } from "./pages/Okrs";
 import { Settings } from "./pages/Settings";
@@ -36,9 +38,9 @@ import { INITIAL_CONNECTORS, type Connector } from "./lib/connectors";
 import { INITIAL_ROUTINES, type Routine } from "./lib/routines";
 
 const PAGES: Record<string, { title: string; description: string }> = {
-  "#new-issue": {
-    title: "New Issue",
-    description: "Capture a new issue. This mockup will become the issue composer.",
+  "#new-chat": {
+    title: "New Chat",
+    description: "복합적인 요청을 입력하면 Atlas가 해석·분해·실행 단계를 시각화합니다.",
   },
   "#dashboard": {
     title: "Dashboard",
@@ -241,6 +243,9 @@ function App() {
   const [routines, setRoutines] = useState<Routine[]>(() =>
     readSampleDataDefault() ? INITIAL_ROUTINES : []
   );
+  const [signals, setSignals] = useState<Signal[]>(() =>
+    readSampleDataDefault() ? INITIAL_SIGNALS : []
+  );
 
   useEffect(() => {
     const onHashChange = () =>
@@ -251,8 +256,9 @@ function App() {
 
   const navigate = (href: string) => {
     if (href === "#new-issue") {
-      setIssueSeed(undefined);
-      setNewIssueOpen(true);
+      // Legacy entry point — now routes to the chat experience.
+      window.location.hash = "#new-chat";
+      setHash("#new-chat");
       return;
     }
     if (href === "#atlas") {
@@ -339,6 +345,7 @@ function App() {
     });
     setConnectors(INITIAL_CONNECTORS);
     setRoutines(INITIAL_ROUTINES);
+    setSignals(INITIAL_SIGNALS);
   };
 
   const handleClearSamples = () => {
@@ -347,7 +354,11 @@ function App() {
     setBacklogs((prev) => prev.filter((b) => !SAMPLE_BACKLOG_IDS.has(b.id)));
     setConnectors([]);
     setRoutines([]);
+    setSignals([]);
   };
+
+  const handleAddSignal = (s: Signal) =>
+    setSignals((prev) => [s, ...prev]);
 
   // Connector actions
   const handleToggleCapability = (cid: string, capId: string) =>
@@ -478,9 +489,13 @@ function App() {
         ) : hash === "#signals" ? (
           <Signals
             sampleData={sampleData}
+            signals={signals}
             onLoadSamples={handleLoadSamples}
             onPlan={openPlanFromSignal}
+            onAddSignal={handleAddSignal}
           />
+        ) : hash === "#new-chat" ? (
+          <Chat onNavigate={navigate} />
         ) : hash === "#backlogs" ? (
           <Backlogs
             items={backlogs}

@@ -1,6 +1,6 @@
 import { useState, type ComponentType, type CSSProperties } from "react";
 import {
-  SquarePen,
+  MessageSquarePlus,
   LayoutGrid,
   Inbox,
   CircleDot,
@@ -106,7 +106,7 @@ const sections: Section[] = [
   {
     id: "top",
     items: [
-      { label: "New Issue", href: "#new-issue", icon: SquarePen },
+      { label: "New Chat", href: "#new-chat", icon: MessageSquarePlus },
       { label: "Atlas", href: "#atlas", icon: Sparkles },
       { label: "Dashboard", href: "#dashboard", icon: LayoutGrid },
       { label: "Inbox", href: "#inbox", icon: Inbox, badge: "2" },
