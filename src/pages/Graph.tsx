@@ -168,7 +168,7 @@ export function Graph({ backlogs, onNavigate }: Props) {
                 (hovered &&
                   !(highlight?.has(e.fromId) && highlight?.has(e.toId))) ||
                 (focusObj &&
-                  !edgeMatchesObjective(e, focusObj, layout, backlogs));
+                  !edgeMatchesObjective(e, focusObj, layout));
               return (
                 <path
                   key={i}
@@ -587,8 +587,7 @@ function pathCurve(fromX: number, fromY: number, toX: number, toY: number) {
 function edgeMatchesObjective(
   e: Edge,
   focusObj: string,
-  layout: ReturnType<typeof computeLayout>,
-  _backlogs: BacklogItem[]
+  layout: ReturnType<typeof computeLayout>
 ): boolean {
   // Find objective for either endpoint
   const krsById = new Map(layout.krs.map((k) => [k.id, k]));
