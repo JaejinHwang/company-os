@@ -163,6 +163,18 @@ export function PersonDetail({
   const person = PEOPLE[personId];
   const [activeTab, setActiveTab] = useState<TabId>("overview");
 
+  const ownedBacklogs = useMemo(
+    () =>
+      backlogs.filter(
+        (b) =>
+          b.agent &&
+          (b.agent === person.name ||
+            b.agent === person.role ||
+            b.agent === person.role.toLowerCase())
+      ),
+    [backlogs, person]
+  );
+
   if (!sampleData) {
     return (
       <div className="mx-auto flex max-w-[760px] flex-col items-center justify-center gap-3 py-24 text-center">
@@ -184,18 +196,6 @@ export function PersonDetail({
       </div>
     );
   }
-
-  const ownedBacklogs = useMemo(
-    () =>
-      backlogs.filter(
-        (b) =>
-          b.agent &&
-          (b.agent === person.name ||
-            b.agent === person.role ||
-            b.agent === person.role.toLowerCase())
-      ),
-    [backlogs, person]
-  );
 
   const directWork = PERSON_DIRECT_WORK[person.id];
   const okrs = PERSON_OKRS[person.id];

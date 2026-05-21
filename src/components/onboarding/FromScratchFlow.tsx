@@ -77,7 +77,11 @@ export function FromScratchFlow({ onDone }: Props) {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
+    // Step transition: trigger unmount → 80ms timeout → mount so the new
+    // step animates in. The initial setMounted(false) is intentional and
+    // bounded — it only fires when `step` or `phase` actually changes.
     if (phase !== "steps") return;
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setMounted(false);
     const t = setTimeout(() => {
       setMounted(true);

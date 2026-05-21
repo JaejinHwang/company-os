@@ -94,6 +94,10 @@ export function NewIssueModal({ open, onClose, seed, onCreate }: Props) {
 
   useEffect(() => {
     if (open) {
+      // Resetting form fields when the modal opens — synchronous setState
+      // here is intentional and cannot cascade indefinitely because the
+      // effect only re-fires when `open` or `seed` actually changes.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setTitle(seed?.title ?? "");
       setDescription(seed?.description ?? "");
       setKrId(seed?.krId ?? "");

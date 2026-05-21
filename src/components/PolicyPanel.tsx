@@ -83,8 +83,12 @@ export function PolicyPanel({
   const [activeTab, setActiveTab] = useState<TabId>("overview");
 
   useEffect(() => {
+    // Realign activeTab when the tab set changes (screen navigation, mode
+    // switch). The branch guarantees the effect only re-fires when activeTab
+    // is no longer in the tabs list, so there's no cascading rerender risk.
     if (tabs.length > 0) {
       const exists = tabs.some((t) => t.id === activeTab);
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       if (!exists) setActiveTab(tabs[0].id);
     }
   }, [tabs, activeTab]);

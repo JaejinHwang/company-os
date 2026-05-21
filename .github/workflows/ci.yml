@@ -29,14 +29,8 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      # NOTE: main currently has ~10 pre-existing lint errors
-      # (hooks-of-rules violations, fast-refresh export warnings, an unused
-      # var). Step is non-blocking until that backlog is cleared in a
-      # follow-up PR — at which point switch to `continue-on-error: false`
-      # (the default) so future regressions block merges.
-      - name: Lint (eslint) — non-blocking until backlog is cleared
+      - name: Lint (eslint)
         run: npm run lint
-        continue-on-error: true
 
       - name: Validate policy schema
         run: npm run check:policy

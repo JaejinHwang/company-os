@@ -1,3 +1,7 @@
+// This file intentionally co-locates the small onboarding-only data (AGENTS,
+// AGENT_INFO, SUGGESTIONS) with the components that consume them. Splitting
+// them would just add indirection. Fast refresh trade-off acknowledged.
+/* eslint-disable react-refresh/only-export-components */
 import type { ComponentType, CSSProperties } from "react";
 import { Bot, BrainCircuit, Gem, Megaphone, Wrench } from "lucide-react";
 import { cn } from "../../lib/cn";
