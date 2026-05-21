@@ -2390,7 +2390,7 @@ export function AgentDetail({
         onNavigate={onNavigate}
       />
 
-      <section className="mt-6 grid grid-cols-2 gap-3 lg:grid-cols-4">
+      <section className="mt-6 grid grid-cols-2 gap-3 @5xl:grid-cols-4">
         <KpiCard
           icon={Layers}
           label="Assigned"
@@ -2426,7 +2426,7 @@ export function AgentDetail({
       <div className="mt-5">
         {activeTab === "overview" && (
           <>
-            <section className="grid grid-cols-1 gap-4 lg:grid-cols-3">
+            <section className="grid grid-cols-1 gap-4 @5xl:grid-cols-3">
               <NowWorkingCard
                 doing={agent.doing}
                 duration={agent.doingDuration}
@@ -2770,7 +2770,7 @@ function NowWorkingCard({
   onNavigate: (href: string) => void;
 }) {
   return (
-    <div className="card overflow-hidden lg:col-span-2">
+    <div className="card overflow-hidden @5xl:col-span-2">
       <CardHeader title="Now working" hint="실시간 진행 상태" />
       <div className="px-5 py-5">
         <div className="flex items-center gap-2 text-[12px] text-charcoal-muted">
@@ -2867,7 +2867,7 @@ function HighlightsCard({
   return (
     <div className="card overflow-hidden">
       <CardHeader title={title} hint={hint} />
-      <div className="grid grid-cols-1 gap-[1px] bg-cream-light sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid grid-cols-1 gap-[1px] bg-cream-light @2xl:grid-cols-2 @5xl:grid-cols-4">
         {metrics.map((m) => (
           <TechMetricTile key={m.label} metric={m} />
         ))}
@@ -2923,7 +2923,7 @@ function BacklogsCard({
   onNavigate: (href: string) => void;
 }) {
   return (
-    <div className="card overflow-hidden lg:col-span-2">
+    <div className="card overflow-hidden @5xl:col-span-2">
       <CardHeader
         title={`Backlogs · ${items.length}`}
         hint="Executing · Urgent · High 순"
@@ -3346,7 +3346,7 @@ function ToolsCard({ tools }: { tools: Tool[] }) {
         title={`Tools · ${tools.length}`}
         hint={`${connected} connected · MCPs and connectors`}
       />
-      <div className="grid grid-cols-1 gap-[1px] bg-cream-light sm:grid-cols-2 lg:grid-cols-3">
+      <div className="grid grid-cols-1 gap-[1px] bg-cream-light @2xl:grid-cols-2 @5xl:grid-cols-3">
         {tools.map((t) => (
           <ToolTile key={t.name} tool={t} />
         ))}
@@ -3494,7 +3494,7 @@ function BacklogsTab({
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="card grid grid-cols-2 gap-[1px] overflow-hidden bg-cream-light sm:grid-cols-4">
+      <div className="card grid grid-cols-2 gap-[1px] overflow-hidden bg-cream-light @2xl:grid-cols-4">
         {(
           [
             { label: "Urgent", count: counts.urgent, color: "#b8443a" },
@@ -3815,7 +3815,7 @@ function ProjectsTab({
         <p className="mb-2 px-1 text-[11px] font-[480] uppercase tracking-[0.08em] text-charcoal-muted">
           Leading · {led.length}
         </p>
-        <div className="grid grid-cols-1 gap-3 lg:grid-cols-2">
+        <div className="grid grid-cols-1 gap-3 @5xl:grid-cols-2">
           {led.map((p) => (
             <ExpandedProjectCard
               key={p.href}
@@ -3830,7 +3830,7 @@ function ProjectsTab({
           <p className="mb-2 px-1 text-[11px] font-[480] uppercase tracking-[0.08em] text-charcoal-muted">
             Contributing · {contributing.length}
           </p>
-          <div className="grid grid-cols-1 gap-3 lg:grid-cols-2">
+          <div className="grid grid-cols-1 gap-3 @5xl:grid-cols-2">
             {contributing.map((p) => (
               <ExpandedProjectCard
                 key={p.href}
@@ -3965,7 +3965,7 @@ function RoutinesTab({
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="card grid grid-cols-1 gap-[1px] overflow-hidden bg-cream-light sm:grid-cols-3">
+      <div className="card grid grid-cols-1 gap-[1px] overflow-hidden bg-cream-light @2xl:grid-cols-3">
         <RoutineStatTile
           label="Total runs · 7d"
           value={totalRuns.toString()}
@@ -4085,7 +4085,7 @@ function ExpandedRoutineRow({ routine }: { routine: AgentRoutine }) {
         </div>
       </div>
 
-      <div className="grid grid-cols-2 gap-[1px] border-t border-cream-light bg-cream-light sm:grid-cols-4">
+      <div className="grid grid-cols-2 gap-[1px] border-t border-cream-light bg-cream-light @2xl:grid-cols-4">
         <RoutineMiniStat
           label="Success rate"
           value={`${routine.successRate}%`}

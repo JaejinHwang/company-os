@@ -9,6 +9,7 @@ type Props = {
   policyOpen: boolean;
   policyFullscreen: boolean;
   screenTitle: string;
+  screenHash: string;
   onTogglePolicy: () => void;
   onTogglePolicyFullscreen: () => void;
 };
@@ -38,6 +39,7 @@ export function ScreenLayout({
   policyOpen,
   policyFullscreen,
   screenTitle,
+  screenHash,
   onTogglePolicy,
   onTogglePolicyFullscreen,
 }: Props) {
@@ -140,6 +142,7 @@ export function ScreenLayout({
           <PolicyPanel
             policy={policy}
             screenTitle={screenTitle}
+            screenHash={screenHash}
             fullscreen={policyFullscreen}
             onClose={onTogglePolicy}
             onToggleFullscreen={onTogglePolicyFullscreen}

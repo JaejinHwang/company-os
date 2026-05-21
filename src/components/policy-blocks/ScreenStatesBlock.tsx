@@ -2,7 +2,7 @@ import { useMemo } from "react";
 import type { StateDef } from "../../lib/policy-parsing";
 import { StateControl } from "./StateControl";
 
-type Props = { source: string };
+type Props = { source: string; screenHash: string };
 
 function parseStates(src: string): StateDef[] {
   try {
@@ -22,7 +22,7 @@ function parseStates(src: string): StateDef[] {
   }
 }
 
-export function ScreenStatesBlock({ source }: Props) {
+export function ScreenStatesBlock({ source, screenHash }: Props) {
   const states = useMemo(() => parseStates(source), [source]);
   if (states.length === 0) {
     return (
@@ -34,7 +34,7 @@ export function ScreenStatesBlock({ source }: Props) {
   return (
     <div className="my-4 space-y-2">
       {states.map((s) => (
-        <StateControl key={s.id} state={s} />
+        <StateControl key={s.id} state={s} screenHash={screenHash} />
       ))}
     </div>
   );

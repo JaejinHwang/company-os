@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { AppShell } from "./components/AppShell";
 import {
   NewIssueModal,
@@ -13,6 +13,8 @@ import {
 import { Dashboard } from "./screens/dashboard";
 import { ScreenLayout } from "./components/ScreenLayout";
 import { policyForHash } from "./screens/_registry";
+import { collectStates, parsePolicy } from "./lib/policy-parsing";
+import { useScreenStateProps } from "./lib/screen-state";
 import { Placeholder } from "./pages/Placeholder";
 import { ProjectDetail } from "./pages/ProjectDetail";
 import { Signals } from "./pages/Signals";
@@ -478,6 +480,30 @@ function App() {
 
   const meta = PAGES[hash] ?? PAGES["#dashboard"];
 
+  // Resolve policy + collect every state def for this screen so that
+  // "real" bindings can patch the prototype's props live.
+  const policySource = policyForHash(hash);
+  const parsedPolicy = useMemo(
+    () => (policySource ? parsePolicy(policySource) : null),
+    [policySource]
+  );
+  const allStates = useMemo(
+    () => (parsedPolicy ? collectStates(parsedPolicy) : []),
+    [parsedPolicy]
+  );
+  const screenStatePatch = useScreenStateProps(hash, allStates);
+
+  // Apply patch to the per-screen props. Each screen reads only the keys
+  // it knows about — patch shape is intentionally loose (Record<string,
+  // unknown>) so policies can express any binding shape.
+  const dashboardSampleData =
+    typeof screenStatePatch.sampleData === "boolean"
+      ? (screenStatePatch.sampleData as boolean)
+      : sampleData;
+  const dashboardBacklogs = Array.isArray(screenStatePatch.backlogs)
+    ? (screenStatePatch.backlogs as BacklogItem[])
+    : backlogs;
+
   if (!onboarded) {
     return <Onboarding onComplete={handleOnboardingDone} />;
   }
@@ -485,10 +511,11 @@ function App() {
   return (
     <>
       <ScreenLayout
-        policy={policyForHash(hash)}
+        policy={policySource}
         policyOpen={policyOpen}
         policyFullscreen={policyFullscreen}
         screenTitle={meta.title}
+        screenHash={hash}
         onTogglePolicy={togglePolicy}
         onTogglePolicyFullscreen={togglePolicyFullscreen}
       >
@@ -502,8 +529,8 @@ function App() {
       >
         {hash === "#dashboard" ? (
           <Dashboard
-            backlogs={backlogs}
-            sampleData={sampleData}
+            backlogs={dashboardBacklogs}
+            sampleData={dashboardSampleData}
             firstAgent={firstAgent}
             onLoadSamples={handleLoadSamples}
             onNavigate={navigate}

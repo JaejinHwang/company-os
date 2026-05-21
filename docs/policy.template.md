@@ -84,6 +84,14 @@
     {
       "id": "TODO-state-id",
       "label": "TODO 짧은 state 이름",
+      "binding": {
+        "kind": "real",
+        "valueMap": {
+          "default": { "TODO-prop-key": "TODO 기본값" },
+          "TODO-other": { "TODO-prop-key": "TODO 다른 값" }
+        },
+        "note": "TODO 어떤 화면 props/store에 매핑되는지 한 줄"
+      },
       "options": [
         {
           "value": "default",
@@ -103,6 +111,18 @@
 ```
 
 <!--
+  binding.kind 가이드:
+  - "real" (default if valueMap 존재): 옵션 선택 시 valueMap[value]의 props가 화면 컴포넌트에
+    실제 전달됨. 화면이 그 prop을 받아 분기 렌더할 수 있어야 함.
+  - "visual": CSS overlay 시뮬레이션만. real binding이 아직 구현되지 않았을 때만 사용.
+    UI에 회색 "VISUAL" 뱃지가 표시되어 미구현 시그널을 줌.
+
+  valueMap에는 화면 컴포넌트가 받는 *현재 prop name*들을 사용한다. prop name이 코드에서
+  바뀌면 valueMap의 key도 같이 sync (양방향 sync 룰).
+-->
+
+
+<!--
   필요한 만큼 위 ```section``` 블록을 반복.
   components / interactions / rules / states 는 빈 배열로 두거나 필드 자체 생략 가능.
 -->
@@ -119,6 +139,14 @@
     "id": "TODO-screen-state-id",
     "label": "TODO 화면 전체 state 이름",
     "selectorTarget": "[aria-label=\"Prototype\"]",
+    "binding": {
+      "kind": "real",
+      "valueMap": {
+        "default": { "TODO-prop": "TODO 기본값" },
+        "TODO-alt": { "TODO-prop": "TODO 분기값" }
+      },
+      "note": "TODO 어떤 prop/store에 매핑되는지"
+    },
     "options": [
       {
         "value": "default",

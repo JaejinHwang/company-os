@@ -168,6 +168,16 @@ src/
     {
       "id": "load-state",
       "label": "Load",
+      "binding": {
+        "kind": "real",
+        "valueMap": {
+          "idle": { "loading": false, "error": null },
+          "loading": { "loading": true, "error": null },
+          "empty": { "loading": false, "data": [] },
+          "error": { "loading": false, "error": "fetch failed" }
+        },
+        "note": "App.tsx의 Hot signals fetcher 상태와 직결"
+      },
       "options": [
         { "value": "idle", "label": "정상", "description": "..." },
         { "value": "loading", "label": "로딩", "description": "..." }
@@ -182,6 +192,7 @@ src/
 - `interactions[].selector`: 좌측 element. **클릭은 실행하지 않고** hover로만 위치 표시 (정책-구현 매핑 확인 용도).
 - `rules[].kind`: `must`(✓ emerald) | `must-not`(✗ red). 카드 시각 구분.
 - `states[]`: § 6 state controls 참고.
+- `states[].binding`: § 6.5 real binding 참고. **default는 "real"** — 각 화면이 정책에서 정의된 variation을 실제로 렌더해야 함.
 - **UI 표시 정책**: `selector` 문자열·`id` 식별자는 schema에 보존하지만 패널 UI에는 노출하지 않는다 (StatusDot의 색만 검증 시그널 제공). 사용자가 의도적 디버깅 모드를 도입하면 그때 같이 표시.
 
 ### 4.4 `states` (screen-level)
@@ -264,6 +275,53 @@ selector 컨벤션:
 
 **Highlight overlay 패턴 (참고)**: 좌측 element를 하이라이트할 때는 element에 `background-color`를 직접 부여하지 않고 **`::before` pseudo-element overlay**로 덮는다 (`policy-zone-highlight` 등). 검정 버튼 같은 강한 색 element가 덧칠로 변색되는 사고를 막기 위함.
 
+### 6.5 Real binding (default) — state ↔ 실제 prop 연결
+
+**모든 state는 실제 화면 변이를 일으키는 것을 목표로 한다.** 단순 CSS overlay 시뮬레이션은 정책-구현 정합을 보장하지 못하므로, 가능한 모든 state에 `binding`을 명시한다.
+
+**Schema** (`StateBinding` — § 4.3 schema 안 `binding` 필드):
+
+```json
+{
+  "id": "workspace-state",
+  "binding": {
+    "kind": "real",
+    "valueMap": {
+      "active": { "sampleData": true },
+      "fresh":  { "sampleData": false, "backlogs": [] }
+    },
+    "note": "App.tsx의 sampleData/backlogs와 직결"
+  },
+  "options": [...],
+  "default": "active"
+}
+```
+
+- `kind: "real"` (default if `valueMap` present): 옵션 선택 시 `valueMap[value]` 의 props가 화면 컴포넌트로 실제 전달됨
+- `kind: "visual"`: 폴백. binding이 아직 구현 안 됐을 때만 사용. UI에 회색 "VISUAL" 뱃지가 떠 작성자에게 미구현 시그널을 줌
+- `valueMap`은 정책-구현 sync의 single source — App.tsx (또는 화면 부모)가 이 patch를 읽어 prop으로 merge
+
+**런타임 모델** (`src/lib/screen-state.ts`):
+- `setScreenState(hash, stateId, value)`: 정책 패널의 `StateControl`이 옵션 선택 시 호출
+- `useScreenStateProps(hash, allStates)`: 화면 부모(App.tsx)가 호출 — 모든 real-binding의 valueMap을 활성 옵션 기준으로 merge한 props patch를 반환
+- 화면 컴포넌트는 그 patch를 default props에 spread해 분기 렌더
+
+**App.tsx 패턴**:
+```tsx
+const parsed = useMemo(() => policyForHash(hash) ? parsePolicy(policyForHash(hash)!) : null, [hash]);
+const allStates = useMemo(() => parsed ? collectStates(parsed) : [], [parsed]);
+const patch = useScreenStateProps(hash, allStates);
+
+const dashboardSampleData = typeof patch.sampleData === "boolean" ? patch.sampleData : sampleData;
+// ... <Dashboard sampleData={dashboardSampleData} ... />
+```
+
+**작성 룰**:
+- 새 state 추가 시 *우선* real binding으로 가는 길을 검토한다. 어떤 props/render 분기를 일으키는지 명시 가능하면 `valueMap`을 작성.
+- valueMap에는 화면 컴포넌트가 받는 *현재 prop key*들을 사용 (예: `sampleData`, `backlogs`, `loading`). prop name이 바뀌면 양방향 sync 룰(§ 7) 발동 — valueMap도 같이 수정.
+- 화면이 아직 해당 분기를 구현하지 않았으면 일단 `"kind": "visual"`로 두고 description에 "real binding 미구현" 명시 → 후속 작업 시 real로 승격.
+- 정책 작성자가 valueMap을 적었는데 화면 코드가 그 prop을 안 받으면 → 화면이 무시. 양방향 sync 룰(§ 7)에 따라 화면 컴포넌트가 그 prop을 받도록 코드를 수정한다.
+
 ---
 
 ## 7. 양방향 Sync 룰 (가장 중요)
@@ -279,7 +337,8 @@ Page.tsx 수정 시 다음 항목들을 정책에 반영:
 | 새 컴포넌트/zone 추가 | `policy.md` Sections에 새 `section` block + Page.tsx에 `data-zone` 마킹 |
 | 새 버튼/링크/액션 추가 | 해당 section의 `interactions[]` 추가 + Page.tsx에 `data-action` 마킹 |
 | props/콜백 signature 변경 | 영향받은 section의 `interactions[].result` 갱신 |
-| 새 상태 분기 (예: loading/error 추가) | 해당 section의 `states[]` 추가 (description 포함) + CSS overlay 추가 |
+| 새 상태 분기 (예: loading/error 추가) | 해당 section의 `states[]` 추가 + **`binding.valueMap`에 prop patch 명시** (real binding) + CSS overlay는 옵션 |
+| 컴포넌트 props signature 변경 | 영향받는 `binding.valueMap`의 key 갱신 (예: `sampleData` → `mode`) — valueMap이 stale하면 정책 토글이 무시되므로 즉시 sync |
 | 룰/제약 변경 (예: 강제 정렬, 금지 패턴) | 해당 section의 `rules[]` 갱신 + Cross-cutting의 Global Rules 검토 |
 | 진입 경로 변경 (라우팅, deeplink) | Overview의 Entry Points 갱신 |
 | 새 시나리오 발생 (예: 신규 페르소나) | Overview의 Scenarios 추가 (GWT) + 관련 UX Requirements 검토 |
@@ -293,7 +352,8 @@ Page.tsx 수정 시 다음 항목들을 정책에 반영:
 | 새 section 추가 | Page.tsx의 해당 위치에 `data-zone` 마킹 + (필요 시) 새 컴포넌트 구현 |
 | 새 interaction 추가 | 해당 element에 `data-action` 마킹 + 콜백 구현 |
 | `rules[]`에 must/must-not 추가 | 코드가 그 룰을 위반하지 않는지 확인 → 위반 시 수정 |
-| 새 state 추가 | CSS overlay 추가 + (필요 시) 컴포넌트 분기 |
+| 새 state + `binding.kind: "real"` + `valueMap` | 화면 컴포넌트가 valueMap의 prop key를 받도록 코드 확장 + App.tsx가 patch를 spread하도록 update |
+| 기존 state에 `binding` 신설 (visual → real 승격) | 화면 컴포넌트의 분기 렌더 구현 (예: `if (!sampleData) <FreshDashboard />`) + App.tsx patch 적용 |
 | selector 변경 | Page.tsx의 마킹 attribute 값과 일치하는지 확인 → StatusDot이 amber 뜨면 즉시 수정 |
 
 ### 7.3 검증 도구

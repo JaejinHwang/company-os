@@ -50,7 +50,7 @@ export function AppShell({
   }, [onOpenChoS]);
 
   return (
-    <div className="flex h-full w-full overflow-hidden bg-cream text-charcoal">
+    <div className="@container flex h-full w-full overflow-hidden bg-cream text-charcoal">
       <Sidebar
         collapsed={collapsed}
         mobileOpen={mobileOpen}
@@ -70,7 +70,7 @@ export function AppShell({
           onOpenMobileSidebar={() => setMobileOpen(true)}
           title={title}
         />
-        <main className="min-h-0 flex-1 overflow-y-auto px-4 py-6 md:px-8 md:py-10">
+        <main className="@container min-h-0 flex-1 overflow-y-auto px-4 py-6 @3xl:px-8 @3xl:py-10">
           {children}
         </main>
       </div>

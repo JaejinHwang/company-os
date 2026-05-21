@@ -86,7 +86,7 @@ export function Settings({
           </div>
         </div>
 
-        <div className="grid grid-cols-1 gap-4 px-6 py-5 sm:grid-cols-3">
+        <div className="grid grid-cols-1 gap-4 px-6 py-5 @2xl:grid-cols-3">
           <SamplePreview
             label="Backlogs"
             value="6 issues"

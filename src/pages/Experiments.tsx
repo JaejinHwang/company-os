@@ -146,7 +146,7 @@ export function Experiments({ onNavigate, onPlan }: Props) {
           </div>
         </div>
 
-        <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-4">
+        <div className="mt-5 grid grid-cols-2 gap-3 @2xl:grid-cols-4">
           <SummaryCard
             icon={<FlaskConical className="h-3.5 w-3.5" strokeWidth={1.6} />}
             label="Total experiments"
@@ -360,7 +360,7 @@ function ExperimentRow({
 
       {expanded && (
         <div className="border-t border-cream-light bg-[rgba(28,28,28,0.02)] px-5 py-5">
-          <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
+          <div className="grid grid-cols-1 gap-5 @5xl:grid-cols-2">
             <div>
               <SectionLabel
                 icon={<Target className="h-3.5 w-3.5" strokeWidth={1.6} />}
@@ -404,7 +404,7 @@ function ExperimentRow({
                 </p>
               )}
             </div>
-            <div className="lg:col-span-2">
+            <div className="@5xl:col-span-2">
               <SectionLabel
                 icon={<ListChecks className="h-3.5 w-3.5" strokeWidth={1.6} />}
                 label="Next actions"

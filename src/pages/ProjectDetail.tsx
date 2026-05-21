@@ -196,7 +196,7 @@ export function ProjectDetail({ title, description, href }: Props) {
 
       <LoopProgress groups={groups} />
 
-      <section className="mt-8 grid grid-cols-1 gap-4 lg:grid-cols-[300px_1fr]">
+      <section className="mt-8 grid grid-cols-1 gap-4 @5xl:grid-cols-[300px_1fr]">
         <PhaseRail
           groups={groups}
           selectedId={selected.id}
@@ -273,7 +273,7 @@ function ProjectHeader({
         </div>
       </div>
 
-      <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
+      <div className="mt-6 grid grid-cols-2 gap-3 @2xl:grid-cols-4">
         <MetaCard
           icon={Hammer}
           label="Phase"

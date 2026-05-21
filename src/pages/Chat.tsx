@@ -312,7 +312,7 @@ function WelcomeHero({
         분해하고, 각 작업을 워크스페이스 액션으로 실행합니다.
       </p>
 
-      <div className="mt-6 grid w-full grid-cols-1 gap-2 sm:grid-cols-2">
+      <div className="mt-6 grid w-full grid-cols-1 gap-2 @2xl:grid-cols-2">
         {examples.map((p) => (
           <button
             key={p.title}

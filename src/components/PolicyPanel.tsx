@@ -25,6 +25,7 @@ import { cn } from "../lib/cn";
 type Props = {
   policy: string | null;
   screenTitle: string;
+  screenHash: string;
   fullscreen: boolean;
   onClose: () => void;
   onToggleFullscreen: () => void;
@@ -32,30 +33,38 @@ type Props = {
 
 type TabId = "overview" | string;
 
-const OVERVIEW_COMPONENTS: Components = {
-  pre: ({ children, ...rest }) => {
-    const code = children as ReactElement<{
-      className?: string;
-      children?: ReactNode;
-    }>;
-    const className = code?.props?.className ?? "";
-    const lang = /language-([\w-]+)/.exec(className)?.[1];
-    const raw = String(code?.props?.children ?? "").replace(/\n$/, "");
-    if (lang === "scenarios") return <ScenariosBlock source={raw} />;
-    if (lang === "ux-requirements")
-      return <UxRequirementsBlock source={raw} />;
-    if (lang === "states") return <ScreenStatesBlock source={raw} />;
-    return <pre {...rest}>{children}</pre>;
-  },
-};
+function makeOverviewComponents(screenHash: string): Components {
+  return {
+    pre: ({ children, ...rest }) => {
+      const code = children as ReactElement<{
+        className?: string;
+        children?: ReactNode;
+      }>;
+      const className = code?.props?.className ?? "";
+      const lang = /language-([\w-]+)/.exec(className)?.[1];
+      const raw = String(code?.props?.children ?? "").replace(/\n$/, "");
+      if (lang === "scenarios") return <ScenariosBlock source={raw} />;
+      if (lang === "ux-requirements")
+        return <UxRequirementsBlock source={raw} />;
+      if (lang === "states")
+        return <ScreenStatesBlock source={raw} screenHash={screenHash} />;
+      return <pre {...rest}>{children}</pre>;
+    },
+  };
+}
 
 export function PolicyPanel({
   policy,
   screenTitle,
+  screenHash,
   fullscreen,
   onClose,
   onToggleFullscreen,
 }: Props) {
+  const overviewComponents = useMemo(
+    () => makeOverviewComponents(screenHash),
+    [screenHash]
+  );
   const parsed = useMemo(
     () => (policy ? parsePolicy(policy) : null),
     [policy]
@@ -155,7 +164,13 @@ export function PolicyPanel({
           )}
         >
           {parsed
-            ? renderParsed(parsed, activeTab, setActiveTab)
+            ? renderParsed(
+                parsed,
+                activeTab,
+                setActiveTab,
+                screenHash,
+                overviewComponents
+              )
             : renderEmpty()}
         </div>
       </div>
@@ -174,7 +189,9 @@ function renderEmpty(): ReactNode {
 function renderParsed(
   parsed: ReturnType<typeof parsePolicy>,
   activeTab: TabId,
-  onNavigateTab: (id: TabId) => void
+  onNavigateTab: (id: TabId) => void,
+  screenHash: string,
+  overviewComponents: Components
 ): ReactNode {
   if (activeTab === "overview") {
     return (
@@ -183,7 +200,7 @@ function renderParsed(
         {parsed.overview && (
           <MarkdownView
             source={parsed.overview}
-            components={OVERVIEW_COMPONENTS}
+            components={overviewComponents}
           />
         )}
         {parsed.sections.length > 0 && (
@@ -196,7 +213,7 @@ function renderParsed(
           <div className="border-t border-charcoal/10 pt-6">
             <MarkdownView
               source={parsed.crossCutting}
-              components={OVERVIEW_COMPONENTS}
+              components={overviewComponents}
             />
           </div>
         )}
@@ -205,7 +222,7 @@ function renderParsed(
   }
   const section = parsed.sections.find((s) => s.id === activeTab);
   if (!section) return null;
-  return <SectionView section={section} />;
+  return <SectionView section={section} screenHash={screenHash} />;
 }
 
 function SectionsOverview({

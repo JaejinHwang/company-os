@@ -292,7 +292,7 @@ export function Sidebar({
   sampleData,
   onNavigate,
 }: Props) {
-  const widthClass = collapsed ? "lg:w-[76px]" : "lg:w-[260px]";
+  const widthClass = collapsed ? "@5xl:w-[76px]" : "@5xl:w-[260px]";
 
   return (
     <>
@@ -300,7 +300,7 @@ export function Sidebar({
         aria-hidden={!mobileOpen}
         onClick={onCloseMobile}
         className={cn(
-          "fixed inset-0 z-30 bg-charcoal/30 backdrop-blur-[1px] transition-opacity duration-200 lg:hidden",
+          "fixed inset-0 z-30 bg-charcoal/30 backdrop-blur-[1px] transition-opacity duration-200 @5xl:hidden",
           mobileOpen ? "opacity-100" : "pointer-events-none opacity-0"
         )}
       />
@@ -308,8 +308,8 @@ export function Sidebar({
       <aside
         className={cn(
           "fixed inset-y-0 left-0 z-40 flex h-full w-[260px] flex-col border-r border-cream-light bg-cream text-charcoal transition-[width,transform] duration-300 ease-gentle",
-          mobileOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0",
-          "lg:static lg:translate-x-0",
+          mobileOpen ? "translate-x-0" : "-translate-x-full @5xl:translate-x-0",
+          "@5xl:static @5xl:translate-x-0",
           widthClass
         )}
       >
@@ -360,14 +360,14 @@ function SidebarHeader({
     <div
       className={cn(
         "relative flex h-16 items-center gap-1.5 border-b border-cream-light px-3",
-        collapsed && "lg:justify-center lg:px-2"
+        collapsed && "@5xl:justify-center @5xl:px-2"
       )}
     >
       <button
         type="button"
         className={cn(
           "flex min-w-0 flex-1 items-center gap-2 rounded-md px-1.5 py-1 text-left transition hover:bg-[rgba(28,28,28,0.04)]",
-          collapsed && "lg:flex-none lg:px-0"
+          collapsed && "@5xl:flex-none @5xl:px-0"
         )}
         title={`Switch workspace · ${workspaceName}`}
       >
@@ -377,7 +377,7 @@ function SidebarHeader({
         <span
           className={cn(
             "min-w-0 flex-1 truncate text-[14.5px] font-[480] text-charcoal",
-            collapsed && "lg:hidden"
+            collapsed && "@5xl:hidden"
           )}
         >
           {workspaceName}
@@ -385,7 +385,7 @@ function SidebarHeader({
         <ChevronsUpDown
           className={cn(
             "h-3.5 w-3.5 text-charcoal-muted",
-            collapsed && "lg:hidden"
+            collapsed && "@5xl:hidden"
           )}
           strokeWidth={1.6}
         />
@@ -397,8 +397,8 @@ function SidebarHeader({
         aria-label="Collapse sidebar"
         title="Collapse sidebar"
         className={cn(
-          "hidden h-7 w-7 items-center justify-center rounded-md text-charcoal/70 transition hover:bg-[rgba(28,28,28,0.04)] hover:text-charcoal lg:inline-flex",
-          collapsed && "lg:hidden"
+          "hidden h-7 w-7 items-center justify-center rounded-md text-charcoal/70 transition hover:bg-[rgba(28,28,28,0.04)] hover:text-charcoal @5xl:inline-flex",
+          collapsed && "@5xl:hidden"
         )}
       >
         <PanelLeftClose className="h-4 w-4" strokeWidth={1.6} />
@@ -410,7 +410,7 @@ function SidebarHeader({
           onClick={onToggleCollapsed}
           aria-label="Expand sidebar"
           title="Expand sidebar"
-          className="absolute right-0 top-1/2 hidden h-7 w-7 -translate-y-1/2 translate-x-1/2 items-center justify-center rounded-pill border border-cream-light bg-cream text-charcoal/70 shadow-focus transition hover:text-charcoal lg:inline-flex"
+          className="absolute right-0 top-1/2 hidden h-7 w-7 -translate-y-1/2 translate-x-1/2 items-center justify-center rounded-pill border border-cream-light bg-cream text-charcoal/70 shadow-focus transition hover:text-charcoal @5xl:inline-flex"
         >
           <PanelLeftOpen className="h-3.5 w-3.5" strokeWidth={1.6} />
         </button>
@@ -474,7 +474,7 @@ function SidebarSection({
       )}
 
       {showLabel && collapsed && (
-        <div className="mx-2 mb-1 h-px bg-cream-light lg:block" />
+        <div className="mx-2 mb-1 h-px bg-cream-light @5xl:block" />
       )}
 
       {renderItems && (
@@ -542,7 +542,7 @@ function SidebarItem({
           active
             ? "bg-[rgba(28,28,28,0.06)] text-charcoal"
             : "text-charcoal/80 hover:bg-[rgba(28,28,28,0.04)] hover:text-charcoal",
-          collapsed && "lg:justify-center lg:px-0"
+          collapsed && "@5xl:justify-center @5xl:px-0"
         )}
       >
         {tree && !collapsed &&
@@ -626,7 +626,7 @@ function SidebarItem({
         <span
           className={cn(
             "min-w-0 flex-1",
-            collapsed && "lg:hidden",
+            collapsed && "@5xl:hidden",
             hasDescription && "flex flex-col gap-0.5"
           )}
         >
@@ -706,13 +706,13 @@ function SidebarFooter({ collapsed }: { collapsed: boolean }) {
     <div
       className={cn(
         "flex items-center gap-2.5 border-t border-cream-light px-3 py-3",
-        collapsed && "lg:justify-center lg:px-2"
+        collapsed && "@5xl:justify-center @5xl:px-2"
       )}
     >
       <span className="grid h-8 w-8 shrink-0 place-items-center rounded-pill bg-charcoal text-[12px] font-[480] text-charcoal-offwhite shadow-inset-dark">
         JH
       </span>
-      <div className={cn("min-w-0 flex-1", collapsed && "lg:hidden")}>
+      <div className={cn("min-w-0 flex-1", collapsed && "@5xl:hidden")}>
         <p className="truncate text-[13.5px] text-charcoal">Jazz Hwang</p>
         <p className="truncate text-[12px] text-charcoal-muted">
           hjj4756@gmail.com

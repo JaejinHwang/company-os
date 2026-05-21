@@ -367,7 +367,7 @@ export function OkrsTable({ backlogs, onNavigate, onAddBacklog }: Props) {
 
   return (
     <div className="mx-auto max-w-[1200px]">
-      <section className="mb-6 grid grid-cols-2 gap-3 md:grid-cols-4">
+      <section className="mb-6 grid grid-cols-2 gap-3 @3xl:grid-cols-4">
         <StatCard
           icon={Target}
           label="Objectives"
@@ -527,7 +527,7 @@ function ObjectiveCard({
           )}
         </div>
 
-        <div className="flex w-full shrink-0 flex-col items-end gap-2 sm:w-[200px]">
+        <div className="flex w-full shrink-0 flex-col items-end gap-2 @2xl:w-[200px]">
           <p className="text-[11.5px] uppercase tracking-[0.06em] text-charcoal-muted">
             Overall
           </p>

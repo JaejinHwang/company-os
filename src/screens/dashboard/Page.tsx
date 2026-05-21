@@ -370,7 +370,7 @@ export function Dashboard({
         onNewIssue={onNewIssue}
       />
 
-      <section data-zone="pulse" className="mt-6 grid grid-cols-2 gap-3 lg:grid-cols-4">
+      <section data-zone="pulse" className="mt-6 grid grid-cols-2 gap-3 @5xl:grid-cols-4">
         <PulseCard
           icon={Radio}
           label="Hot signals"
@@ -404,7 +404,7 @@ export function Dashboard({
         />
       </section>
 
-      <section className="mt-6 grid grid-cols-1 gap-4 lg:grid-cols-3">
+      <section className="mt-6 grid grid-cols-1 gap-4 @5xl:grid-cols-3">
         <HotSignalsCard
           signals={hotSignals}
           onPlan={onPlan}
@@ -417,7 +417,7 @@ export function Dashboard({
         <ProjectsStrip projects={projects} onNavigate={onNavigate} />
       </section>
 
-      <section className="mt-6 grid grid-cols-1 gap-4 lg:grid-cols-3">
+      <section className="mt-6 grid grid-cols-1 gap-4 @5xl:grid-cols-3">
         <BacklogTriageCard
           backlogs={backlogs}
           onAll={() => onNavigate("#backlogs")}
@@ -566,7 +566,7 @@ function HotSignalsCard({
   onAll: () => void;
 }) {
   return (
-    <div data-zone="hot-signals" className="card overflow-hidden lg:col-span-2">
+    <div data-zone="hot-signals" className="card overflow-hidden @5xl:col-span-2">
       <CardHeader
         title="Signals"
         hint="플래닝하면 Backlogs에 항목이 생깁니다"
@@ -731,7 +731,7 @@ function ProjectsStrip({
         title="Projects"
         hint="각 카드를 누르면 단계별 산출물로 이동합니다"
       />
-      <div className="grid grid-cols-1 gap-[1px] bg-cream-light sm:grid-cols-2 lg:grid-cols-5">
+      <div className="grid grid-cols-1 gap-[1px] bg-cream-light @2xl:grid-cols-2 @5xl:grid-cols-5">
         {projects.map((p) => (
           <ProjectMiniCard key={p.href} project={p} onNavigate={onNavigate} />
         ))}
@@ -844,7 +844,7 @@ function BacklogTriageCard({
   }, [backlogs]);
 
   return (
-    <div data-zone="backlogs" className="card overflow-hidden lg:col-span-2">
+    <div data-zone="backlogs" className="card overflow-hidden @5xl:col-span-2">
       <CardHeader
         title="Backlogs"
         hint="Executing · Urgent · High 순"
@@ -1124,8 +1124,8 @@ function FreshDashboard({
         </button>
       </section>
 
-      <section className="mt-6 grid grid-cols-1 gap-4 lg:grid-cols-3">
-        <div className="card overflow-hidden p-6 lg:col-span-2">
+      <section className="mt-6 grid grid-cols-1 gap-4 @5xl:grid-cols-3">
+        <div className="card overflow-hidden p-6 @5xl:col-span-2">
           <p className="text-[12px] uppercase tracking-[0.08em] text-charcoal-muted">
             오늘의 첫 태스크
           </p>

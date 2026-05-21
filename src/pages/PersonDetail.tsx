@@ -276,7 +276,7 @@ function Breadcrumb({ person }: { person: Person }) {
 function Header({ person }: { person: Person }) {
   const statusCfg = PERSON_STATUS_CONFIG[person.status];
   return (
-    <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
+    <div className="flex flex-col gap-5 @5xl:flex-row @5xl:items-start @5xl:justify-between">
       <div className="flex items-start gap-4">
         <PersonAvatar seed={person.name} size="xl" />
         <div className="flex flex-col gap-1.5">
@@ -359,7 +359,7 @@ function KpiStrip({
     },
   ];
   return (
-    <div className="card grid grid-cols-2 gap-[1px] overflow-hidden bg-cream-light sm:grid-cols-4">
+    <div className="card grid grid-cols-2 gap-[1px] overflow-hidden bg-cream-light @2xl:grid-cols-4">
       {kpis.map((k) => (
         <div key={k.label} className="bg-cream p-4">
           <p className="text-[11px] font-[480] uppercase tracking-[0.08em] text-charcoal-muted">
@@ -525,7 +525,7 @@ function AgentPoolHero({
           </button>
         </div>
       ) : (
-        <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+        <div className="grid grid-cols-1 gap-3 @3xl:grid-cols-2">
           {person.agents.map((a) => (
             <AgentPoolCard key={a} agent={a} onNavigate={onNavigate} />
           ))}
@@ -649,7 +649,7 @@ function PoolCostsTab({
     <div className="flex flex-col gap-6">
       {/* Cost hero */}
       <section className="card overflow-hidden">
-        <div className="grid grid-cols-1 gap-[1px] bg-cream-light sm:grid-cols-4">
+        <div className="grid grid-cols-1 gap-[1px] bg-cream-light @2xl:grid-cols-4">
           <CostHeroTile
             icon={Users}
             label="Agents in pool"
@@ -963,7 +963,7 @@ function DirectWorkRow({ work }: { work: PersonDirectWork }) {
         </p>
       </div>
       {work.reason && (
-        <span className="hidden shrink-0 rounded-pill border border-cream-light bg-cream px-2 py-0.5 text-[11.5px] text-charcoal-muted sm:inline">
+        <span className="hidden shrink-0 rounded-pill border border-cream-light bg-cream px-2 py-0.5 text-[11.5px] text-charcoal-muted @2xl:inline">
           {REASON_META[work.reason]}
         </span>
       )}
@@ -1038,7 +1038,7 @@ function HumanTab({
 }) {
   const pto = PERSON_PTO[person.id];
   return (
-    <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+    <div className="grid grid-cols-1 gap-4 @3xl:grid-cols-2">
       <div className="card p-4">
         <div className="flex items-center gap-2 text-[13px] font-[480] text-charcoal">
           <Plane className="h-4 w-4 text-charcoal-muted" strokeWidth={1.6} />

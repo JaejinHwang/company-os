@@ -415,6 +415,14 @@
     "id": "workspace-state",
     "label": "Workspace",
     "selectorTarget": "[aria-label=\"Prototype\"]",
+    "binding": {
+      "kind": "real",
+      "valueMap": {
+        "active": { "sampleData": true },
+        "fresh": { "sampleData": false, "backlogs": [] }
+      },
+      "note": "App.tsx의 sampleData boolean과 backlogs 배열을 직접 교체한다."
+    },
     "options": [
       {
         "value": "active",
@@ -425,11 +433,6 @@
         "value": "fresh",
         "label": "신규 워크스페이스",
         "description": "백로그/시그널/루틴 모두 0건. 시작 단계용 카피와 '첫 작업 만들기' CTA가 Hero를 차지하고 다른 zone은 안내 placeholder만 노출."
-      },
-      {
-        "value": "partial",
-        "label": "일부 zone 비어있음",
-        "description": "예: hot signals 0건이지만 backlogs/routines는 정상. 비어있는 zone만 empty card로 placeholder, 다른 zone은 정상 표시. Pulse card는 0건이어도 회색 톤으로 위치 유지."
       }
     ],
     "default": "active"

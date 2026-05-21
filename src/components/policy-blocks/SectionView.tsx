@@ -13,6 +13,7 @@ import { StatusDot } from "./StatusDot";
 
 type Props = {
   section: SectionDef;
+  screenHash: string;
 };
 
 function highlight(selector: string | undefined, on: boolean) {
@@ -26,7 +27,7 @@ function highlight(selector: string | undefined, on: boolean) {
   }
 }
 
-export function SectionView({ section }: Props) {
+export function SectionView({ section, screenHash }: Props) {
   const validationItems = useMemo(
     () => [
       { selector: section.selector },
@@ -75,6 +76,7 @@ export function SectionView({ section }: Props) {
             <StateControl
               key={s.id}
               state={s}
+              screenHash={screenHash}
               sectionSelector={section.selector}
             />
           ))}

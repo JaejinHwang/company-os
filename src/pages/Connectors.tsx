@@ -192,7 +192,7 @@ export function Connectors({
       </section>
 
       <section className="mt-5">
-        <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid grid-cols-1 gap-2 @2xl:grid-cols-2 @5xl:grid-cols-3">
           {visible.map((c) => (
             <ConnectorCard
               key={c.id}
