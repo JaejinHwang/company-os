@@ -322,6 +322,27 @@ const dashboardSampleData = typeof patch.sampleData === "boolean" ? patch.sample
 - 화면이 아직 해당 분기를 구현하지 않았으면 일단 `"kind": "visual"`로 두고 description에 "real binding 미구현" 명시 → 후속 작업 시 real로 승격.
 - 정책 작성자가 valueMap을 적었는데 화면 코드가 그 prop을 안 받으면 → 화면이 무시. 양방향 sync 룰(§ 7)에 따라 화면 컴포넌트가 그 prop을 받도록 코드를 수정한다.
 
+### Dynamic-hash 화면 helper — `patchEntity`
+
+화면이 특정 entity 객체를 prop으로 받는 패턴(예: 추후 `#routine-<id>` 같은 detail 화면)에서는, App.tsx에서 `useScreenStateProps`의 patch를 entity에 직접 적용해야 한다. `patchEntity` 헬퍼가 그 boilerplate를 흡수한다:
+
+```tsx
+import { useScreenStateProps, patchEntity } from "./lib/screen-state";
+
+const patch = useScreenStateProps(hash, allStates);
+const patchedRoutine = patchEntity(routineForHash, patch);
+
+return <RoutineDetail routine={patchedRoutine} ... />;
+```
+
+`patchEntity`의 행동 (구현: `src/lib/screen-state.ts`):
+- entity가 null/undefined면 그대로 반환 (entity lookup이 아직 안 됐을 때 안전)
+- patch에서 값이 `undefined`인 key는 건너뜀 → 빈 `valueMap` entry (`{}`)는 자동 no-op이 되어 "원본 entity 그대로" 의미
+- 그 외 값(`null`, `[]`, `0`, `false` 포함)은 entity의 동명 필드를 override
+- 변경 0건이면 동일 reference 반환 → `React.memo` 친화
+
+이 helper 없이 매 dynamic-hash 화면마다 `Array.isArray` 타입 체크 + 수동 shallow merge를 반복하면, "옵션 토글했는데 화면이 안 바뀜" 버그의 가장 흔한 원인이 바로 이 merge 누락이다. patch 한 줄로 흡수.
+
 ---
 
 ## 7. 양방향 Sync 룰 (가장 중요)
