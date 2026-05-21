@@ -126,7 +126,7 @@ export function Graph({ backlogs, onNavigate }: Props) {
   };
 
   return (
-    <div className="mx-auto max-w-[1100px]">
+    <div className="mx-auto max-w-content">
       {/* Focus chips */}
       <div className="mb-4 flex flex-wrap items-center gap-1.5">
         <span className="text-[12px] text-charcoal-muted">Focus</span>
@@ -274,7 +274,7 @@ export function Graph({ backlogs, onNavigate }: Props) {
           {layout.unaligned.length > 0 && (
             <>
               <div
-                className="absolute text-[11px] font-[480] uppercase tracking-[0.06em] text-[#b8443a]"
+                className="absolute text-[11px] font-[480] uppercase tracking-[0.06em] text-danger"
                 style={{
                   left: COL_X.bl,
                   top: layout.unalignedHeaderY,
@@ -362,7 +362,7 @@ function ToggleChip({
         "inline-flex h-7 items-center gap-1.5 rounded-pill border px-2.5 text-[12px] transition",
         active
           ? "border-transparent bg-charcoal text-charcoal-offwhite shadow-inset-dark"
-          : "border-cream-light bg-cream text-charcoal hover:bg-[rgba(28,28,28,0.04)]"
+          : "border-cream-light bg-cream text-charcoal hover:bg-charcoal/[0.04]"
       )}
     >
       {color && (

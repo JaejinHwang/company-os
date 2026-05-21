@@ -83,7 +83,7 @@ export function SectionBlock({ source }: Props) {
     <div
       onMouseEnter={() => highlight(section.selector, true)}
       onMouseLeave={() => highlight(section.selector, false)}
-      className="my-3 overflow-hidden rounded-lg border border-charcoal/10 bg-charcoal/[0.02] transition hover:border-[#2563eb]/40 hover:bg-[#2563eb]/[0.04]"
+      className="my-3 overflow-hidden rounded-lg border border-charcoal/10 bg-charcoal/[0.02] transition hover:border-info/40 hover:bg-info/[0.04]"
     >
       <button
         type="button"

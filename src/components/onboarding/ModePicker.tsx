@@ -64,7 +64,7 @@ export function ModePicker({ onSelect }: Props) {
   }, []);
 
   return (
-    <div className="w-full max-w-[1080px]">
+    <div className="w-full max-w-content">
       <header className="text-center">
         <p
           className={cn(
@@ -104,7 +104,7 @@ export function ModePicker({ onSelect }: Props) {
               style={{ transitionDelay: `${250 + i * 90}ms` }}
               className={cn(
                 "group relative flex flex-col gap-4 overflow-hidden rounded-card border border-cream-light bg-cream p-6 text-left transition-all duration-700",
-                "hover:border-[rgba(28,28,28,0.4)] hover:-translate-y-1 focus:outline-none focus-visible:shadow-focus",
+                "hover:border-charcoal/40 hover:-translate-y-1 focus:outline-none focus-visible:shadow-focus",
                 mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
               )}
             >
@@ -121,7 +121,7 @@ export function ModePicker({ onSelect }: Props) {
                 >
                   <Icon className="h-5 w-5" strokeWidth={1.6} />
                 </span>
-                <kbd className="inline-flex h-6 min-w-[24px] items-center justify-center rounded border border-cream-light bg-cream px-1.5 text-[11.5px] text-charcoal-muted">
+                <kbd className="inline-flex h-6 min-w-6 items-center justify-center rounded border border-cream-light bg-cream px-1.5 text-[11.5px] text-charcoal-muted">
                   {m.key}
                 </kbd>
               </div>

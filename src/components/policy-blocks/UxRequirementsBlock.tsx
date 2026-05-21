@@ -44,7 +44,7 @@ export function UxRequirementsBlock({ source }: Props) {
         >
           <div className="flex items-start gap-2">
             <Sparkles
-              className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#2563eb]/70"
+              className="mt-0.5 h-3.5 w-3.5 shrink-0 text-info/70"
               strokeWidth={1.8}
             />
             <div className="min-w-0 flex-1">

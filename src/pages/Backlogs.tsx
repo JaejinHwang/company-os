@@ -120,7 +120,7 @@ export function Backlogs({
 
   if (items.length === 0) {
     return (
-      <div className="mx-auto max-w-[1200px]">
+      <div className="mx-auto max-w-content">
         <header className="mb-8">
           <h2 className="text-sub font-[600] tracking-[-0.9px] text-charcoal">
             Backlogs
@@ -141,7 +141,7 @@ export function Backlogs({
   }
 
   return (
-    <div className="mx-auto max-w-[1200px]">
+    <div className="mx-auto max-w-content">
       <header className="mb-8 flex items-center justify-between gap-3">
         <h2 className="text-sub font-[600] tracking-[-0.9px] text-charcoal">
           Backlogs
@@ -170,7 +170,7 @@ export function Backlogs({
                   "inline-flex h-8 items-center gap-1.5 rounded-pill border px-3 text-[13px] transition",
                   active
                     ? "border-transparent bg-charcoal text-charcoal-offwhite shadow-inset-dark"
-                    : "border-cream-light bg-cream text-charcoal hover:bg-[rgba(28,28,28,0.04)]"
+                    : "border-cream-light bg-cream text-charcoal hover:bg-charcoal/[0.04]"
                 )}
               >
                 <span>{f.label}</span>
@@ -179,7 +179,7 @@ export function Backlogs({
                     "rounded-pill px-1.5 text-[11px]",
                     active
                       ? "bg-white/15 text-charcoal-offwhite"
-                      : "bg-[rgba(28,28,28,0.06)] text-charcoal-muted"
+                      : "bg-charcoal/[0.06] text-charcoal-muted"
                   )}
                 >
                   {count}
@@ -233,10 +233,10 @@ function BacklogRow({
   const isDone = item.status === "done";
 
   return (
-    <li className="grid grid-cols-[24px_minmax(0,1fr)_auto] items-start gap-3 px-5 py-3.5 transition hover:bg-[rgba(28,28,28,0.025)]">
+    <li className="grid grid-cols-[24px_minmax(0,1fr)_auto] items-start gap-3 px-5 py-3.5 transition hover:bg-charcoal/[0.025]">
       <span className="mt-0.5 grid h-5 w-5 place-items-center">
         <StatusIcon
-          className="h-[18px] w-[18px]"
+          className="h-4.5 w-4.5"
           style={{ color: status.color }}
           strokeWidth={1.7}
         />
@@ -306,7 +306,7 @@ function BacklogRow({
           <button
             type="button"
             onClick={() => item.projectHref && onNavigate(item.projectHref)}
-            className="inline-flex h-8 items-center gap-1.5 rounded-pill border border-blue-500/30 bg-blue-500/10 px-3 text-[12.5px] text-[#2563eb] transition hover:bg-blue-500/15"
+            className="inline-flex h-8 items-center gap-1.5 rounded-pill border border-blue-500/30 bg-blue-500/10 px-3 text-[12.5px] text-info transition hover:bg-blue-500/15"
           >
             <span className="relative grid h-2 w-2 place-items-center">
               <span className="absolute inset-0 animate-ping rounded-full bg-blue-500/50" />
@@ -344,7 +344,7 @@ function KrChip({
         type="button"
         onClick={onClick}
         title="이 백로그는 어떤 KR도 가리키지 않습니다 — 연결하세요"
-        className="inline-flex items-center gap-1 rounded-pill border border-[rgba(184,68,58,0.35)] bg-[rgba(184,68,58,0.06)] px-1.5 py-0.5 text-[10.5px] font-[480] text-[#b8443a] transition hover:bg-[rgba(184,68,58,0.10)]"
+        className="inline-flex items-center gap-1 rounded-pill border border-danger/[0.35] bg-danger/[0.06] px-1.5 py-0.5 text-[10.5px] font-[480] text-danger transition hover:bg-danger/10"
       >
         ⚠ No KR
       </button>
@@ -358,7 +358,7 @@ function KrChip({
       type="button"
       onClick={onClick}
       title={`${obj?.full ?? ""} · ${kr.label}`}
-      className="inline-flex items-center gap-1 rounded-pill border border-cream-light bg-cream px-1.5 py-0.5 text-[10.5px] font-[480] text-charcoal transition hover:bg-[rgba(28,28,28,0.04)]"
+      className="inline-flex items-center gap-1 rounded-pill border border-cream-light bg-cream px-1.5 py-0.5 text-[10.5px] font-[480] text-charcoal transition hover:bg-charcoal/[0.04]"
     >
       <span>⊙</span>
       <span className="text-charcoal-muted">{obj?.short ?? ""}</span>

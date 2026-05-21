@@ -38,7 +38,7 @@ export function Okrs({
 
   if (!sampleData) {
     return (
-      <div className="mx-auto max-w-[1200px]">
+      <div className="mx-auto max-w-content">
         <header className="mb-6">
           <p className="text-[13px] uppercase tracking-[0.08em] text-charcoal-muted">
             Q2 2026
@@ -58,7 +58,7 @@ export function Okrs({
   }
 
   return (
-    <div className="mx-auto max-w-[1200px]">
+    <div className="mx-auto max-w-content">
       <header className="mb-6 flex flex-wrap items-end justify-between gap-4">
         <div>
           <p className="text-[13px] uppercase tracking-[0.08em] text-charcoal-muted">
@@ -69,7 +69,7 @@ export function Okrs({
           </h2>
         </div>
 
-        <div className="inline-flex items-center gap-1 rounded-pill bg-[rgba(28,28,28,0.06)] p-1">
+        <div className="inline-flex items-center gap-1 rounded-pill bg-charcoal/[0.06] p-1">
           <ViewButton
             active={view === "table"}
             onClick={() => handleSetView("table")}

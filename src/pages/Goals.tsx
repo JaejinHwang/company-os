@@ -10,7 +10,7 @@ type Props = {
 export function Goals({ sampleData, workspaceVision, onLoadSamples }: Props) {
   if (!sampleData) {
     return (
-      <div className="mx-auto max-w-[860px] pb-16">
+      <div className="mx-auto max-w-prose pb-16">
         <header className="mb-10">
           <h2 className="text-sub font-[600] tracking-[-0.9px] text-charcoal">
             Goals
@@ -38,7 +38,7 @@ export function Goals({ sampleData, workspaceVision, onLoadSamples }: Props) {
   }
 
   return (
-    <div className="mx-auto max-w-[860px] pb-16">
+    <div className="mx-auto max-w-prose pb-16">
       <header className="mb-10">
         <p className="text-[13px] uppercase tracking-[0.08em] text-charcoal-muted">
           Sprint Org
@@ -220,7 +220,7 @@ function AntiGoal({ title, body }: { title: string; body: string }) {
   return (
     <li className="grid grid-cols-[20px_1fr] items-start gap-3">
       <X
-        className="mt-1 h-3.5 w-3.5 shrink-0 text-[#b8443a]"
+        className="mt-1 h-3.5 w-3.5 shrink-0 text-danger"
         strokeWidth={2}
       />
       <div>

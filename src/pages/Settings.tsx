@@ -15,7 +15,7 @@ export function Settings({
   onClearSamples,
 }: Props) {
   return (
-    <div className="mx-auto max-w-[860px]">
+    <div className="mx-auto max-w-prose">
       <header className="mb-8">
         <p className="text-[13px] uppercase tracking-[0.08em] text-charcoal-muted">
           Settings
@@ -48,14 +48,14 @@ export function Settings({
                 className={cn(
                   "inline-flex items-center gap-1.5 rounded-pill border px-2 py-0.5 text-[11.5px] font-[480]",
                   sampleData
-                    ? "border-[rgba(31,138,76,0.25)] bg-[rgba(31,138,76,0.08)] text-[#1f8a4c]"
+                    ? "border-success/25 bg-success/[0.08] text-success"
                     : "border-cream-light bg-cream text-charcoal-muted"
                 )}
               >
                 <span
                   className={cn(
                     "h-1.5 w-1.5 rounded-full",
-                    sampleData ? "bg-[#1f8a4c]" : "bg-charcoal-muted"
+                    sampleData ? "bg-success" : "bg-charcoal-muted"
                   )}
                 />
                 {sampleData ? "샘플 모드 켜짐" : "내 워크스페이스만 표시 중"}
@@ -68,7 +68,7 @@ export function Settings({
               <button
                 type="button"
                 onClick={onClearSamples}
-                className="inline-flex h-9 items-center gap-1.5 rounded-md border border-cream-light bg-cream px-3 text-[13.5px] text-charcoal transition hover:bg-[rgba(28,28,28,0.04)]"
+                className="inline-flex h-9 items-center gap-1.5 rounded-md border border-cream-light bg-cream px-3 text-[13.5px] text-charcoal transition hover:bg-charcoal/[0.04]"
               >
                 <Trash2 className="h-3.5 w-3.5" strokeWidth={1.6} />
                 샘플 비우기

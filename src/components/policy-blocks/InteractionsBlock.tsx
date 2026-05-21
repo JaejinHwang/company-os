@@ -55,10 +55,10 @@ export function InteractionsBlock({ source }: Props) {
           key={i}
           onMouseEnter={() => highlight(it.selector, true)}
           onMouseLeave={() => highlight(it.selector, false)}
-          className="group flex cursor-default items-start gap-2 rounded-md border border-charcoal/10 bg-charcoal/[0.02] p-3 transition hover:border-[#2563eb]/40 hover:bg-[#2563eb]/[0.04]"
+          className="group flex cursor-default items-start gap-2 rounded-md border border-charcoal/10 bg-charcoal/[0.02] p-3 transition hover:border-info/40 hover:bg-info/[0.04]"
         >
           <MousePointer2
-            className="mt-0.5 h-3.5 w-3.5 shrink-0 text-charcoal/35 group-hover:text-[#2563eb]"
+            className="mt-0.5 h-3.5 w-3.5 shrink-0 text-charcoal/35 group-hover:text-info"
             strokeWidth={1.8}
           />
           <div className="min-w-0 flex-1">

@@ -366,7 +366,7 @@ export function OkrsTable({ backlogs, onNavigate, onAddBacklog }: Props) {
   }, []);
 
   return (
-    <div className="mx-auto max-w-[1200px]">
+    <div className="mx-auto max-w-content">
       <section className="mb-6 grid grid-cols-2 gap-3 @3xl:grid-cols-4">
         <StatCard
           icon={Target}
@@ -412,7 +412,7 @@ export function OkrsTable({ backlogs, onNavigate, onAddBacklog }: Props) {
                   "inline-flex h-8 items-center gap-1.5 rounded-pill border px-3 text-[13px] transition",
                   active
                     ? "border-transparent bg-charcoal text-charcoal-offwhite shadow-inset-dark"
-                    : "border-cream-light bg-cream text-charcoal hover:bg-[rgba(28,28,28,0.04)]"
+                    : "border-cream-light bg-cream text-charcoal hover:bg-charcoal/[0.04]"
                 )}
               >
                 <span>{f.label}</span>
@@ -421,7 +421,7 @@ export function OkrsTable({ backlogs, onNavigate, onAddBacklog }: Props) {
                     "rounded-pill px-1.5 text-[11px]",
                     active
                       ? "bg-white/15 text-charcoal-offwhite"
-                      : "bg-[rgba(28,28,28,0.06)] text-charcoal-muted"
+                      : "bg-charcoal/[0.06] text-charcoal-muted"
                   )}
                 >
                   {count}
@@ -517,7 +517,7 @@ function ObjectiveCard({
                   key={p.href}
                   type="button"
                   onClick={() => onNavigate(p.href)}
-                  className="inline-flex items-center gap-1 rounded-pill border border-cream-light bg-cream px-2 py-0.5 text-[11.5px] text-charcoal transition hover:bg-[rgba(28,28,28,0.04)]"
+                  className="inline-flex items-center gap-1 rounded-pill border border-cream-light bg-cream px-2 py-0.5 text-[11.5px] text-charcoal transition hover:bg-charcoal/[0.04]"
                 >
                   {p.label}
                   <ArrowUpRight className="h-2.5 w-2.5" strokeWidth={1.8} />
@@ -537,7 +537,7 @@ function ObjectiveCard({
           >
             {progress}%
           </p>
-          <div className="relative h-1.5 w-full overflow-hidden rounded-pill bg-[rgba(28,28,28,0.06)]">
+          <div className="relative h-1.5 w-full overflow-hidden rounded-pill bg-charcoal/[0.06]">
             <div
               className="absolute inset-y-0 left-0 rounded-pill"
               style={{
@@ -609,7 +609,7 @@ function KeyResultRow({
   ).length;
 
   return (
-    <li className="px-6 py-3.5 transition hover:bg-[rgba(28,28,28,0.025)]">
+    <li className="px-6 py-3.5 transition hover:bg-charcoal/[0.025]">
       <div className="grid grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)_minmax(0,1fr)_120px] items-start gap-3">
       <div className="min-w-0">
         <p className="truncate text-[14px] font-[480] text-charcoal">
@@ -648,7 +648,7 @@ function KeyResultRow({
             {formatValue(kr.target, kr.unit)}
           </span>
         </div>
-        <div className="mt-2 relative h-1 overflow-hidden rounded-pill bg-[rgba(28,28,28,0.06)]">
+        <div className="mt-2 relative h-1 overflow-hidden rounded-pill bg-charcoal/[0.06]">
           <div
             className="absolute inset-y-0 left-0 rounded-pill"
             style={{
@@ -668,7 +668,7 @@ function KeyResultRow({
             type="button"
             onClick={() => onNavigate(kr.linkedProject!.href)}
             title={kr.linkedProject.label}
-            className="inline-flex max-w-full items-center gap-1 truncate rounded-pill border border-cream-light bg-cream px-2 py-0.5 text-left text-[11.5px] text-charcoal transition hover:bg-[rgba(28,28,28,0.04)]"
+            className="inline-flex max-w-full items-center gap-1 truncate rounded-pill border border-cream-light bg-cream px-2 py-0.5 text-left text-[11.5px] text-charcoal transition hover:bg-charcoal/[0.04]"
           >
             <Layers className="h-2.5 w-2.5 shrink-0" strokeWidth={1.6} />
             <span className="truncate">{kr.linkedProject.label}</span>
@@ -736,7 +736,7 @@ function BacklogStrip({
             type="button"
             onClick={() => onNavigate(b.projectHref ?? "#backlogs")}
             title={`${b.title}\n${b.agent ?? ""} · ${b.status}`}
-            className="inline-flex max-w-[280px] items-center gap-1.5 rounded-pill border border-cream-light bg-cream px-2 py-0.5 text-[11.5px] text-charcoal transition hover:bg-[rgba(28,28,28,0.04)]"
+            className="inline-flex max-w-[280px] items-center gap-1.5 rounded-pill border border-cream-light bg-cream px-2 py-0.5 text-[11.5px] text-charcoal transition hover:bg-charcoal/[0.04]"
           >
             <span
               className="h-1.5 w-1.5 shrink-0 rounded-full"
@@ -753,13 +753,13 @@ function BacklogStrip({
         <button
           type="button"
           onClick={() => onNavigate("#backlogs")}
-          className="inline-flex items-center gap-1 rounded-pill border border-cream-light bg-cream px-2 py-0.5 text-[11.5px] text-charcoal-muted transition hover:bg-[rgba(28,28,28,0.04)]"
+          className="inline-flex items-center gap-1 rounded-pill border border-cream-light bg-cream px-2 py-0.5 text-[11.5px] text-charcoal-muted transition hover:bg-charcoal/[0.04]"
         >
           +{overflow} more
         </button>
       )}
       {executingCount > 0 && (
-        <span className="inline-flex items-center gap-1 rounded-pill bg-blue-500/10 px-1.5 py-0.5 text-[11px] text-[#2563eb]">
+        <span className="inline-flex items-center gap-1 rounded-pill bg-blue-500/10 px-1.5 py-0.5 text-[11px] text-info">
           <span className="relative grid h-1.5 w-1.5 place-items-center">
             <span className="absolute inset-0 animate-ping rounded-full bg-blue-500/50" />
             <span className="relative h-1.5 w-1.5 rounded-full bg-blue-500" />

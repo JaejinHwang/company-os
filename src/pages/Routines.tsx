@@ -99,7 +99,7 @@ export function Routines({
 
   if (routines.length === 0) {
     return (
-      <div className="mx-auto max-w-[1200px]">
+      <div className="mx-auto max-w-content">
         <header className="mb-8">
           <h2 className="text-sub font-[600] tracking-[-0.9px] text-charcoal">
             Routines
@@ -116,7 +116,7 @@ export function Routines({
   }
 
   return (
-    <div className="mx-auto max-w-[1200px]">
+    <div className="mx-auto max-w-content">
       <header className="mb-8">
         <h2 className="text-sub font-[600] tracking-[-0.9px] text-charcoal">
           Routines
@@ -143,11 +143,11 @@ export function Routines({
                   "inline-flex h-8 items-center gap-1.5 rounded-pill border px-3 text-[13px] transition",
                   active
                     ? isBlocked
-                      ? "border-transparent bg-[#b8443a] text-cream shadow-inset-dark"
+                      ? "border-transparent bg-danger text-cream shadow-inset-dark"
                       : "border-transparent bg-charcoal text-charcoal-offwhite shadow-inset-dark"
                     : isBlocked
-                    ? "border-[rgba(184,68,58,0.25)] bg-[rgba(184,68,58,0.06)] text-[#b8443a] hover:bg-[rgba(184,68,58,0.1)]"
-                    : "border-cream-light bg-cream text-charcoal hover:bg-[rgba(28,28,28,0.04)]"
+                    ? "border-danger/25 bg-danger/[0.06] text-danger hover:bg-danger/10"
+                    : "border-cream-light bg-cream text-charcoal hover:bg-charcoal/[0.04]"
                 )}
               >
                 <span>{f.label}</span>
@@ -157,8 +157,8 @@ export function Routines({
                     active
                       ? "bg-white/20 text-charcoal-offwhite"
                       : isBlocked
-                      ? "bg-[rgba(184,68,58,0.15)] text-[#b8443a]"
-                      : "bg-[rgba(28,28,28,0.06)] text-charcoal-muted"
+                      ? "bg-danger/15 text-danger"
+                      : "bg-charcoal/[0.06] text-charcoal-muted"
                   )}
                 >
                   {count}
@@ -225,7 +225,7 @@ function RoutineRow({
   return (
     <li
       className={cn(
-        "grid grid-cols-[24px_minmax(0,1fr)_auto] items-start gap-3 px-5 py-3.5 transition hover:bg-[rgba(28,28,28,0.025)]",
+        "grid grid-cols-[24px_minmax(0,1fr)_auto] items-start gap-3 px-5 py-3.5 transition hover:bg-charcoal/[0.025]",
         !routine.enabled && !isBlocked && "opacity-60"
       )}
     >
@@ -234,7 +234,7 @@ function RoutineRow({
         style={{ color: cat.color }}
         title={cat.label}
       >
-        <CatIcon className="h-[18px] w-[18px]" strokeWidth={1.7} />
+        <CatIcon className="h-4.5 w-4.5" strokeWidth={1.7} />
       </span>
 
       <div className="min-w-0">
@@ -262,11 +262,11 @@ function RoutineRow({
           <button
             type="button"
             onClick={() => onNavigate("#connectors")}
-            className="mt-1 inline-flex items-center gap-1 rounded-md border border-[rgba(184,68,58,0.25)] bg-[rgba(184,68,58,0.06)] px-1.5 py-0.5 text-[11.5px] text-[#b8443a] transition hover:bg-[rgba(184,68,58,0.1)]"
+            className="mt-1 inline-flex items-center gap-1 rounded-md border border-danger/25 bg-danger/[0.06] px-1.5 py-0.5 text-[11.5px] text-danger transition hover:bg-danger/10"
           >
             <AlertCircle className="h-3 w-3" strokeWidth={1.8} />
             <span>Needs setup</span>
-            <span className="text-[#b8443a]/70">
+            <span className="text-danger/70">
               · {blockedConnectors.map((c) => c.name).join(", ")} 미연결
             </span>
             <ArrowUpRight className="h-3 w-3" strokeWidth={1.8} />
@@ -319,7 +319,7 @@ function RoutineRow({
           className={cn(
             "inline-flex h-8 w-8 items-center justify-center rounded-md border border-cream-light bg-cream text-charcoal transition",
             routine.enabled && !isBlocked
-              ? "hover:bg-[rgba(28,28,28,0.04)]"
+              ? "hover:bg-charcoal/[0.04]"
               : "cursor-not-allowed opacity-50"
           )}
         >
@@ -361,7 +361,7 @@ function DependencyStack({
         </span>
       ))}
       {connectors.length > 3 && (
-        <span className="grid h-4 min-w-[16px] place-items-center rounded-sm bg-cream-light px-1 text-[9px] font-[480] text-charcoal-muted ring-1 ring-cream">
+        <span className="grid h-4 min-w-4 place-items-center rounded-sm bg-cream-light px-1 text-[9px] font-[480] text-charcoal-muted ring-1 ring-cream">
           +{connectors.length - 3}
         </span>
       )}
@@ -390,7 +390,7 @@ function RoutineToggle({
         "relative inline-flex h-5 w-9 items-center rounded-pill transition",
         enabled
           ? "bg-charcoal shadow-inset-dark"
-          : "bg-[rgba(28,28,28,0.15)]",
+          : "bg-charcoal/15",
         disabled && "cursor-not-allowed opacity-50"
       )}
     >

@@ -191,7 +191,7 @@ export function ProjectDetail({ title, description, href }: Props) {
   }, [flatPhases]);
 
   return (
-    <div className="mx-auto max-w-[1280px]">
+    <div className="mx-auto max-w-wide">
       <ProjectHeader title={title} description={description} totals={totals} />
 
       <LoopProgress groups={groups} />
@@ -223,12 +223,12 @@ function ProjectHeader({
       <nav className="flex items-center gap-1.5 text-[12.5px] text-charcoal-muted">
         <a
           href="#dashboard"
-          className="rounded px-1 py-0.5 hover:bg-[rgba(28,28,28,0.04)] hover:text-charcoal"
+          className="rounded px-1 py-0.5 hover:bg-charcoal/[0.04] hover:text-charcoal"
         >
           Workspace
         </a>
         <ChevronRight className="h-3 w-3" strokeWidth={1.6} />
-        <span className="rounded px-1 py-0.5 hover:bg-[rgba(28,28,28,0.04)] hover:text-charcoal">
+        <span className="rounded px-1 py-0.5 hover:bg-charcoal/[0.04] hover:text-charcoal">
           Projects
         </span>
         <ChevronRight className="h-3 w-3" strokeWidth={1.6} />
@@ -266,7 +266,7 @@ function ProjectHeader({
           <button
             type="button"
             aria-label="More"
-            className="inline-flex h-9 w-9 items-center justify-center rounded-md text-charcoal/70 transition hover:bg-[rgba(28,28,28,0.04)] hover:text-charcoal"
+            className="inline-flex h-9 w-9 items-center justify-center rounded-md text-charcoal/70 transition hover:bg-charcoal/[0.04] hover:text-charcoal"
           >
             <MoreHorizontal className="h-4 w-4" strokeWidth={1.6} />
           </button>
@@ -372,7 +372,7 @@ function LoopProgress({ groups }: { groups: LoopGroup[] }) {
               <div className="w-[140px] shrink-0 text-[13px] text-charcoal">
                 {g.label}
               </div>
-              <div className="relative h-2 flex-1 overflow-hidden rounded-pill bg-[rgba(28,28,28,0.06)]">
+              <div className="relative h-2 flex-1 overflow-hidden rounded-pill bg-charcoal/[0.06]">
                 <div
                   className="absolute inset-y-0 left-0 bg-charcoal/85"
                   style={{ width: `${donePct}%` }}
@@ -432,8 +432,8 @@ function PhaseRail({
                       className={cn(
                         "group flex w-full items-center gap-2.5 px-4 py-2 text-left text-[14px] transition",
                         active
-                          ? "bg-[rgba(28,28,28,0.06)] text-charcoal"
-                          : "text-charcoal/80 hover:bg-[rgba(28,28,28,0.04)] hover:text-charcoal"
+                          ? "bg-charcoal/[0.06] text-charcoal"
+                          : "text-charcoal/80 hover:bg-charcoal/[0.04] hover:text-charcoal"
                       )}
                     >
                       <StatusIcon
@@ -453,7 +453,7 @@ function PhaseRail({
                         {p.name}
                       </span>
                       {active && (
-                        <span className="ml-auto h-1.5 w-1.5 shrink-0 rounded-full bg-[#2563eb]" />
+                        <span className="ml-auto h-1.5 w-1.5 shrink-0 rounded-full bg-info" />
                       )}
                     </button>
                   </li>
@@ -626,7 +626,7 @@ function SectionView({ section }: { section: ArtifactSection }) {
             {section.rows.map((row, ri) => (
               <tr
                 key={ri}
-                className="border-t border-cream-light hover:bg-[rgba(28,28,28,0.03)]"
+                className="border-t border-cream-light hover:bg-charcoal/[0.03]"
               >
                 {row.map((cell, ci) => (
                   <td

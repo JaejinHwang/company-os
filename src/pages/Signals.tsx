@@ -85,7 +85,7 @@ export function Signals({ sampleData, signals, onPlan, onLoadSamples, onAddSigna
 
   if (!sampleData && signals.length === 0) {
     return (
-      <div className="mx-auto max-w-[1200px]">
+      <div className="mx-auto max-w-content">
         <header className="mb-8 flex items-center justify-between gap-3">
           <h2 className="text-sub font-[600] tracking-[-0.9px] text-charcoal">
             Signals
@@ -115,7 +115,7 @@ export function Signals({ sampleData, signals, onPlan, onLoadSamples, onAddSigna
   }
 
   return (
-    <div className="mx-auto max-w-[1200px]">
+    <div className="mx-auto max-w-content">
       <header className="mb-8 flex items-center justify-between gap-3">
         <h2 className="text-sub font-[600] tracking-[-0.9px] text-charcoal">
           Signals
@@ -144,7 +144,7 @@ export function Signals({ sampleData, signals, onPlan, onLoadSamples, onAddSigna
                   "inline-flex h-8 items-center gap-1.5 rounded-pill border px-3 text-[13px] transition",
                   active
                     ? "border-transparent bg-charcoal text-charcoal-offwhite shadow-inset-dark"
-                    : "border-cream-light bg-cream text-charcoal hover:bg-[rgba(28,28,28,0.04)]"
+                    : "border-cream-light bg-cream text-charcoal hover:bg-charcoal/[0.04]"
                 )}
               >
                 <span>{f.label}</span>
@@ -153,7 +153,7 @@ export function Signals({ sampleData, signals, onPlan, onLoadSamples, onAddSigna
                     "rounded-pill px-1.5 text-[11px]",
                     active
                       ? "bg-white/15 text-charcoal-offwhite"
-                      : "bg-[rgba(28,28,28,0.06)] text-charcoal-muted"
+                      : "bg-charcoal/[0.06] text-charcoal-muted"
                   )}
                 >
                   {count}
@@ -201,13 +201,13 @@ function SignalRow({
   const Icon = src.icon;
 
   return (
-    <li className="grid grid-cols-[24px_minmax(0,1fr)_auto] items-start gap-3 px-5 py-3.5 transition hover:bg-[rgba(28,28,28,0.025)]">
+    <li className="grid grid-cols-[24px_minmax(0,1fr)_auto] items-start gap-3 px-5 py-3.5 transition hover:bg-charcoal/[0.025]">
       <span
         className="mt-0.5 grid h-5 w-5 place-items-center"
         style={{ color: src.color }}
         title={src.label}
       >
-        <Icon className="h-[18px] w-[18px]" strokeWidth={1.7} />
+        <Icon className="h-4.5 w-4.5" strokeWidth={1.7} />
       </span>
 
       <div className="min-w-0">
@@ -228,7 +228,7 @@ function SignalRow({
           </p>
           {signal.hot && (
             <Flame
-              className="h-3.5 w-3.5 shrink-0 text-[#b8443a]"
+              className="h-3.5 w-3.5 shrink-0 text-danger"
               strokeWidth={2}
             />
           )}

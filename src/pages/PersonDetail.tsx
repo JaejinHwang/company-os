@@ -177,7 +177,7 @@ export function PersonDetail({
 
   if (!sampleData) {
     return (
-      <div className="mx-auto flex max-w-[760px] flex-col items-center justify-center gap-3 py-24 text-center">
+      <div className="mx-auto flex max-w-prose flex-col items-center justify-center gap-3 py-24 text-center">
         <PersonAvatar seed={person.name} size="xl" />
         <h2 className="text-[20px] font-[600] tracking-[-0.3px] text-charcoal">
           {person.name}
@@ -223,7 +223,7 @@ export function PersonDetail({
   ];
 
   return (
-    <div className="mx-auto flex max-w-[1280px] flex-col gap-6">
+    <div className="mx-auto flex max-w-wide flex-col gap-6">
       <Breadcrumb person={person} />
       <Header person={person} />
       <KpiStrip
@@ -261,7 +261,7 @@ function Breadcrumb({ person }: { person: Person }) {
     <nav className="flex items-center gap-1.5 text-[12.5px] text-charcoal-muted">
       <a
         href="#dashboard"
-        className="rounded px-1 py-0.5 hover:bg-[rgba(28,28,28,0.04)] hover:text-charcoal"
+        className="rounded px-1 py-0.5 hover:bg-charcoal/[0.04] hover:text-charcoal"
       >
         Workspace
       </a>
@@ -314,11 +314,11 @@ function Header({ person }: { person: Person }) {
         </div>
       </div>
       <div className="flex flex-wrap gap-2">
-        <button className="inline-flex items-center gap-1.5 rounded-md border border-cream-light bg-cream px-3 py-1.5 text-[13px] text-charcoal hover:bg-[rgba(28,28,28,0.04)]">
+        <button className="inline-flex items-center gap-1.5 rounded-md border border-cream-light bg-cream px-3 py-1.5 text-[13px] text-charcoal hover:bg-charcoal/[0.04]">
           <MessageSquare className="h-3.5 w-3.5" strokeWidth={1.6} />
           Message
         </button>
-        <button className="inline-flex items-center gap-1.5 rounded-md border border-cream-light bg-cream px-3 py-1.5 text-[13px] text-charcoal hover:bg-[rgba(28,28,28,0.04)]">
+        <button className="inline-flex items-center gap-1.5 rounded-md border border-cream-light bg-cream px-3 py-1.5 text-[13px] text-charcoal hover:bg-charcoal/[0.04]">
           <CalendarDays className="h-3.5 w-3.5" strokeWidth={1.6} />
           Schedule 1:1
         </button>
@@ -359,7 +359,7 @@ function KpiStrip({
     },
   ];
   return (
-    <div className="card grid grid-cols-2 gap-[1px] overflow-hidden bg-cream-light @2xl:grid-cols-4">
+    <div className="card grid grid-cols-2 gap-px overflow-hidden bg-cream-light @2xl:grid-cols-4">
       {kpis.map((k) => (
         <div key={k.label} className="bg-cream p-4">
           <p className="text-[11px] font-[480] uppercase tracking-[0.08em] text-charcoal-muted">
@@ -409,7 +409,7 @@ function TabBar({
               {typeof t.count === "number" && (
                 <span
                   className={cn(
-                    "inline-flex h-[18px] min-w-[20px] items-center justify-center rounded-pill px-1.5 text-[11px] font-[480] transition",
+                    "inline-flex h-4.5 min-w-5 items-center justify-center rounded-pill px-1.5 text-[11px] font-[480] transition",
                     isActive
                       ? "bg-charcoal text-charcoal-offwhite shadow-inset-dark"
                       : "border border-cream-light bg-cream text-charcoal-muted"
@@ -421,7 +421,7 @@ function TabBar({
               <span
                 aria-hidden
                 className={cn(
-                  "absolute inset-x-2 -bottom-px h-[2px] rounded-pill transition-opacity",
+                  "absolute inset-x-2 -bottom-px h-0.5 rounded-pill transition-opacity",
                   isActive
                     ? "bg-charcoal opacity-100"
                     : "bg-charcoal opacity-0 group-hover:opacity-20"
@@ -506,7 +506,7 @@ function AgentPoolHero({
         title="Agent Pool"
         hint={`${person.name}만 일을 시킬 수 있는 에이전트`}
         right={
-          <button className="inline-flex items-center gap-1.5 rounded-md border border-cream-light bg-cream px-2.5 py-1 text-[12.5px] text-charcoal hover:bg-[rgba(28,28,28,0.04)]">
+          <button className="inline-flex items-center gap-1.5 rounded-md border border-cream-light bg-cream px-2.5 py-1 text-[12.5px] text-charcoal hover:bg-charcoal/[0.04]">
             <Plus className="h-3.5 w-3.5" strokeWidth={1.8} />
             Claim agent
           </button>
@@ -649,7 +649,7 @@ function PoolCostsTab({
     <div className="flex flex-col gap-6">
       {/* Cost hero */}
       <section className="card overflow-hidden">
-        <div className="grid grid-cols-1 gap-[1px] bg-cream-light @2xl:grid-cols-4">
+        <div className="grid grid-cols-1 gap-px bg-cream-light @2xl:grid-cols-4">
           <CostHeroTile
             icon={Users}
             label="Agents in pool"
@@ -743,7 +743,7 @@ function PoolCostsTab({
                 return (
                   <tr
                     key={a}
-                    className="cursor-pointer transition hover:bg-[rgba(28,28,28,0.02)]"
+                    className="cursor-pointer transition hover:bg-charcoal/[0.02]"
                     onClick={() => onNavigate(AGENT_HREF[a])}
                   >
                     <td className="px-4 py-2.5">
@@ -818,7 +818,7 @@ function PoolCostsTab({
                 return (
                   <tr
                     key={a}
-                    className="cursor-pointer transition hover:bg-[rgba(28,28,28,0.02)]"
+                    className="cursor-pointer transition hover:bg-charcoal/[0.02]"
                     onClick={() => onNavigate(AGENT_HREF[a])}
                   >
                     <td className="px-4 py-2.5 text-charcoal">{a}</td>
@@ -921,7 +921,7 @@ function DirectWorkTab({ directWork }: { directWork: PersonDirectWork[] }) {
               "rounded-md px-2.5 py-1 text-[12.5px] transition",
               tab === t.id
                 ? "bg-charcoal text-charcoal-offwhite"
-                : "text-charcoal-muted hover:bg-[rgba(28,28,28,0.04)] hover:text-charcoal"
+                : "text-charcoal-muted hover:bg-charcoal/[0.04] hover:text-charcoal"
             )}
           >
             {t.label}
@@ -949,7 +949,7 @@ function DirectWorkRow({ work }: { work: PersonDirectWork }) {
   const meta = KIND_META[work.kind];
   const Icon = meta.icon;
   return (
-    <li className="group flex items-center gap-3 px-4 py-2.5 transition hover:bg-[rgba(28,28,28,0.02)]">
+    <li className="group flex items-center gap-3 px-4 py-2.5 transition hover:bg-charcoal/[0.02]">
       <span
         className="grid h-7 w-7 shrink-0 place-items-center rounded-md"
         style={{ backgroundColor: `${meta.color}1a`, color: meta.color }}
@@ -971,7 +971,7 @@ function DirectWorkRow({ work }: { work: PersonDirectWork }) {
         <span className="shrink-0 text-[12px] text-charcoal-muted">Due {work.due}</span>
       )}
       <button
-        className="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded text-charcoal-muted opacity-0 transition hover:bg-[rgba(28,28,28,0.06)] hover:text-charcoal group-hover:opacity-100"
+        className="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded text-charcoal-muted opacity-0 transition hover:bg-charcoal/[0.06] hover:text-charcoal group-hover:opacity-100"
         aria-label="More"
       >
         <MoreHorizontal className="h-3.5 w-3.5" strokeWidth={1.6} />

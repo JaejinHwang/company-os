@@ -721,7 +721,7 @@ export function ChiefOfStaff({
         role="dialog"
         aria-modal="true"
         aria-label="Atlas — your Chief of Staff"
-        className="relative flex h-full max-h-[92vh] w-full max-w-[1180px] flex-col overflow-hidden rounded-container border border-cream-light bg-cream shadow-focus"
+        className="relative flex h-full max-h-[92vh] w-full max-w-content flex-col overflow-hidden rounded-container border border-cream-light bg-cream shadow-focus"
       >
         {/* Header */}
         <div className="flex items-center gap-3 border-b border-cream-light px-5 py-3">
@@ -734,7 +734,7 @@ export function ChiefOfStaff({
           </div>
 
           {/* Tabs */}
-          <div className="hidden items-center gap-1 rounded-pill bg-[rgba(28,28,28,0.06)] p-1 md:inline-flex">
+          <div className="hidden items-center gap-1 rounded-pill bg-charcoal/[0.06] p-1 md:inline-flex">
             <TabBtn
               active={tab === "today"}
               onClick={() => setTab("today")}
@@ -763,7 +763,7 @@ export function ChiefOfStaff({
             type="button"
             aria-label="Close"
             onClick={onClose}
-            className="inline-flex h-8 w-8 items-center justify-center rounded-md text-charcoal-muted transition hover:bg-[rgba(28,28,28,0.04)] hover:text-charcoal"
+            className="inline-flex h-8 w-8 items-center justify-center rounded-md text-charcoal-muted transition hover:bg-charcoal/[0.04] hover:text-charcoal"
           >
             <X className="h-4 w-4" strokeWidth={1.8} />
           </button>
@@ -893,14 +893,14 @@ function TodayPane({
           <button
             type="button"
             aria-label="Previous day"
-            className="inline-flex h-7 w-7 items-center justify-center rounded-md text-charcoal-muted transition hover:bg-[rgba(28,28,28,0.04)] hover:text-charcoal"
+            className="inline-flex h-7 w-7 items-center justify-center rounded-md text-charcoal-muted transition hover:bg-charcoal/[0.04] hover:text-charcoal"
           >
             <ChevronLeft className="h-4 w-4" strokeWidth={1.8} />
           </button>
           <button
             type="button"
             aria-label="Next day"
-            className="inline-flex h-7 w-7 items-center justify-center rounded-md text-charcoal-muted transition hover:bg-[rgba(28,28,28,0.04)] hover:text-charcoal"
+            className="inline-flex h-7 w-7 items-center justify-center rounded-md text-charcoal-muted transition hover:bg-charcoal/[0.04] hover:text-charcoal"
           >
             <ChevronRight className="h-4 w-4" strokeWidth={1.8} />
           </button>
@@ -913,7 +913,7 @@ function TodayPane({
         </p>
 
         <div className="ml-auto flex items-center gap-1.5">
-          <div className="inline-flex items-center gap-1 rounded-pill bg-[rgba(28,28,28,0.06)] p-1">
+          <div className="inline-flex items-center gap-1 rounded-pill bg-charcoal/[0.06] p-1">
             <ViewSeg active label="Day" />
             <ViewSeg label="Week" />
             <ViewSeg label="Agenda" />
@@ -921,7 +921,7 @@ function TodayPane({
           <button
             type="button"
             aria-label="Add event"
-            className="inline-flex h-8 w-8 items-center justify-center rounded-md border border-cream-light bg-cream text-charcoal-muted transition hover:bg-[rgba(28,28,28,0.04)] hover:text-charcoal"
+            className="inline-flex h-8 w-8 items-center justify-center rounded-md border border-cream-light bg-cream text-charcoal-muted transition hover:bg-charcoal/[0.04] hover:text-charcoal"
           >
             <Plus className="h-3.5 w-3.5" strokeWidth={1.8} />
           </button>
@@ -931,7 +931,7 @@ function TodayPane({
             className={cn(
               "inline-flex h-9 items-center gap-2 rounded-md px-3.5 text-[13.5px] transition",
               recording
-                ? "bg-[#b8443a] text-white shadow-inset-dark"
+                ? "bg-danger text-white shadow-inset-dark"
                 : "btn-primary"
             )}
           >
@@ -962,7 +962,7 @@ function TodayPane({
             onSelectEvent={setSelectedEventId}
           />
         </div>
-        <aside className="hidden w-[340px] shrink-0 flex-col border-l border-cream-light bg-[rgba(28,28,28,0.015)] lg:flex">
+        <aside className="hidden w-[340px] shrink-0 flex-col border-l border-cream-light bg-charcoal/[0.015] lg:flex">
           <EventPrepPanel event={selectedEvent} onAskAtlas={onAskAtlas} />
         </aside>
       </div>
@@ -983,7 +983,7 @@ function TodayPane({
                 type="button"
                 onClick={() => onAskAtlas(`${d.agent}이 작업한 "${d.task}" 결과 보여줘`)}
                 title={`${d.agent} · ${d.task}`}
-                className="inline-flex items-center gap-1.5 rounded-pill border border-cream-light bg-cream px-2 py-1 text-[12px] text-charcoal transition hover:bg-[rgba(28,28,28,0.04)]"
+                className="inline-flex items-center gap-1.5 rounded-pill border border-cream-light bg-cream px-2 py-1 text-[12px] text-charcoal transition hover:bg-charcoal/[0.04]"
               >
                 <AgentIcon className="h-3 w-3" strokeWidth={1.6} />
                 <span className="max-w-[160px] truncate">{d.task}</span>
@@ -1051,10 +1051,10 @@ function CalendarTimeline({
         style={{ top: nowY }}
       >
         <div className="relative">
-          <span className="absolute -left-1 -top-1.5 h-3 w-3 rounded-full bg-[#b8443a] ring-2 ring-cream" />
-          <div className="h-px bg-[#b8443a]" />
+          <span className="absolute -left-1 -top-1.5 h-3 w-3 rounded-full bg-danger ring-2 ring-cream" />
+          <div className="h-px bg-danger" />
         </div>
-        <span className="absolute -top-3 right-1 rounded bg-[#b8443a] px-1 py-0 text-[10px] font-[480] text-white">
+        <span className="absolute -top-3 right-1 rounded bg-danger px-1 py-0 text-[10px] font-[480] text-white">
           {NOW_TIME}
         </span>
       </div>
@@ -1160,7 +1160,7 @@ function CalendarBlock({
               e.stopPropagation();
               onAskAtlas(`${event.title} brief 보여줘`);
             }}
-            className="mt-1 inline-flex items-center gap-1 rounded-pill border border-cream-light bg-cream px-1.5 py-0 text-[10.5px] text-charcoal transition hover:bg-[rgba(28,28,28,0.04)]"
+            className="mt-1 inline-flex items-center gap-1 rounded-pill border border-cream-light bg-cream px-1.5 py-0 text-[10.5px] text-charcoal transition hover:bg-charcoal/[0.04]"
           >
             <FileText className="h-2.5 w-2.5" strokeWidth={1.6} />
             Atlas brief
@@ -1211,7 +1211,7 @@ function CalendarBlock({
         <button
           type="button"
           onClick={(e) => e.stopPropagation()}
-          className="rounded-md border border-cream-light bg-cream px-1.5 py-0 text-[10.5px] text-charcoal transition hover:bg-[rgba(28,28,28,0.04)]"
+          className="rounded-md border border-cream-light bg-cream px-1.5 py-0 text-[10.5px] text-charcoal transition hover:bg-charcoal/[0.04]"
         >
           Open
         </button>
@@ -1221,7 +1221,7 @@ function CalendarBlock({
             e.stopPropagation();
             onAskAtlas(`이걸 적절한 에이전트에게 위임해줘: ${event.title}`);
           }}
-          className="rounded-md border border-cream-light bg-cream px-1.5 py-0 text-[10.5px] text-charcoal transition hover:bg-[rgba(28,28,28,0.04)]"
+          className="rounded-md border border-cream-light bg-cream px-1.5 py-0 text-[10.5px] text-charcoal transition hover:bg-charcoal/[0.04]"
         >
           Delegate
         </button>
@@ -1316,7 +1316,7 @@ function EventPrepPanel({
                     className={cn(
                       "mt-0.5 grid h-3.5 w-3.5 shrink-0 place-items-center rounded-sm border",
                       c.done
-                        ? "border-[#1f8a4c] bg-[#1f8a4c] text-cream"
+                        ? "border-success bg-success text-cream"
                         : "border-charcoal/30 bg-cream"
                     )}
                   >
@@ -1450,7 +1450,7 @@ function PrepTaskRow({
           {task.suggestedAgent}
         </span>
         {task.delegated ? (
-          <span className="inline-flex items-center gap-1 rounded-pill border border-[rgba(31,138,76,0.25)] bg-[rgba(31,138,76,0.08)] px-1.5 py-0.5 text-[10.5px] font-[480] text-[#1f8a4c]">
+          <span className="inline-flex items-center gap-1 rounded-pill border border-success/25 bg-success/[0.08] px-1.5 py-0.5 text-[10.5px] font-[480] text-success">
             <CheckCircle2 className="h-2.5 w-2.5" strokeWidth={1.8} />
             Delegated
           </span>
@@ -1462,7 +1462,7 @@ function PrepTaskRow({
                 `"${eventTitle}" 준비를 위해 ${task.suggestedAgent}에게 위임해줘: ${task.title}`
               )
             }
-            className="inline-flex items-center gap-1 rounded-md border border-cream-light bg-cream px-2 py-0.5 text-[11px] text-charcoal transition hover:bg-[rgba(28,28,28,0.04)]"
+            className="inline-flex items-center gap-1 rounded-md border border-cream-light bg-cream px-2 py-0.5 text-[11px] text-charcoal transition hover:bg-charcoal/[0.04]"
           >
             Delegate
             <ArrowRight className="h-3 w-3" strokeWidth={1.8} />
@@ -1521,7 +1521,7 @@ function LogPane({
             </div>
 
             {m.actions.length > 0 && (
-              <div className="border-t border-cream-light bg-[rgba(28,28,28,0.015)]">
+              <div className="border-t border-cream-light bg-charcoal/[0.015]">
                 <div className="flex items-center justify-between gap-2 px-4 py-2">
                   <p className="text-[11px] font-[480] uppercase tracking-[0.08em] text-charcoal-muted">
                     Follow-up actions · {m.actions.length}
@@ -1556,14 +1556,14 @@ function ActionRow({ action }: { action: MeetingAction }) {
   const StatusIcon = status.icon;
   const ownerIsAgent = action.owner.toLowerCase().includes("agent");
   return (
-    <li className="group grid grid-cols-[auto_1fr_auto] items-center gap-3 px-4 py-2.5 transition hover:bg-[rgba(28,28,28,0.025)]">
+    <li className="group grid grid-cols-[auto_1fr_auto] items-center gap-3 px-4 py-2.5 transition hover:bg-charcoal/[0.025]">
       <span
         aria-label={kind.label}
         title={kind.label}
         className="grid h-8 w-8 shrink-0 place-items-center rounded-md border border-cream-light bg-cream"
         style={{ color: kind.color }}
       >
-        <KindIcon className="h-[16px] w-[16px]" strokeWidth={1.6} />
+        <KindIcon className="h-4 w-4" strokeWidth={1.6} />
       </span>
 
       <div className="min-w-0">
@@ -1585,7 +1585,7 @@ function ActionRow({ action }: { action: MeetingAction }) {
             <span
               className={cn(
                 "h-1.5 w-1.5 rounded-full",
-                ownerIsAgent ? "bg-[#2563eb]" : "bg-charcoal/60"
+                ownerIsAgent ? "bg-info" : "bg-charcoal/60"
               )}
             />
             {action.owner}
@@ -1611,7 +1611,7 @@ function ActionRow({ action }: { action: MeetingAction }) {
 
       <button
         type="button"
-        className="inline-flex h-7 shrink-0 items-center gap-1 rounded-md border border-cream-light bg-cream px-2 text-[12px] text-charcoal opacity-0 transition hover:bg-[rgba(28,28,28,0.04)] group-hover:opacity-100"
+        className="inline-flex h-7 shrink-0 items-center gap-1 rounded-md border border-cream-light bg-cream px-2 text-[12px] text-charcoal opacity-0 transition hover:bg-charcoal/[0.04] group-hover:opacity-100"
       >
         Plan
         <ArrowRight className="h-3 w-3" strokeWidth={1.8} />
@@ -1750,7 +1750,7 @@ function QuickActions({
               key={it.label}
               type="button"
               onClick={it.action}
-              className="inline-flex items-center gap-1.5 rounded-pill border border-cream-light bg-cream px-2.5 py-1 text-[11.5px] text-charcoal transition hover:bg-[rgba(28,28,28,0.04)]"
+              className="inline-flex items-center gap-1.5 rounded-pill border border-cream-light bg-cream px-2.5 py-1 text-[11.5px] text-charcoal transition hover:bg-charcoal/[0.04]"
             >
               <Icon className="h-3 w-3 text-charcoal-muted" strokeWidth={1.6} />
               {it.label}
@@ -1777,7 +1777,7 @@ function Composer({
         <button
           type="button"
           aria-label="Attach"
-          className="inline-flex h-7 w-7 items-center justify-center rounded text-charcoal-muted transition hover:bg-[rgba(28,28,28,0.04)] hover:text-charcoal"
+          className="inline-flex h-7 w-7 items-center justify-center rounded text-charcoal-muted transition hover:bg-charcoal/[0.04] hover:text-charcoal"
         >
           <Paperclip className="h-3.5 w-3.5" strokeWidth={1.6} />
         </button>
@@ -1848,7 +1848,7 @@ function TabBtn({
           className={cn(
             "rounded-pill px-1 text-[10.5px]",
             active
-              ? "bg-[rgba(28,28,28,0.06)] text-charcoal-muted"
+              ? "bg-charcoal/[0.06] text-charcoal-muted"
               : "bg-cream text-charcoal-muted"
           )}
         >

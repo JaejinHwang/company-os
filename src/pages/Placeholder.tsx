@@ -5,7 +5,7 @@ type Props = {
 
 export function Placeholder({ title, description }: Props) {
   return (
-    <div className="mx-auto max-w-[1200px]">
+    <div className="mx-auto max-w-content">
       <h2 className="text-section font-[600] tracking-[-1.2px] text-charcoal">
         {title}
       </h2>

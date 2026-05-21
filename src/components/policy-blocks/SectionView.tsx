@@ -121,7 +121,7 @@ export function SectionView({ section, screenHash }: Props) {
                   highlight(it.selector, false);
                   highlight(section.selector, true);
                 }}
-                className="rounded-md border border-charcoal/10 bg-charcoal/[0.02] px-3 py-2.5 transition hover:border-[#2563eb]/40 hover:bg-[#2563eb]/[0.04]"
+                className="rounded-md border border-charcoal/10 bg-charcoal/[0.02] px-3 py-2.5 transition hover:border-info/40 hover:bg-info/[0.04]"
               >
                 <div className="flex items-start gap-2">
                   <MousePointer2

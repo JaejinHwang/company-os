@@ -186,7 +186,7 @@ export function NewIssueModal({ open, onClose, seed, onCreate }: Props) {
             <button
               type="button"
               aria-label="Expand"
-              className="inline-flex h-7 w-7 items-center justify-center rounded-md text-charcoal-muted transition hover:bg-[rgba(28,28,28,0.04)] hover:text-charcoal"
+              className="inline-flex h-7 w-7 items-center justify-center rounded-md text-charcoal-muted transition hover:bg-charcoal/[0.04] hover:text-charcoal"
             >
               <Maximize2 className="h-3.5 w-3.5" strokeWidth={1.8} />
             </button>
@@ -194,7 +194,7 @@ export function NewIssueModal({ open, onClose, seed, onCreate }: Props) {
               type="button"
               aria-label="Close"
               onClick={onClose}
-              className="inline-flex h-7 w-7 items-center justify-center rounded-md text-charcoal-muted transition hover:bg-[rgba(28,28,28,0.04)] hover:text-charcoal"
+              className="inline-flex h-7 w-7 items-center justify-center rounded-md text-charcoal-muted transition hover:bg-charcoal/[0.04] hover:text-charcoal"
             >
               <X className="h-4 w-4" strokeWidth={1.8} />
             </button>
@@ -237,7 +237,7 @@ export function NewIssueModal({ open, onClose, seed, onCreate }: Props) {
             <button
               type="button"
               aria-label="More fields"
-              className="ml-0.5 inline-flex h-6 w-6 items-center justify-center rounded-md text-charcoal-muted transition hover:bg-[rgba(28,28,28,0.04)] hover:text-charcoal"
+              className="ml-0.5 inline-flex h-6 w-6 items-center justify-center rounded-md text-charcoal-muted transition hover:bg-charcoal/[0.04] hover:text-charcoal"
             >
               <MoreHorizontal className="h-3.5 w-3.5" strokeWidth={1.8} />
             </button>
@@ -249,7 +249,7 @@ export function NewIssueModal({ open, onClose, seed, onCreate }: Props) {
             <span
               className={cn(
                 "text-[11.5px]",
-                krId ? "text-charcoal-muted" : "text-[#b8443a]"
+                krId ? "text-charcoal-muted" : "text-danger"
               )}
               title="모든 이슈는 Key Result에 연결되어야 합니다"
             >
@@ -365,7 +365,7 @@ function Pill({
   return (
     <button
       type="button"
-      className="inline-flex h-7 items-center gap-1.5 rounded-pill border border-cream-light bg-cream px-2.5 text-[13px] text-charcoal transition hover:bg-[rgba(28,28,28,0.04)]"
+      className="inline-flex h-7 items-center gap-1.5 rounded-pill border border-cream-light bg-cream px-2.5 text-[13px] text-charcoal transition hover:bg-charcoal/[0.04]"
     >
       {icon}
       {children}
@@ -443,7 +443,7 @@ function KrSelect({
           "appearance-none rounded-md border bg-cream py-1 pl-2.5 pr-7 text-[13px] focus:outline-none focus-visible:shadow-focus",
           value
             ? "border-cream-light text-charcoal"
-            : "border-[rgba(184,68,58,0.35)] text-charcoal-muted"
+            : "border-danger/[0.35] text-charcoal-muted"
         )}
         title={selected ? `${selectedObj?.full} · ${selected.label}` : "KR 선택"}
       >

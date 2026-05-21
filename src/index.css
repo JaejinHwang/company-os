@@ -54,7 +54,7 @@ body {
     @apply inline-flex items-center justify-center gap-2 rounded-md bg-charcoal px-4 py-2 text-[15px] text-charcoal-offwhite shadow-inset-dark transition active:opacity-80 focus:outline-none focus-visible:shadow-focus;
   }
   .btn-ghost {
-    @apply inline-flex items-center justify-center gap-2 rounded-md border border-[rgba(28,28,28,0.4)] bg-transparent px-4 py-2 text-[15px] text-charcoal transition active:opacity-80 focus:outline-none focus-visible:shadow-focus;
+    @apply inline-flex items-center justify-center gap-2 rounded-md border border-charcoal/40 bg-transparent px-4 py-2 text-[15px] text-charcoal transition active:opacity-80 focus:outline-none focus-visible:shadow-focus;
   }
   .btn-surface {
     @apply inline-flex items-center justify-center gap-2 rounded-md bg-cream px-4 py-2 text-[15px] text-charcoal transition hover:bg-cream-light active:opacity-80 focus:outline-none focus-visible:shadow-focus;

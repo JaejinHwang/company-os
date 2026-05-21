@@ -245,7 +245,7 @@ export function Chat({ onNavigate }: Props) {
   const activeModel = MODELS.find((m) => m.id === model) ?? MODELS[0];
 
   return (
-    <div className="mx-auto flex h-full max-w-[760px] flex-col">
+    <div className="mx-auto flex h-full max-w-prose flex-col">
       {isEmpty ? (
         <WelcomeHero onSubmit={send} examples={EXAMPLE_PROMPTS} />
       ) : (
@@ -318,7 +318,7 @@ function WelcomeHero({
             key={p.title}
             type="button"
             onClick={() => onSubmit(`${p.title}: ${p.sub}`)}
-            className="card group flex flex-col items-start gap-1 p-3.5 text-left transition hover:bg-[rgba(28,28,28,0.025)]"
+            className="card group flex flex-col items-start gap-1 p-3.5 text-left transition hover:bg-charcoal/[0.025]"
           >
             <span className="text-[13.5px] font-[480] text-charcoal">
               {p.title}
@@ -405,7 +405,7 @@ function Composer({
               setAttachOpen(!attachOpen);
               setModelOpen(false);
             }}
-            className="inline-flex h-8 w-8 items-center justify-center rounded-pill text-charcoal-muted transition hover:bg-[rgba(28,28,28,0.05)] hover:text-charcoal"
+            className="inline-flex h-8 w-8 items-center justify-center rounded-pill text-charcoal-muted transition hover:bg-charcoal/5 hover:text-charcoal"
             title="첨부"
           >
             <Paperclip className="h-4 w-4" strokeWidth={1.7} />
@@ -419,7 +419,7 @@ function Composer({
                     key={opt.id}
                     type="button"
                     onClick={() => setAttachOpen(false)}
-                    className="flex w-full items-center gap-2 px-2.5 py-1.5 text-left text-[13px] text-charcoal transition hover:bg-[rgba(28,28,28,0.04)]"
+                    className="flex w-full items-center gap-2 px-2.5 py-1.5 text-left text-[13px] text-charcoal transition hover:bg-charcoal/[0.04]"
                   >
                     <Icon className="h-3.5 w-3.5 text-charcoal-muted" strokeWidth={1.7} />
                     {opt.label}
@@ -438,7 +438,7 @@ function Composer({
               setModelOpen(!modelOpen);
               setAttachOpen(false);
             }}
-            className="inline-flex h-8 items-center gap-1.5 rounded-pill border border-cream-light bg-cream px-2.5 text-[12.5px] text-charcoal transition hover:bg-[rgba(28,28,28,0.04)]"
+            className="inline-flex h-8 items-center gap-1.5 rounded-pill border border-cream-light bg-cream px-2.5 text-[12.5px] text-charcoal transition hover:bg-charcoal/[0.04]"
           >
             <Sparkles className="h-3 w-3 text-charcoal-muted" strokeWidth={2} />
             {model.label}
@@ -455,8 +455,8 @@ function Composer({
                     setModelOpen(false);
                   }}
                   className={cn(
-                    "flex w-full items-center justify-between gap-2 px-2.5 py-1.5 text-left transition hover:bg-[rgba(28,28,28,0.04)]",
-                    m.id === model.id && "bg-[rgba(28,28,28,0.04)]"
+                    "flex w-full items-center justify-between gap-2 px-2.5 py-1.5 text-left transition hover:bg-charcoal/[0.04]",
+                    m.id === model.id && "bg-charcoal/[0.04]"
                   )}
                 >
                   <span className="min-w-0">
@@ -502,7 +502,7 @@ function Composer({
 function UserBubble({ text }: { text: string }) {
   return (
     <li className="flex justify-end">
-      <div className="max-w-[80%] rounded-container border border-cream-light bg-[rgba(28,28,28,0.04)] px-3.5 py-2.5 text-[14.5px] leading-[1.55] text-charcoal">
+      <div className="max-w-[80%] rounded-container border border-cream-light bg-charcoal/[0.04] px-3.5 py-2.5 text-[14.5px] leading-[1.55] text-charcoal">
         {text}
       </div>
     </li>
@@ -582,7 +582,7 @@ function AssistantTurn({
                         className={cn(
                           "mt-[3px] inline-grid h-3 w-3 shrink-0 place-items-center rounded-full border",
                           done
-                            ? "border-[#1f8a4c] bg-[#1f8a4c]/15 text-[#1f8a4c]"
+                            ? "border-success bg-success/15 text-success"
                             : "border-cream-light bg-cream text-transparent"
                         )}
                       >
@@ -623,7 +623,7 @@ function AssistantTurn({
 
 function SystemBlock({ children }: { children: React.ReactNode }) {
   return (
-    <div className="rounded-md border border-dashed border-cream-light bg-[rgba(28,28,28,0.02)] px-3.5 py-2.5">
+    <div className="rounded-md border border-dashed border-cream-light bg-charcoal/[0.02] px-3.5 py-2.5">
       {children}
     </div>
   );
@@ -642,7 +642,7 @@ function ActionWidget({
     <button
       type="button"
       onClick={onClick}
-      className="group flex w-full max-w-[480px] items-center gap-3 rounded-card border border-cream-light bg-cream p-3 text-left transition hover:bg-[rgba(28,28,28,0.025)]"
+      className="group flex w-full max-w-card items-center gap-3 rounded-card border border-cream-light bg-cream p-3 text-left transition hover:bg-charcoal/[0.025]"
     >
       <span
         className="grid h-9 w-9 shrink-0 place-items-center rounded-md"
@@ -657,7 +657,7 @@ function ActionWidget({
       <div className="min-w-0 flex-1">
         <div className="flex items-center gap-1.5">
           <span
-            className="inline-flex items-center gap-1 rounded-pill border px-1.5 py-[1px] text-[10px] font-[480] uppercase tracking-[0.06em]"
+            className="inline-flex items-center gap-1 rounded-pill border px-1.5 py-px text-[10px] font-[480] uppercase tracking-[0.06em]"
             style={{
               color: meta.color,
               borderColor: `${meta.color}33`,

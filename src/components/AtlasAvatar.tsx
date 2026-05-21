@@ -3,7 +3,7 @@ import { cn } from "../lib/cn";
 type Size = "xs" | "sm" | "md" | "lg";
 
 const SIZE: Record<Size, string> = {
-  xs: "h-[18px] w-[18px]",
+  xs: "h-4.5 w-4.5",
   sm: "h-7 w-7",
   md: "h-9 w-9",
   lg: "h-12 w-12",

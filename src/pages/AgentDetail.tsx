@@ -2331,7 +2331,7 @@ export function AgentDetail({
 
   if (!sampleData) {
     return (
-      <div className="mx-auto flex max-w-[760px] flex-col items-center justify-center gap-3 py-24 text-center">
+      <div className="mx-auto flex max-w-prose flex-col items-center justify-center gap-3 py-24 text-center">
         <span className="grid h-16 w-16 place-items-center rounded-pill bg-cream-light text-charcoal">
           <Icon className="h-7 w-7" strokeWidth={1.5} />
         </span>
@@ -2374,7 +2374,7 @@ export function AgentDetail({
   ];
 
   return (
-    <div className="mx-auto max-w-[1280px]">
+    <div className="mx-auto max-w-wide">
       <Breadcrumb agentName={agentName} />
 
       <Header
@@ -2526,7 +2526,7 @@ function TabBar({
               {typeof t.count === "number" && (
                 <span
                   className={cn(
-                    "inline-flex h-[18px] min-w-[20px] items-center justify-center rounded-pill px-1.5 text-[11px] font-[480] transition",
+                    "inline-flex h-4.5 min-w-5 items-center justify-center rounded-pill px-1.5 text-[11px] font-[480] transition",
                     isActive
                       ? "bg-charcoal text-charcoal-offwhite shadow-inset-dark"
                       : "border border-cream-light bg-cream text-charcoal-muted"
@@ -2538,7 +2538,7 @@ function TabBar({
               <span
                 aria-hidden
                 className={cn(
-                  "absolute inset-x-2 -bottom-px h-[2px] rounded-pill transition-opacity",
+                  "absolute inset-x-2 -bottom-px h-0.5 rounded-pill transition-opacity",
                   isActive
                     ? "bg-charcoal opacity-100"
                     : "bg-charcoal opacity-0 group-hover:opacity-20"
@@ -2557,7 +2557,7 @@ function Breadcrumb({ agentName }: { agentName: AgentName }) {
     <nav className="flex items-center gap-1.5 text-[12.5px] text-charcoal-muted">
       <a
         href="#dashboard"
-        className="rounded px-1 py-0.5 hover:bg-[rgba(28,28,28,0.04)] hover:text-charcoal"
+        className="rounded px-1 py-0.5 hover:bg-charcoal/[0.04] hover:text-charcoal"
       >
         Workspace
       </a>
@@ -2618,7 +2618,7 @@ function Header({
               className="mt-2.5 inline-flex items-center gap-1.5 text-[13px] text-charcoal-muted underline-offset-4 hover:text-charcoal hover:underline"
             >
               <CircleDot
-                className="h-3.5 w-3.5 text-[#2563eb]"
+                className="h-3.5 w-3.5 text-info"
                 strokeWidth={1.8}
               />
               <span className="text-charcoal">{doing}</span>
@@ -2646,7 +2646,7 @@ function Header({
           <button
             type="button"
             aria-label="More"
-            className="inline-flex h-9 w-9 items-center justify-center rounded-md text-charcoal/70 transition hover:bg-[rgba(28,28,28,0.04)] hover:text-charcoal"
+            className="inline-flex h-9 w-9 items-center justify-center rounded-md text-charcoal/70 transition hover:bg-charcoal/[0.04] hover:text-charcoal"
           >
             <MoreHorizontal className="h-4 w-4" strokeWidth={1.6} />
           </button>
@@ -2659,7 +2659,7 @@ function Header({
 function AgentStatusChip({ status }: { status: AgentStatus }) {
   if (status === "executing") {
     return (
-      <span className="inline-flex shrink-0 items-center gap-1 rounded-pill border border-blue-500/30 bg-blue-500/10 px-2 py-0.5 text-[11px] font-[480] text-[#2563eb]">
+      <span className="inline-flex shrink-0 items-center gap-1 rounded-pill border border-blue-500/30 bg-blue-500/10 px-2 py-0.5 text-[11px] font-[480] text-info">
         <span className="relative grid h-2 w-2 place-items-center">
           <span className="absolute inset-0 animate-ping rounded-full bg-blue-500/50" />
           <span className="relative h-1.5 w-1.5 rounded-full bg-blue-500" />
@@ -2670,7 +2670,7 @@ function AgentStatusChip({ status }: { status: AgentStatus }) {
   }
   if (status === "blocked") {
     return (
-      <span className="inline-flex shrink-0 items-center gap-1 rounded-pill border border-[rgba(184,68,58,0.25)] bg-[rgba(184,68,58,0.08)] px-2 py-0.5 text-[11px] font-[480] text-[#b8443a]">
+      <span className="inline-flex shrink-0 items-center gap-1 rounded-pill border border-danger/25 bg-danger/[0.08] px-2 py-0.5 text-[11px] font-[480] text-danger">
         <AlertCircle className="h-3 w-3" strokeWidth={1.8} />
         Blocked
       </span>
@@ -2795,7 +2795,7 @@ function NowWorkingCard({
           <button
             type="button"
             onClick={() => onNavigate(href)}
-            className="inline-flex h-8 items-center gap-1.5 rounded-pill border border-blue-500/30 bg-blue-500/10 px-3 text-[12.5px] text-[#2563eb] transition hover:bg-blue-500/15"
+            className="inline-flex h-8 items-center gap-1.5 rounded-pill border border-blue-500/30 bg-blue-500/10 px-3 text-[12.5px] text-info transition hover:bg-blue-500/15"
           >
             <FileText className="h-3 w-3" strokeWidth={1.8} />
             View project
@@ -2830,7 +2830,7 @@ function UpNextCard({
             <button
               type="button"
               onClick={() => it.href && onNavigate(it.href)}
-              className="group flex w-full items-start gap-2.5 px-5 py-3 text-left transition hover:bg-[rgba(28,28,28,0.025)]"
+              className="group flex w-full items-start gap-2.5 px-5 py-3 text-left transition hover:bg-charcoal/[0.025]"
             >
               <span className="mt-0.5 grid h-5 w-5 shrink-0 place-items-center text-[10.5px] font-[480] text-charcoal-muted">
                 {i + 1}
@@ -2867,7 +2867,7 @@ function HighlightsCard({
   return (
     <div className="card overflow-hidden">
       <CardHeader title={title} hint={hint} />
-      <div className="grid grid-cols-1 gap-[1px] bg-cream-light @2xl:grid-cols-2 @5xl:grid-cols-4">
+      <div className="grid grid-cols-1 gap-px bg-cream-light @2xl:grid-cols-2 @5xl:grid-cols-4">
         {metrics.map((m) => (
           <TechMetricTile key={m.label} metric={m} />
         ))}
@@ -2962,10 +2962,10 @@ function BacklogRow({
   const priority = PRIORITY_META[item.priority];
   const isExecuting = item.status === "in_progress";
   return (
-    <li className="grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 px-5 py-3 transition hover:bg-[rgba(28,28,28,0.025)]">
+    <li className="grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 px-5 py-3 transition hover:bg-charcoal/[0.025]">
       <span className="grid h-5 w-5 place-items-center">
         {isExecuting ? (
-          <CircleDot className="h-4 w-4 text-[#2563eb]" strokeWidth={1.8} />
+          <CircleDot className="h-4 w-4 text-info" strokeWidth={1.8} />
         ) : (
           <Circle className="h-4 w-4 text-charcoal-muted" strokeWidth={1.8} />
         )}
@@ -3004,7 +3004,7 @@ function BacklogRow({
           <button
             type="button"
             onClick={() => item.projectHref && onNavigate(item.projectHref)}
-            className="inline-flex h-8 items-center gap-1.5 rounded-pill border border-blue-500/30 bg-blue-500/10 px-3 text-[12px] text-[#2563eb] transition hover:bg-blue-500/15"
+            className="inline-flex h-8 items-center gap-1.5 rounded-pill border border-blue-500/30 bg-blue-500/10 px-3 text-[12px] text-info transition hover:bg-blue-500/15"
           >
             <span className="relative grid h-2 w-2 place-items-center">
               <span className="absolute inset-0 animate-ping rounded-full bg-blue-500/50" />
@@ -3034,7 +3034,7 @@ function RoutineStatusChip({
 }) {
   if (status === "success") {
     return (
-      <span className="inline-flex shrink-0 items-center gap-1 text-[11px] text-[#1f8a4c]">
+      <span className="inline-flex shrink-0 items-center gap-1 text-[11px] text-success">
         <CheckCircle2 className="h-3 w-3" strokeWidth={1.8} />
         Success
       </span>
@@ -3042,14 +3042,14 @@ function RoutineStatusChip({
   }
   if (status === "failed") {
     return (
-      <span className="inline-flex shrink-0 items-center gap-1 text-[11px] text-[#b8443a]">
+      <span className="inline-flex shrink-0 items-center gap-1 text-[11px] text-danger">
         <AlertCircle className="h-3 w-3" strokeWidth={1.8} />
         Failed
       </span>
     );
   }
   return (
-    <span className="inline-flex shrink-0 items-center gap-1 text-[11px] text-[#2563eb]">
+    <span className="inline-flex shrink-0 items-center gap-1 text-[11px] text-info">
       <span className="relative grid h-2 w-2 place-items-center">
         <span className="absolute inset-0 animate-ping rounded-full bg-blue-500/50" />
         <span className="relative h-1.5 w-1.5 rounded-full bg-blue-500" />
@@ -3170,7 +3170,7 @@ function Markdown({ source }: { source: string }) {
         >
           {items.map((it, j) => (
             <li key={j} className="flex items-start gap-2">
-              <span className="mt-[8px] inline-block h-1 w-1 shrink-0 rounded-full bg-charcoal-muted" />
+              <span className="mt-2 inline-block h-1 w-1 shrink-0 rounded-full bg-charcoal-muted" />
               <span>{renderInline(it)}</span>
             </li>
           ))}
@@ -3275,7 +3275,7 @@ function SkillsCard({ skills }: { skills: Skill[] }) {
 
 function SkillRow({ skill }: { skill: Skill }) {
   return (
-    <li className="px-5 py-3.5 transition hover:bg-[rgba(28,28,28,0.025)]">
+    <li className="px-5 py-3.5 transition hover:bg-charcoal/[0.025]">
       <div className="flex items-start gap-3">
         <span className="mt-0.5 grid h-7 w-7 shrink-0 place-items-center rounded-md border border-cream-light bg-cream text-charcoal-muted">
           <Sparkles className="h-3.5 w-3.5" strokeWidth={1.6} />
@@ -3320,7 +3320,7 @@ function SkillRow({ skill }: { skill: Skill }) {
         <button
           type="button"
           aria-label="More"
-          className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-md text-charcoal-muted opacity-0 transition hover:bg-[rgba(28,28,28,0.04)] hover:text-charcoal group-hover:opacity-100"
+          className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-md text-charcoal-muted opacity-0 transition hover:bg-charcoal/[0.04] hover:text-charcoal group-hover:opacity-100"
         >
           <MoreHorizontal className="h-3.5 w-3.5" strokeWidth={1.6} />
         </button>
@@ -3346,7 +3346,7 @@ function ToolsCard({ tools }: { tools: Tool[] }) {
         title={`Tools · ${tools.length}`}
         hint={`${connected} connected · MCPs and connectors`}
       />
-      <div className="grid grid-cols-1 gap-[1px] bg-cream-light @2xl:grid-cols-2 @5xl:grid-cols-3">
+      <div className="grid grid-cols-1 gap-px bg-cream-light @2xl:grid-cols-2 @5xl:grid-cols-3">
         {tools.map((t) => (
           <ToolTile key={t.name} tool={t} />
         ))}
@@ -3437,7 +3437,7 @@ function FilterChip({
         "inline-flex h-8 items-center gap-1.5 rounded-pill border px-3 text-[13px] transition",
         active
           ? "border-transparent bg-charcoal text-charcoal-offwhite shadow-inset-dark"
-          : "border-cream-light bg-cream text-charcoal hover:bg-[rgba(28,28,28,0.04)]"
+          : "border-cream-light bg-cream text-charcoal hover:bg-charcoal/[0.04]"
       )}
     >
       {color && (
@@ -3453,7 +3453,7 @@ function FilterChip({
             "rounded-pill px-1.5 text-[11px]",
             active
               ? "bg-white/15 text-charcoal-offwhite"
-              : "bg-[rgba(28,28,28,0.06)] text-charcoal-muted"
+              : "bg-charcoal/[0.06] text-charcoal-muted"
           )}
         >
           {count}
@@ -3494,7 +3494,7 @@ function BacklogsTab({
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="card grid grid-cols-2 gap-[1px] overflow-hidden bg-cream-light @2xl:grid-cols-4">
+      <div className="card grid grid-cols-2 gap-px overflow-hidden bg-cream-light @2xl:grid-cols-4">
         {(
           [
             { label: "Urgent", count: counts.urgent, color: "#b8443a" },
@@ -3577,7 +3577,7 @@ function CompletedBacklogsCard({ items }: { items: CompletedBacklog[] }) {
                 className="grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 px-5 py-3"
               >
                 <CheckCircle2
-                  className="h-4 w-4 text-[#1f8a4c]"
+                  className="h-4 w-4 text-success"
                   strokeWidth={1.8}
                 />
                 <div className="min-w-0">
@@ -3706,7 +3706,7 @@ function ActivityHeatmapCard({ hours }: { hours: number[] }) {
         hint={`${total}건의 액션 · 24h`}
       />
       <div className="px-5 py-5">
-        <div className="flex items-end gap-[2px]">
+        <div className="flex items-end gap-0.5">
           {hours.map((n, i) => {
             const h = (n / max) * 56;
             const isHighlight = n > 0;
@@ -3721,7 +3721,7 @@ function ActivityHeatmapCard({ hours }: { hours: number[] }) {
                     "w-full rounded-sm transition",
                     isHighlight
                       ? "bg-charcoal/85"
-                      : "bg-[rgba(28,28,28,0.06)]"
+                      : "bg-charcoal/[0.06]"
                   )}
                   style={{ height: `${Math.max(h, 2)}px` }}
                 />
@@ -3883,14 +3883,14 @@ function ExpandedProjectCard({
           type="button"
           onClick={() => onNavigate(project.href)}
           aria-label="Open project"
-          className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-md text-charcoal-muted transition hover:bg-[rgba(28,28,28,0.04)] hover:text-charcoal"
+          className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-md text-charcoal-muted transition hover:bg-charcoal/[0.04] hover:text-charcoal"
         >
           <ArrowUpRight className="h-3.5 w-3.5" strokeWidth={1.6} />
         </button>
       </div>
 
       <div className="px-5 py-4">
-        <div className="relative h-1.5 overflow-hidden rounded-pill bg-[rgba(28,28,28,0.06)]">
+        <div className="relative h-1.5 overflow-hidden rounded-pill bg-charcoal/[0.06]">
           <div
             className="absolute inset-y-0 left-0 bg-charcoal/85"
             style={{ width: `${donePct}%` }}
@@ -3902,7 +3902,7 @@ function ExpandedProjectCard({
         </div>
 
         <div className="mt-4 flex items-center gap-2 text-[12.5px] text-charcoal-muted">
-          <CircleDot className="h-3.5 w-3.5 text-[#2563eb]" strokeWidth={1.8} />
+          <CircleDot className="h-3.5 w-3.5 text-info" strokeWidth={1.8} />
           <span className="text-charcoal">{project.currentPhase}</span>
           <span className="text-charcoal-muted/60">·</span>
           <span>{project.phaseProgress}%</span>
@@ -3965,7 +3965,7 @@ function RoutinesTab({
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="card grid grid-cols-1 gap-[1px] overflow-hidden bg-cream-light @2xl:grid-cols-3">
+      <div className="card grid grid-cols-1 gap-px overflow-hidden bg-cream-light @2xl:grid-cols-3">
         <RoutineStatTile
           label="Total runs · 7d"
           value={totalRuns.toString()}
@@ -4076,16 +4076,16 @@ function ExpandedRoutineRow({ routine }: { routine: AgentRoutine }) {
               title={h}
               className={cn(
                 "h-5 flex-1 rounded-sm",
-                h === "success" && "bg-[#1f8a4c]/85",
-                h === "failed" && "bg-[#b8443a]/85",
-                h === "skipped" && "bg-[rgba(28,28,28,0.1)]"
+                h === "success" && "bg-success/85",
+                h === "failed" && "bg-danger/85",
+                h === "skipped" && "bg-charcoal/10"
               )}
             />
           ))}
         </div>
       </div>
 
-      <div className="grid grid-cols-2 gap-[1px] border-t border-cream-light bg-cream-light @2xl:grid-cols-4">
+      <div className="grid grid-cols-2 gap-px border-t border-cream-light bg-cream-light @2xl:grid-cols-4">
         <RoutineMiniStat
           label="Success rate"
           value={`${routine.successRate}%`}

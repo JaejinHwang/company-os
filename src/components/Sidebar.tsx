@@ -366,7 +366,7 @@ function SidebarHeader({
       <button
         type="button"
         className={cn(
-          "flex min-w-0 flex-1 items-center gap-2 rounded-md px-1.5 py-1 text-left transition hover:bg-[rgba(28,28,28,0.04)]",
+          "flex min-w-0 flex-1 items-center gap-2 rounded-md px-1.5 py-1 text-left transition hover:bg-charcoal/[0.04]",
           collapsed && "@5xl:flex-none @5xl:px-0"
         )}
         title={`Switch workspace · ${workspaceName}`}
@@ -397,7 +397,7 @@ function SidebarHeader({
         aria-label="Collapse sidebar"
         title="Collapse sidebar"
         className={cn(
-          "hidden h-7 w-7 items-center justify-center rounded-md text-charcoal/70 transition hover:bg-[rgba(28,28,28,0.04)] hover:text-charcoal @5xl:inline-flex",
+          "hidden h-7 w-7 items-center justify-center rounded-md text-charcoal/70 transition hover:bg-charcoal/[0.04] hover:text-charcoal @5xl:inline-flex",
           collapsed && "@5xl:hidden"
         )}
       >
@@ -465,7 +465,7 @@ function SidebarSection({
             <button
               type="button"
               aria-label={`Add ${section.label}`}
-              className="ml-auto inline-flex h-5 w-5 items-center justify-center rounded text-charcoal-muted transition hover:bg-[rgba(28,28,28,0.04)] hover:text-charcoal"
+              className="ml-auto inline-flex h-5 w-5 items-center justify-center rounded text-charcoal-muted transition hover:bg-charcoal/[0.04] hover:text-charcoal"
             >
               <Plus className="h-3.5 w-3.5" strokeWidth={1.8} />
             </button>
@@ -540,8 +540,8 @@ function SidebarItem({
             : "items-center gap-2.5 py-1.5",
           tree && !collapsed ? "pl-1.5 pr-2" : "px-2",
           active
-            ? "bg-[rgba(28,28,28,0.06)] text-charcoal"
-            : "text-charcoal/80 hover:bg-[rgba(28,28,28,0.04)] hover:text-charcoal",
+            ? "bg-charcoal/[0.06] text-charcoal"
+            : "text-charcoal/80 hover:bg-charcoal/[0.04] hover:text-charcoal",
           collapsed && "@5xl:justify-center @5xl:px-0"
         )}
       >
@@ -556,7 +556,7 @@ function SidebarItem({
                 setExpanded((v) => !v);
               }}
               className={cn(
-                "inline-flex h-4 w-4 shrink-0 items-center justify-center rounded text-charcoal-muted transition hover:bg-[rgba(28,28,28,0.08)] hover:text-charcoal",
+                "inline-flex h-4 w-4 shrink-0 items-center justify-center rounded text-charcoal-muted transition hover:bg-charcoal/[0.08] hover:text-charcoal",
                 hasDescription && "mt-1"
               )}
             >
@@ -578,7 +578,7 @@ function SidebarItem({
           ))}
         {StatusIcon && status ? (
           <StatusIcon
-            className="h-[16px] w-[16px] shrink-0"
+            className="h-4 w-4 shrink-0"
             style={{ color: status.color }}
             strokeWidth={1.8}
           />
@@ -591,12 +591,12 @@ function SidebarItem({
             <span
               className={cn(
                 "relative shrink-0",
-                hasDescription ? "mt-0.5 h-[20px] w-[20px]" : "h-[18px] w-[18px]"
+                hasDescription ? "mt-0.5 h-5 w-5" : "h-4.5 w-4.5"
               )}
             >
               <Icon
                 className={cn(
-                  hasDescription ? "h-[20px] w-[20px]" : "h-[18px] w-[18px]",
+                  hasDescription ? "h-5 w-5" : "h-4.5 w-4.5",
                   active ? "text-charcoal" : "text-charcoal/70"
                 )}
                 strokeWidth={1.6}
@@ -608,8 +608,8 @@ function SidebarItem({
               className={cn(
                 "shrink-0",
                 hasDescription
-                  ? "mt-0.5 h-[20px] w-[20px]"
-                  : "h-[18px] w-[18px]",
+                  ? "mt-0.5 h-5 w-5"
+                  : "h-4.5 w-4.5",
                 active ? "text-charcoal" : "text-charcoal/70"
               )}
               strokeWidth={1.6}
@@ -621,7 +621,7 @@ function SidebarItem({
             style={{ backgroundColor: item.dotColor }}
           />
         ) : (
-          <span className="h-[18px] w-[18px] shrink-0" />
+          <span className="h-4.5 w-4.5 shrink-0" />
         )}
         <span
           className={cn(
@@ -638,7 +638,7 @@ function SidebarItem({
           )}
         </span>
         {item.badge && !collapsed && (
-          <span className="inline-flex h-[18px] min-w-[20px] items-center justify-center rounded-pill border border-cream-light bg-cream px-1.5 text-[11px] font-[480] text-charcoal-muted">
+          <span className="inline-flex h-4.5 min-w-5 items-center justify-center rounded-pill border border-cream-light bg-cream px-1.5 text-[11px] font-[480] text-charcoal-muted">
             {item.badge}
           </span>
         )}
@@ -650,14 +650,14 @@ function SidebarItem({
               e.preventDefault();
               e.stopPropagation();
             }}
-            className="inline-flex h-5 w-5 items-center justify-center rounded text-charcoal-muted opacity-0 transition hover:bg-[rgba(28,28,28,0.04)] hover:text-charcoal group-hover:opacity-100"
+            className="inline-flex h-5 w-5 items-center justify-center rounded text-charcoal-muted opacity-0 transition hover:bg-charcoal/[0.04] hover:text-charcoal group-hover:opacity-100"
           >
             <MoreHorizontal className="h-3.5 w-3.5" strokeWidth={1.6} />
           </button>
         )}
       </a>
       {hasChildren && expanded && !collapsed && (
-        <ul className="ml-[18px] mt-0.5 flex flex-col gap-0.5 border-l border-cream-light pl-2">
+        <ul className="ml-4.5 mt-0.5 flex flex-col gap-0.5 border-l border-cream-light pl-2">
           {childItems.map((child) => (
             <SidebarItem
               key={child.href}
@@ -678,7 +678,7 @@ function AgentPresenceDot({ status }: { status: AgentStatus }) {
   return (
     <span
       aria-label={cfg.label}
-      className="absolute -bottom-0.5 -right-0.5 grid h-[10px] w-[10px] place-items-center rounded-full bg-cream"
+      className="absolute -bottom-0.5 -right-0.5 grid h-2.5 w-2.5 place-items-center rounded-full bg-cream"
     >
       {cfg.pulse ? (
         <span className="relative grid h-1.5 w-1.5 place-items-center">

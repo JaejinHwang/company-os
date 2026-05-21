@@ -58,7 +58,7 @@ export function ConfirmStep({
     values.firstAgent.trim().length > 0;
 
   return (
-    <div className="w-full max-w-[680px]">
+    <div className="w-full max-w-prose">
       <header
         className={cn(
           "text-center transition-all duration-500",
@@ -169,7 +169,7 @@ export function ConfirmStep({
         <button
           type="button"
           onClick={onBack}
-          className="inline-flex h-9 items-center gap-1.5 rounded-md border border-cream-light bg-cream px-3 text-[13.5px] text-charcoal transition hover:bg-[rgba(28,28,28,0.04)]"
+          className="inline-flex h-9 items-center gap-1.5 rounded-md border border-cream-light bg-cream px-3 text-[13.5px] text-charcoal transition hover:bg-charcoal/[0.04]"
         >
           {backIcon}
           {backLabel}

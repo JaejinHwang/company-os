@@ -50,12 +50,12 @@ const ACTION_STATUS_TONE: Record<
   in_progress: {
     label: "In progress",
     tone:
-      "text-[#2563eb] bg-[rgba(37,99,235,0.08)] border-[rgba(37,99,235,0.25)]",
+      "text-info bg-info/[0.08] border-info/25",
   },
   done: {
     label: "Done",
     tone:
-      "text-[#1f8a4c] bg-[rgba(31,138,76,0.08)] border-[rgba(31,138,76,0.25)]",
+      "text-success bg-success/[0.08] border-success/25",
   },
 };
 
@@ -131,7 +131,7 @@ export function Experiments({ onNavigate, onPlan }: Props) {
   }, [filter, verdict]);
 
   return (
-    <div className="mx-auto max-w-[1280px]">
+    <div className="mx-auto max-w-wide">
       <header className="mb-6">
         <div className="flex flex-wrap items-end justify-between gap-3">
           <div>
@@ -269,7 +269,7 @@ function FilterGroup<T extends string>({
   options: { id: T; label: string }[];
 }) {
   return (
-    <div className="inline-flex items-center gap-1 rounded-pill bg-[rgba(28,28,28,0.06)] p-1">
+    <div className="inline-flex items-center gap-1 rounded-pill bg-charcoal/[0.06] p-1">
       {options.map((o) => {
         const active = value === o.id;
         return (
@@ -314,7 +314,7 @@ function ExperimentRow({
       <button
         type="button"
         onClick={onToggle}
-        className="flex w-full items-start gap-3 px-5 py-4 text-left transition hover:bg-[rgba(28,28,28,0.03)]"
+        className="flex w-full items-start gap-3 px-5 py-4 text-left transition hover:bg-charcoal/[0.03]"
       >
         <span className="mt-0.5 inline-flex h-5 w-5 shrink-0 items-center justify-center">
           {expanded ? (
@@ -359,7 +359,7 @@ function ExperimentRow({
       </button>
 
       {expanded && (
-        <div className="border-t border-cream-light bg-[rgba(28,28,28,0.02)] px-5 py-5">
+        <div className="border-t border-cream-light bg-charcoal/[0.02] px-5 py-5">
           <div className="grid grid-cols-1 gap-5 @5xl:grid-cols-2">
             <div>
               <SectionLabel
@@ -484,14 +484,14 @@ function NextActionItem({
 
   return (
     <li className="group">
-      <div className="grid grid-cols-[auto_1fr_auto] items-start gap-4 px-5 py-4 transition hover:bg-[rgba(28,28,28,0.025)]">
+      <div className="grid grid-cols-[auto_1fr_auto] items-start gap-4 px-5 py-4 transition hover:bg-charcoal/[0.025]">
         <span
           aria-label={cfg.label}
           title={cfg.label}
           className="mt-0.5 grid h-9 w-9 shrink-0 place-items-center rounded-md border border-cream-light bg-cream"
           style={{ color: cfg.color }}
         >
-          <KindIcon className="h-[18px] w-[18px]" strokeWidth={1.6} />
+          <KindIcon className="h-4.5 w-4.5" strokeWidth={1.6} />
         </span>
 
         <div className="min-w-0">
@@ -525,9 +525,9 @@ function NextActionItem({
 
           {status === "in_progress" ? (
             <div className="mt-2 flex items-center gap-2">
-              <div className="relative h-1 max-w-[280px] flex-1 overflow-hidden rounded-pill bg-[rgba(28,28,28,0.08)]">
+              <div className="relative h-1 max-w-[280px] flex-1 overflow-hidden rounded-pill bg-charcoal/[0.08]">
                 <div
-                  className="absolute inset-y-0 left-0 rounded-pill bg-[#2563eb]"
+                  className="absolute inset-y-0 left-0 rounded-pill bg-info"
                   style={{ width: `${progress}%` }}
                 />
               </div>
@@ -579,7 +579,7 @@ function NextActionItem({
             <button
               type="button"
               onClick={onOpenRun}
-              className="inline-flex h-8 items-center gap-1.5 rounded-pill border border-cream-light bg-cream px-3 text-[13px] text-charcoal transition hover:bg-[rgba(28,28,28,0.04)]"
+              className="inline-flex h-8 items-center gap-1.5 rounded-pill border border-cream-light bg-cream px-3 text-[13px] text-charcoal transition hover:bg-charcoal/[0.04]"
             >
               View result
               <ArrowUpRight className="h-3.5 w-3.5" strokeWidth={1.8} />

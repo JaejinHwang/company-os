@@ -124,7 +124,7 @@ export function Connectors({
 
   if (!sampleData && connectors.length === 0) {
     return (
-      <div className="mx-auto max-w-[1200px]">
+      <div className="mx-auto max-w-content">
         <header className="mb-8">
           <h2 className="text-sub font-[600] tracking-[-0.9px] text-charcoal">
             Connectors
@@ -145,7 +145,7 @@ export function Connectors({
     : [];
 
   return (
-    <div className="mx-auto max-w-[1200px]">
+    <div className="mx-auto max-w-content">
       <header className="mb-8">
         <h2 className="text-sub font-[600] tracking-[-0.9px] text-charcoal">
           Connectors
@@ -171,7 +171,7 @@ export function Connectors({
                   "inline-flex h-8 items-center gap-1.5 rounded-pill border px-3 text-[13px] transition",
                   active
                     ? "border-transparent bg-charcoal text-charcoal-offwhite shadow-inset-dark"
-                    : "border-cream-light bg-cream text-charcoal hover:bg-[rgba(28,28,28,0.04)]"
+                    : "border-cream-light bg-cream text-charcoal hover:bg-charcoal/[0.04]"
                 )}
               >
                 <span>{f.label}</span>
@@ -180,7 +180,7 @@ export function Connectors({
                     "rounded-pill px-1.5 text-[11px]",
                     active
                       ? "bg-white/15 text-charcoal-offwhite"
-                      : "bg-[rgba(28,28,28,0.06)] text-charcoal-muted"
+                      : "bg-charcoal/[0.06] text-charcoal-muted"
                   )}
                 >
                   {count}
@@ -251,7 +251,7 @@ function ConnectorCard({
     <button
       type="button"
       onClick={onClick}
-      className="card group flex items-center gap-3 p-3.5 text-left transition hover:bg-[rgba(28,28,28,0.025)]"
+      className="card group flex items-center gap-3 p-3.5 text-left transition hover:bg-charcoal/[0.025]"
     >
       <BrandBadge color={connector.brandColor} label={connector.badge} />
       <div className="min-w-0 flex-1">
@@ -347,7 +347,7 @@ function ConnectorDrawer({
       <aside
         role="dialog"
         aria-label={`${connector.name} 커넥터`}
-        className="absolute inset-y-0 right-0 flex w-full max-w-[420px] flex-col bg-cream shadow-[-20px_0_40px_-20px_rgba(0,0,0,0.18)] animate-[fadeUp_220ms_ease-out]"
+        className="absolute inset-y-0 right-0 flex w-full max-w-card flex-col bg-cream shadow-[-20px_0_40px_-20px_rgba(0,0,0,0.18)] animate-[fadeUp_220ms_ease-out]"
       >
         <header className="flex items-start justify-between gap-3 border-b border-cream-light px-5 py-4">
           <div className="flex items-center gap-3">
@@ -375,14 +375,14 @@ function ConnectorDrawer({
             type="button"
             onClick={onClose}
             aria-label="Close"
-            className="inline-flex h-8 w-8 items-center justify-center rounded-md text-charcoal-muted transition hover:bg-[rgba(28,28,28,0.04)] hover:text-charcoal"
+            className="inline-flex h-8 w-8 items-center justify-center rounded-md text-charcoal-muted transition hover:bg-charcoal/[0.04] hover:text-charcoal"
           >
             <X className="h-4 w-4" strokeWidth={1.8} />
           </button>
         </header>
 
         {isError && connector.errorReason && (
-          <div className="border-b border-cream-light bg-[rgba(184,68,58,0.04)] px-5 py-2.5 text-[12.5px] text-[#b8443a]">
+          <div className="border-b border-cream-light bg-danger/[0.04] px-5 py-2.5 text-[12.5px] text-danger">
             {connector.errorReason}
           </div>
         )}
@@ -446,14 +446,14 @@ function ConnectorDrawer({
               <button
                 type="button"
                 onClick={onDisconnect}
-                className="inline-flex h-8 items-center rounded-md px-3 text-[13px] text-charcoal-muted transition hover:text-[#b8443a]"
+                className="inline-flex h-8 items-center rounded-md px-3 text-[13px] text-charcoal-muted transition hover:text-danger"
               >
                 연결 해제
               </button>
               <button
                 type="button"
                 onClick={onReconnect}
-                className="inline-flex h-8 items-center rounded-md border border-cream-light bg-cream px-3 text-[13px] text-charcoal transition hover:bg-[rgba(28,28,28,0.04)]"
+                className="inline-flex h-8 items-center rounded-md border border-cream-light bg-cream px-3 text-[13px] text-charcoal transition hover:bg-charcoal/[0.04]"
               >
                 다시 동기화
               </button>
@@ -540,7 +540,7 @@ function RoutineRefSection({
           <li
             key={r.id}
             className={cn(
-              "flex items-center justify-between gap-3 rounded-md px-2 py-2 transition hover:bg-[rgba(28,28,28,0.03)]",
+              "flex items-center justify-between gap-3 rounded-md px-2 py-2 transition hover:bg-charcoal/[0.03]",
               !r.enabled && "opacity-60"
             )}
           >
@@ -570,7 +570,7 @@ function CapabilityRow({
   return (
     <li
       className={cn(
-        "flex items-center justify-between gap-3 rounded-md px-2 py-2 transition hover:bg-[rgba(28,28,28,0.03)]",
+        "flex items-center justify-between gap-3 rounded-md px-2 py-2 transition hover:bg-charcoal/[0.03]",
         !canToggle && "opacity-60 hover:bg-transparent"
       )}
     >
@@ -609,7 +609,7 @@ function Toggle({
       onClick={onClick}
       className={cn(
         "relative inline-flex h-5 w-9 shrink-0 items-center rounded-pill transition",
-        enabled ? "bg-charcoal shadow-inset-dark" : "bg-[rgba(28,28,28,0.15)]",
+        enabled ? "bg-charcoal shadow-inset-dark" : "bg-charcoal/15",
         disabled && "cursor-not-allowed opacity-60"
       )}
     >

@@ -14,6 +14,25 @@ module.exports = {
           muted: "#5f5f5d",
           offwhite: "#fcfbf8",
         },
+        // Semantic status colors (CLAUDE.md §8 — single source of truth).
+        success: "#1f8a4c",
+        danger: "#b8443a",
+        warning: "#c89211",
+        info: "#2563eb",
+        accent: "#7c6cff",
+      },
+      maxWidth: {
+        // Content width scale (CLAUDE.md §8). Pages should pick one of these
+        // rather than introducing arbitrary max-w-[Npx] values.
+        wide: "1280px",
+        content: "1200px",
+        prose: "760px",
+        narrow: "640px",
+        card: "420px",
+      },
+      spacing: {
+        // Common icon size that's not in Tailwind's default scale.
+        4.5: "1.125rem", // 18px
       },
       fontFamily: {
         sans: [

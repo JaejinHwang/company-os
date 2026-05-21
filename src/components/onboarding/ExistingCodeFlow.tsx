@@ -90,7 +90,7 @@ export function ExistingCodeFlow({ onDone }: Props) {
 
   if (phase === "input") {
     return (
-      <div className="w-full max-w-[640px]">
+      <div className="w-full max-w-narrow">
         <header className="text-center">
           <p className="text-[13px] uppercase tracking-[0.08em] text-charcoal-muted">
             From existing code
@@ -135,7 +135,7 @@ export function ExistingCodeFlow({ onDone }: Props) {
                   type="button"
                   style={{ animationDelay: `${i * 60}ms` }}
                   onClick={() => setPath(s)}
-                  className="inline-flex h-7 items-center gap-1.5 rounded-pill border border-cream-light bg-cream px-2.5 text-[12px] text-charcoal transition animate-[fadeUp_400ms_ease-out_both] hover:bg-[rgba(28,28,28,0.04)]"
+                  className="inline-flex h-7 items-center gap-1.5 rounded-pill border border-cream-light bg-cream px-2.5 text-[12px] text-charcoal transition animate-[fadeUp_400ms_ease-out_both] hover:bg-charcoal/[0.04]"
                 >
                   {s.startsWith("github") ? (
                     <GitBranch className="h-3 w-3" strokeWidth={1.6} />
@@ -170,7 +170,7 @@ export function ExistingCodeFlow({ onDone }: Props) {
   if (phase === "analyzing") {
     const progress = ((stageIdx + 1) / STAGES.length) * 100;
     return (
-      <div className="w-full max-w-[560px]">
+      <div className="w-full max-w-narrow">
         <header className="text-center">
           <p className="text-[13px] uppercase tracking-[0.08em] text-charcoal-muted">
             Analyzing
@@ -183,7 +183,7 @@ export function ExistingCodeFlow({ onDone }: Props) {
           </p>
         </header>
 
-        <div className="mt-8 h-1.5 overflow-hidden rounded-pill bg-[rgba(28,28,28,0.06)]">
+        <div className="mt-8 h-1.5 overflow-hidden rounded-pill bg-charcoal/[0.06]">
           <div
             className="h-full rounded-pill bg-charcoal transition-all duration-500 ease-gentle"
             style={{ width: `${progress}%` }}
@@ -201,12 +201,12 @@ export function ExistingCodeFlow({ onDone }: Props) {
                 className={cn(
                   "flex items-center gap-3 rounded-md px-3 py-2.5 text-[13.5px] transition-all duration-300",
                   pending && "opacity-40",
-                  active && "bg-[rgba(28,28,28,0.04)]"
+                  active && "bg-charcoal/[0.04]"
                 )}
               >
                 {done ? (
                   <CheckCircle2
-                    className="h-4 w-4 shrink-0 text-[#1f8a4c]"
+                    className="h-4 w-4 shrink-0 text-success"
                     strokeWidth={1.8}
                   />
                 ) : active ? (
@@ -215,7 +215,7 @@ export function ExistingCodeFlow({ onDone }: Props) {
                     <span className="relative h-2 w-2 rounded-full bg-blue-500" />
                   </span>
                 ) : (
-                  <span className="h-4 w-4 shrink-0 rounded-full border border-[rgba(28,28,28,0.2)]" />
+                  <span className="h-4 w-4 shrink-0 rounded-full border border-charcoal/20" />
                 )}
                 <span className={cn("text-charcoal", active && "font-[480]")}>
                   {s.label}

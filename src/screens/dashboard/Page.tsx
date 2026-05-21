@@ -346,7 +346,7 @@ export function Dashboard({
 
   if (!sampleData) {
     return (
-      <div className="mx-auto max-w-[1200px]">
+      <div className="mx-auto max-w-content">
         <FreshDashboard
           today={today}
           backlogs={backlogs}
@@ -361,7 +361,7 @@ export function Dashboard({
   }
 
   return (
-    <div className="mx-auto max-w-[1200px]">
+    <div className="mx-auto max-w-content">
       <Hero
         today={today}
         hotCount={hotCount}
@@ -450,17 +450,17 @@ function Hero({
     {
       count: hotCount,
       label: hotCount > 0 ? "hot signal 대기" : "hot signal 없음",
-      tone: hotCount > 0 ? "text-[#b8443a]" : "text-charcoal-muted",
+      tone: hotCount > 0 ? "text-danger" : "text-charcoal-muted",
     },
     {
       count: urgentBacklogs,
       label: urgentBacklogs > 0 ? "urgent 백로그" : "urgent 백로그 없음",
-      tone: urgentBacklogs > 0 ? "text-[#c89211]" : "text-charcoal-muted",
+      tone: urgentBacklogs > 0 ? "text-warning" : "text-charcoal-muted",
     },
     {
       count: failedRoutines,
       label: failedRoutines > 0 ? "routine 실패" : "routine 모두 정상",
-      tone: failedRoutines > 0 ? "text-[#b8443a]" : "text-[#1f8a4c]",
+      tone: failedRoutines > 0 ? "text-danger" : "text-success",
     },
   ];
 
@@ -525,7 +525,7 @@ function PulseCard({
       onClick={onClick}
       className={cn(
         "card flex flex-col gap-3 p-4 text-left transition",
-        onClick && "hover:bg-[rgba(28,28,28,0.025)]"
+        onClick && "hover:bg-charcoal/[0.025]"
       )}
     >
       <div className="flex items-center justify-between">
@@ -580,7 +580,7 @@ function HotSignalsCard({
           return (
             <li
               key={s.id}
-              className="grid grid-cols-[auto_minmax(0,1fr)_auto] items-start gap-3 px-5 py-3.5 transition hover:bg-[rgba(28,28,28,0.025)]"
+              className="grid grid-cols-[auto_minmax(0,1fr)_auto] items-start gap-3 px-5 py-3.5 transition hover:bg-charcoal/[0.025]"
             >
               <span
                 className="mt-0.5 grid h-8 w-8 shrink-0 place-items-center rounded-md border border-cream-light bg-cream"
@@ -602,7 +602,7 @@ function HotSignalsCard({
                     {src.short}
                   </span>
                   {s.hot && (
-                    <span className="inline-flex items-center gap-1 rounded-pill border border-[rgba(184,68,58,0.25)] bg-[rgba(184,68,58,0.08)] px-1.5 py-0.5 text-[10.5px] font-[480] text-[#b8443a]">
+                    <span className="inline-flex items-center gap-1 rounded-pill border border-danger/25 bg-danger/[0.08] px-1.5 py-0.5 text-[10.5px] font-[480] text-danger">
                       <Flame className="h-2.5 w-2.5" strokeWidth={1.8} />
                       Hot
                     </span>
@@ -656,7 +656,7 @@ function AgentsCard({
           return (
             <li
               key={a.name}
-              className="flex items-start gap-3 px-5 py-3 transition hover:bg-[rgba(28,28,28,0.025)]"
+              className="flex items-start gap-3 px-5 py-3 transition hover:bg-charcoal/[0.025]"
             >
               <span className="mt-0.5 grid h-7 w-7 shrink-0 place-items-center rounded-pill border border-cream-light bg-cream">
                 <Icon className="h-3.5 w-3.5" strokeWidth={1.6} />
@@ -693,7 +693,7 @@ function AgentsCard({
 function AgentStatusChip({ status }: { status: AgentState["status"] }) {
   if (status === "executing") {
     return (
-      <span className="inline-flex shrink-0 items-center gap-1 rounded-pill border border-blue-500/30 bg-blue-500/10 px-1.5 py-0.5 text-[10.5px] font-[480] text-[#2563eb]">
+      <span className="inline-flex shrink-0 items-center gap-1 rounded-pill border border-blue-500/30 bg-blue-500/10 px-1.5 py-0.5 text-[10.5px] font-[480] text-info">
         <span className="relative grid h-2 w-2 place-items-center">
           <span className="absolute inset-0 animate-ping rounded-full bg-blue-500/50" />
           <span className="relative h-1.5 w-1.5 rounded-full bg-blue-500" />
@@ -704,7 +704,7 @@ function AgentStatusChip({ status }: { status: AgentState["status"] }) {
   }
   if (status === "blocked") {
     return (
-      <span className="inline-flex shrink-0 items-center gap-1 rounded-pill border border-[rgba(184,68,58,0.25)] bg-[rgba(184,68,58,0.08)] px-1.5 py-0.5 text-[10.5px] font-[480] text-[#b8443a]">
+      <span className="inline-flex shrink-0 items-center gap-1 rounded-pill border border-danger/25 bg-danger/[0.08] px-1.5 py-0.5 text-[10.5px] font-[480] text-danger">
         <AlertCircle className="h-2.5 w-2.5" strokeWidth={1.8} />
         Blocked
       </span>
@@ -731,7 +731,7 @@ function ProjectsStrip({
         title="Projects"
         hint="각 카드를 누르면 단계별 산출물로 이동합니다"
       />
-      <div className="grid grid-cols-1 gap-[1px] bg-cream-light @2xl:grid-cols-2 @5xl:grid-cols-5">
+      <div className="grid grid-cols-1 gap-px bg-cream-light @2xl:grid-cols-2 @5xl:grid-cols-5">
         {projects.map((p) => (
           <ProjectMiniCard key={p.href} project={p} onNavigate={onNavigate} />
         ))}
@@ -756,7 +756,7 @@ function ProjectMiniCard({
     <button
       type="button"
       onClick={() => onNavigate(project.href)}
-      className="group flex flex-col gap-3 bg-cream p-4 text-left transition hover:bg-[rgba(28,28,28,0.025)]"
+      className="group flex flex-col gap-3 bg-cream p-4 text-left transition hover:bg-charcoal/[0.025]"
     >
       <div className="flex items-start justify-between gap-2">
         <span className="inline-flex items-center gap-1.5 rounded-pill border border-cream-light bg-cream px-2 py-0.5 text-[11px] text-charcoal">
@@ -771,13 +771,13 @@ function ProjectMiniCard({
           strokeWidth={1.6}
         />
       </div>
-      <div className="min-h-[40px]">
+      <div className="min-h-10">
         <p className="line-clamp-2 text-[14px] font-[480] leading-[1.35] text-charcoal">
           {project.title}
         </p>
       </div>
       <div>
-        <div className="relative h-1.5 overflow-hidden rounded-pill bg-[rgba(28,28,28,0.06)]">
+        <div className="relative h-1.5 overflow-hidden rounded-pill bg-charcoal/[0.06]">
           <div
             className="absolute inset-y-0 left-0 bg-charcoal/85"
             style={{ width: `${donePct}%` }}
@@ -885,10 +885,10 @@ function BacklogRow({
   const isExecuting = item.status === "in_progress";
 
   return (
-    <li className="grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 px-5 py-3 transition hover:bg-[rgba(28,28,28,0.025)]">
+    <li className="grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 px-5 py-3 transition hover:bg-charcoal/[0.025]">
       <span className="grid h-5 w-5 place-items-center">
         {isExecuting ? (
-          <CircleDot className="h-4 w-4 text-[#2563eb]" strokeWidth={1.8} />
+          <CircleDot className="h-4 w-4 text-info" strokeWidth={1.8} />
         ) : (
           <Circle className="h-4 w-4 text-charcoal-muted" strokeWidth={1.8} />
         )}
@@ -939,7 +939,7 @@ function BacklogRow({
           <button
             type="button"
             onClick={() => item.projectHref && onNavigate(item.projectHref)}
-            className="inline-flex h-8 items-center gap-1.5 rounded-pill border border-blue-500/30 bg-blue-500/10 px-3 text-[12px] text-[#2563eb] transition hover:bg-blue-500/15"
+            className="inline-flex h-8 items-center gap-1.5 rounded-pill border border-blue-500/30 bg-blue-500/10 px-3 text-[12px] text-info transition hover:bg-blue-500/15"
           >
             <span className="relative grid h-2 w-2 place-items-center">
               <span className="absolute inset-0 animate-ping rounded-full bg-blue-500/50" />
@@ -985,7 +985,7 @@ function RoutinesDigestCard({
           return (
             <li
               key={r.name}
-              className="flex items-start gap-3 px-5 py-3 transition hover:bg-[rgba(28,28,28,0.025)]"
+              className="flex items-start gap-3 px-5 py-3 transition hover:bg-charcoal/[0.025]"
             >
               <span
                 className="mt-0.5 h-2 w-2 shrink-0 rounded-full"
@@ -1018,7 +1018,7 @@ function RoutinesDigestCard({
 function RoutineStatusChip({ status }: { status: RoutineRun["status"] }) {
   if (status === "success") {
     return (
-      <span className="inline-flex shrink-0 items-center gap-1 text-[11px] text-[#1f8a4c]">
+      <span className="inline-flex shrink-0 items-center gap-1 text-[11px] text-success">
         <CheckCircle2 className="h-3 w-3" strokeWidth={1.8} />
         Success
       </span>
@@ -1026,14 +1026,14 @@ function RoutineStatusChip({ status }: { status: RoutineRun["status"] }) {
   }
   if (status === "failed") {
     return (
-      <span className="inline-flex shrink-0 items-center gap-1 text-[11px] text-[#b8443a]">
+      <span className="inline-flex shrink-0 items-center gap-1 text-[11px] text-danger">
         <AlertCircle className="h-3 w-3" strokeWidth={1.8} />
         Failed
       </span>
     );
   }
   return (
-    <span className="inline-flex shrink-0 items-center gap-1 text-[11px] text-[#2563eb]">
+    <span className="inline-flex shrink-0 items-center gap-1 text-[11px] text-info">
       <span className="relative grid h-2 w-2 place-items-center">
         <span className="absolute inset-0 animate-ping rounded-full bg-blue-500/50" />
         <span className="relative h-1.5 w-1.5 rounded-full bg-blue-500" />
@@ -1158,7 +1158,7 @@ function FreshDashboard({
                   <button
                     type="button"
                     onClick={() => onNavigate("#backlogs")}
-                    className="inline-flex h-9 items-center gap-1.5 rounded-pill border border-blue-500/30 bg-blue-500/10 px-3 text-[13px] text-[#2563eb]"
+                    className="inline-flex h-9 items-center gap-1.5 rounded-pill border border-blue-500/30 bg-blue-500/10 px-3 text-[13px] text-info"
                   >
                     <span className="relative grid h-2 w-2 place-items-center">
                       <span className="absolute inset-0 animate-ping rounded-full bg-blue-500/50" />
@@ -1179,7 +1179,7 @@ function FreshDashboard({
                 <button
                   type="button"
                   onClick={() => onNavigate("#backlogs")}
-                  className="inline-flex h-9 items-center gap-1.5 rounded-md border border-cream-light bg-cream px-3 text-[13.5px] text-charcoal transition hover:bg-[rgba(28,28,28,0.04)]"
+                  className="inline-flex h-9 items-center gap-1.5 rounded-md border border-cream-light bg-cream px-3 text-[13.5px] text-charcoal transition hover:bg-charcoal/[0.04]"
                 >
                   Backlog 전체 보기
                   <ArrowRight className="h-3 w-3" strokeWidth={1.8} />
@@ -1260,7 +1260,7 @@ function ExploreLink({
       <button
         type="button"
         onClick={onClick}
-        className="group flex w-full items-center justify-between rounded-md border border-cream-light bg-cream px-3 py-2 text-left transition hover:bg-[rgba(28,28,28,0.04)]"
+        className="group flex w-full items-center justify-between rounded-md border border-cream-light bg-cream px-3 py-2 text-left transition hover:bg-charcoal/[0.04]"
       >
         <div className="min-w-0">
           <p className="text-[13.5px] font-[480] text-charcoal">{label}</p>

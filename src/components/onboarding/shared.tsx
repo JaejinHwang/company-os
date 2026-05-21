@@ -55,8 +55,8 @@ export function AgentPicker({
               "group flex items-center gap-3 rounded-md border p-3.5 text-left transition-all duration-200",
               animate && "animate-[fadeUp_400ms_ease-out_both]",
               selected
-                ? "border-charcoal bg-[rgba(28,28,28,0.04)]"
-                : "border-cream-light bg-cream hover:border-[rgba(28,28,28,0.3)] hover:-translate-y-0.5"
+                ? "border-charcoal bg-charcoal/[0.04]"
+                : "border-cream-light bg-cream hover:border-charcoal/30 hover:-translate-y-0.5"
             )}
           >
             <span
@@ -111,7 +111,7 @@ export function QuickPicks({
               animate && "animate-[fadeUp_400ms_ease-out_both]",
               isActive
                 ? "border-charcoal bg-charcoal text-charcoal-offwhite shadow-inset-dark"
-                : "border-cream-light bg-cream text-charcoal hover:bg-[rgba(28,28,28,0.04)]"
+                : "border-cream-light bg-cream text-charcoal hover:bg-charcoal/[0.04]"
             )}
           >
             {s}

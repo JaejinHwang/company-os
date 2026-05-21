@@ -107,7 +107,7 @@ export function OracleFlow({ onDone }: Props) {
 
   if (phase === "idle") {
     return (
-      <div className="w-full max-w-[560px] text-center">
+      <div className="w-full max-w-narrow text-center">
         <p className="text-[13px] uppercase tracking-[0.08em] text-charcoal-muted">
           Oracle
         </p>
@@ -153,7 +153,7 @@ export function OracleFlow({ onDone }: Props) {
   const rolling = phase === "rolling";
 
   return (
-    <div className="w-full max-w-[640px]">
+    <div className="w-full max-w-narrow">
       <div className="grid place-items-center">
         <div
           className={cn(

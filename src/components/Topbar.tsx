@@ -12,7 +12,7 @@ export function Topbar({ onOpenMobileSidebar, title }: Props) {
         type="button"
         onClick={onOpenMobileSidebar}
         aria-label="Open sidebar"
-        className="inline-flex h-9 w-9 items-center justify-center rounded-md text-charcoal/80 transition hover:bg-[rgba(28,28,28,0.04)] hover:text-charcoal @5xl:hidden"
+        className="inline-flex h-9 w-9 items-center justify-center rounded-md text-charcoal/80 transition hover:bg-charcoal/[0.04] hover:text-charcoal @5xl:hidden"
       >
         <Menu className="h-5 w-5" strokeWidth={1.6} />
       </button>

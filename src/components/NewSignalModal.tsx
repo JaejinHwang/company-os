@@ -144,7 +144,7 @@ export function NewSignalModal({ open, onClose, onCreate }: Props) {
             <button
               type="button"
               aria-label="Expand"
-              className="inline-flex h-7 w-7 items-center justify-center rounded-md text-charcoal-muted transition hover:bg-[rgba(28,28,28,0.04)] hover:text-charcoal"
+              className="inline-flex h-7 w-7 items-center justify-center rounded-md text-charcoal-muted transition hover:bg-charcoal/[0.04] hover:text-charcoal"
             >
               <Maximize2 className="h-3.5 w-3.5" strokeWidth={1.8} />
             </button>
@@ -152,7 +152,7 @@ export function NewSignalModal({ open, onClose, onCreate }: Props) {
               type="button"
               aria-label="Close"
               onClick={onClose}
-              className="inline-flex h-7 w-7 items-center justify-center rounded-md text-charcoal-muted transition hover:bg-[rgba(28,28,28,0.04)] hover:text-charcoal"
+              className="inline-flex h-7 w-7 items-center justify-center rounded-md text-charcoal-muted transition hover:bg-charcoal/[0.04] hover:text-charcoal"
             >
               <X className="h-4 w-4" strokeWidth={1.8} />
             </button>
@@ -192,7 +192,7 @@ export function NewSignalModal({ open, onClose, onCreate }: Props) {
             <button
               type="button"
               aria-label="More fields"
-              className="ml-0.5 inline-flex h-6 w-6 items-center justify-center rounded-md text-charcoal-muted transition hover:bg-[rgba(28,28,28,0.04)] hover:text-charcoal"
+              className="ml-0.5 inline-flex h-6 w-6 items-center justify-center rounded-md text-charcoal-muted transition hover:bg-charcoal/[0.04] hover:text-charcoal"
             >
               <MoreHorizontal className="h-3.5 w-3.5" strokeWidth={1.8} />
             </button>
@@ -237,7 +237,7 @@ export function NewSignalModal({ open, onClose, onCreate }: Props) {
               <Flame
                 className={cn(
                   "h-3.5 w-3.5",
-                  hot ? "text-[#b8443a]" : "text-charcoal-muted"
+                  hot ? "text-danger" : "text-charcoal-muted"
                 )}
                 strokeWidth={1.8}
               />
@@ -311,7 +311,7 @@ function Pill({
   return (
     <button
       type="button"
-      className="inline-flex h-7 items-center gap-1.5 rounded-pill border border-cream-light bg-cream px-2.5 text-[13px] text-charcoal transition hover:bg-[rgba(28,28,28,0.04)]"
+      className="inline-flex h-7 items-center gap-1.5 rounded-pill border border-cream-light bg-cream px-2.5 text-[13px] text-charcoal transition hover:bg-charcoal/[0.04]"
     >
       {icon}
       {children}
@@ -337,8 +337,8 @@ function ToggleablePill({
       className={cn(
         "inline-flex h-7 items-center gap-1.5 rounded-pill border px-2.5 text-[13px] transition",
         active
-          ? "border-[rgba(184,68,58,0.35)] bg-[rgba(184,68,58,0.08)] text-[#b8443a]"
-          : "border-cream-light bg-cream text-charcoal hover:bg-[rgba(28,28,28,0.04)]"
+          ? "border-danger/[0.35] bg-danger/[0.08] text-danger"
+          : "border-cream-light bg-cream text-charcoal hover:bg-charcoal/[0.04]"
       )}
     >
       {icon}

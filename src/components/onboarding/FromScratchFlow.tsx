@@ -168,7 +168,7 @@ export function FromScratchFlow({ onDone }: Props) {
   };
 
   return (
-    <div className="w-full max-w-[640px]">
+    <div className="w-full max-w-narrow">
       <div className="flex items-center justify-center gap-2">
         {STEPS.map((_, i) => (
           <span
@@ -179,7 +179,7 @@ export function FromScratchFlow({ onDone }: Props) {
                 ? "w-6 bg-charcoal"
                 : i === step
                 ? "w-10 bg-charcoal"
-                : "w-6 bg-[rgba(28,28,28,0.15)]"
+                : "w-6 bg-charcoal/15"
             )}
           />
         ))}
@@ -272,7 +272,7 @@ export function FromScratchFlow({ onDone }: Props) {
             "inline-flex h-9 items-center gap-1.5 rounded-md px-3 text-[13.5px] text-charcoal transition",
             step === 0
               ? "opacity-30"
-              : "hover:bg-[rgba(28,28,28,0.04)]"
+              : "hover:bg-charcoal/[0.04]"
           )}
         >
           <ArrowLeft className="h-3.5 w-3.5" strokeWidth={1.8} />

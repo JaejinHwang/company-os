@@ -153,7 +153,7 @@ export function PolicyPanel({
             >
               {t.label}
               {activeTab === t.id && (
-                <span className="absolute inset-x-2 bottom-0 h-[2px] rounded-t bg-charcoal" />
+                <span className="absolute inset-x-2 bottom-0 h-0.5 rounded-t bg-charcoal" />
               )}
             </button>
           ))}
@@ -164,7 +164,7 @@ export function PolicyPanel({
         <div
           className={cn(
             "py-6",
-            fullscreen ? "mx-auto max-w-[900px] px-10" : "px-6"
+            fullscreen ? "mx-auto max-w-content px-10" : "px-6"
           )}
         >
           {parsed
@@ -254,10 +254,10 @@ function SectionsOverview({
               onClick={() => onNavigateTab(s.id)}
               onMouseEnter={() => highlightSelector(s.selector, true)}
               onMouseLeave={() => highlightSelector(s.selector, false)}
-              className="group flex w-full items-start gap-2.5 rounded-md border border-charcoal/10 bg-charcoal/[0.02] px-3 py-2.5 text-left transition hover:border-[#2563eb]/40 hover:bg-[#2563eb]/[0.04]"
+              className="group flex w-full items-start gap-2.5 rounded-md border border-charcoal/10 bg-charcoal/[0.02] px-3 py-2.5 text-left transition hover:border-info/40 hover:bg-info/[0.04]"
             >
               <Crosshair
-                className="mt-0.5 h-3.5 w-3.5 shrink-0 text-charcoal/35 group-hover:text-[#2563eb]"
+                className="mt-0.5 h-3.5 w-3.5 shrink-0 text-charcoal/35 group-hover:text-info"
                 strokeWidth={1.7}
               />
               <div className="min-w-0 flex-1">
@@ -276,7 +276,7 @@ function SectionsOverview({
                 )}
               </div>
               <ArrowRight
-                className="mt-0.5 h-3.5 w-3.5 shrink-0 text-charcoal/30 transition group-hover:translate-x-0.5 group-hover:text-[#2563eb]"
+                className="mt-0.5 h-3.5 w-3.5 shrink-0 text-charcoal/30 transition group-hover:translate-x-0.5 group-hover:text-info"
                 strokeWidth={1.8}
               />
             </button>

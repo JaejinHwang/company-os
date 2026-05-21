@@ -65,21 +65,21 @@ export function Onboarding({ onComplete }: Props) {
         <div
           className={cn(
             "absolute -top-40 -left-40 h-[480px] w-[480px] rounded-full blur-3xl transition-all duration-[1400ms] ease-gentle",
-            phase === "picker" && "bg-[#7c6cff]/[0.06]",
-            phase === "scratch" && "bg-[#1f8a4c]/[0.06]",
-            phase === "existing" && "bg-[#2563eb]/[0.06]",
-            phase === "oracle" && "bg-[#c89211]/[0.08]",
-            phase === "splash" && "bg-[#7c6cff]/[0.10] scale-150"
+            phase === "picker" && "bg-accent/[0.06]",
+            phase === "scratch" && "bg-success/[0.06]",
+            phase === "existing" && "bg-info/[0.06]",
+            phase === "oracle" && "bg-warning/[0.08]",
+            phase === "splash" && "bg-accent/[0.10] scale-150"
           )}
         />
         <div
           className={cn(
             "absolute -bottom-40 -right-40 h-[520px] w-[520px] rounded-full blur-3xl transition-all duration-[1400ms] ease-gentle",
-            phase === "picker" && "bg-[#c89211]/[0.05]",
-            phase === "scratch" && "bg-[#2563eb]/[0.05]",
-            phase === "existing" && "bg-[#1f8a4c]/[0.05]",
-            phase === "oracle" && "bg-[#b8443a]/[0.06]",
-            phase === "splash" && "bg-[#1f8a4c]/[0.10] scale-150"
+            phase === "picker" && "bg-warning/[0.05]",
+            phase === "scratch" && "bg-info/[0.05]",
+            phase === "existing" && "bg-success/[0.05]",
+            phase === "oracle" && "bg-danger/[0.06]",
+            phase === "splash" && "bg-success/[0.10] scale-150"
           )}
         />
       </div>
@@ -97,7 +97,7 @@ export function Onboarding({ onComplete }: Props) {
               <button
                 type="button"
                 onClick={() => setPhase("picker")}
-                className="inline-flex h-8 items-center gap-1.5 rounded-md px-2.5 text-[12.5px] text-charcoal-muted transition hover:bg-[rgba(28,28,28,0.04)] hover:text-charcoal"
+                className="inline-flex h-8 items-center gap-1.5 rounded-md px-2.5 text-[12.5px] text-charcoal-muted transition hover:bg-charcoal/[0.04] hover:text-charcoal"
               >
                 <ArrowLeft className="h-3.5 w-3.5" strokeWidth={1.8} />
                 모드 다시 고르기
