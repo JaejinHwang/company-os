@@ -1,0 +1,7 @@
+# CODEOWNERS — automatically requests review from listed owners on every PR.
+# For this to be *enforced*, the matching branch must also have a protection
+# rule with "Require review from Code Owners" enabled.
+# Docs: https://docs.github.com/articles/about-code-owners
+
+# Default: every change in this repo requires review from @JaejinHwang
+*  @JaejinHwang
