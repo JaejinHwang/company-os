@@ -12,7 +12,7 @@ import {
 } from "./components/onboarding/Onboarding";
 import { Dashboard } from "./screens/dashboard";
 import { ScreenLayout } from "./components/ScreenLayout";
-import { enhancedPolicyForHash, policyForHash } from "./screens/_registry";
+import { policyForHash } from "./screens/_registry";
 import { Placeholder } from "./pages/Placeholder";
 import { ProjectDetail } from "./pages/ProjectDetail";
 import { Signals } from "./pages/Signals";
@@ -486,7 +486,6 @@ function App() {
     <>
       <ScreenLayout
         policy={policyForHash(hash)}
-        enhancedPolicy={enhancedPolicyForHash(hash)}
         policyOpen={policyOpen}
         policyFullscreen={policyFullscreen}
         screenTitle={meta.title}

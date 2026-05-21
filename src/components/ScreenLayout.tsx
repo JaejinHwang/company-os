@@ -6,7 +6,6 @@ import { PolicyPanel } from "./PolicyPanel";
 type Props = {
   children: ReactNode;
   policy: string | null;
-  enhancedPolicy: string | null;
   policyOpen: boolean;
   policyFullscreen: boolean;
   screenTitle: string;
@@ -22,7 +21,6 @@ type Props = {
 export function ScreenLayout({
   children,
   policy,
-  enhancedPolicy,
   policyOpen,
   policyFullscreen,
   screenTitle,
@@ -54,7 +52,6 @@ export function ScreenLayout({
         {policyOpen ? (
           <PolicyPanel
             policy={policy}
-            enhanced={enhancedPolicy}
             screenTitle={screenTitle}
             fullscreen={policyFullscreen}
             onClose={onTogglePolicy}

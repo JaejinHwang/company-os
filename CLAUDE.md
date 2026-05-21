@@ -2,6 +2,8 @@
 
 이 프로젝트는 **좌측: 라이브 React 프로토타입 · 우측: 정책 문서**가 한 화면에 떠 있는 split-view PoC다. 화면(screen) 단위로 *정책 + 컨텍스트 + 의사결정 + 인터랙션 + state matrix*를 함께 정의하고, 우측 정책 패널이 좌측 prototype을 직접 가리키고(hover outline) 시뮬레이션한다(state controls).
 
+화면당 **단일 source** (`policy.md`)에서 모든 정책이 정의되며, fenced JSON 블록(```` ```scenarios `, ` ```ux-requirements `, ` ```section ```` 등)을 통해 시각화/연동 정보가 함께 들어간다. drift 위험이 없는 단일 진실원 구조.
+
 새 화면을 추가하거나 기존 화면을 수정할 때 **반드시 이 문서의 컨벤션을 따른다**. 특히 **양방향 sync 룰(§ 7)** 은 모든 화면 수정의 기본 규칙이다.
 
 ---
@@ -25,12 +27,11 @@ src/
     policy-parsing.ts           # md → ParsedPolicy { preface, overview, sections[], crossCutting }
     policy-validation.ts        # useSelectorValidation 훅 (MutationObserver)
   screens/
-    _registry.ts                # hash → { policy, enhanced } 매핑
+    _registry.ts                # hash → policy 매핑
     <screen-name>/
       Page.tsx                  # React 컴포넌트
-      policy.md                 # 자유 텍스트 (Standard 모드)
-      policy.enhanced.md        # 3-tier + fenced blocks (Enhanced 모드)
-      index.ts                  # export { Component, policy, enhancedPolicy }
+      policy.md                 # 단일 정책 문서 (3-tier + fenced blocks)
+      index.ts                  # export { Component, policy }
   pages/                        # 아직 screens/로 마이그레이션 안 된 페이지
 ```
 
@@ -43,27 +44,25 @@ src/
 1. `mkdir -p src/screens/<name>/`
 2. `git mv src/pages/<Name>.tsx src/screens/<name>/Page.tsx` (기존 페이지인 경우) 또는 신규 작성
 3. import 경로 2~3개 갱신 (상대 경로 한 단계 깊어짐)
-4. `policy.md` 작성 (자유 md, Standard 모드용)
-5. `policy.enhanced.md` 작성 (3-tier 구조, Enhanced 모드용. § 4 schema 참고)
-6. `index.ts`:
+4. `policy.md` 작성 (3-tier 구조 + fenced block — § 3, § 4 schema 참고)
+5. `index.ts`:
    ```ts
    export { <Name> } from "./Page";
    export { default as policy } from "./policy.md?raw";
-   export { default as enhancedPolicy } from "./policy.enhanced.md?raw";
    ```
-7. `_registry.ts`에 등록:
+6. `_registry.ts`에 등록:
    ```ts
-   import { policy as <name>Policy, enhancedPolicy as <name>EnhancedPolicy } from "./<name>";
-   SCREEN_POLICIES["#<hash>"] = { policy: <name>Policy, enhanced: <name>EnhancedPolicy };
+   import { policy as <name>Policy } from "./<name>";
+   SCREEN_POLICIES["#<hash>"] = <name>Policy;
    ```
-8. `App.tsx`의 hash 분기에 새 컴포넌트 라우팅 추가
-9. **Page.tsx에 selector 마킹**: § 5 컨벤션에 따라 `data-zone`, `data-action` 부여
+7. `App.tsx`의 hash 분기에 새 컴포넌트 라우팅 추가
+8. **Page.tsx에 selector 마킹**: § 5 컨벤션에 따라 `data-zone`, `data-action` 부여
 
 ---
 
 ## 3. 정책 작성 컨벤션 — 3-tier 구조
 
-`policy.enhanced.md`의 골격:
+`policy.md`의 골격. fenced block들은 작성자가 선택적으로 채우며, 부족한 경우 일반 markdown으로 자유 작성해도 동작 (탭 안 그려지고 단일 페이지로 렌더):
 
 ```markdown
 > **목적 한 줄.** [TL;DR — Why this screen exists.]
@@ -233,7 +232,7 @@ Page.tsx 수정 시 다음 항목들을 정책에 반영:
 
 | 코드 변경 | 정책에 반영할 곳 |
 |---|---|
-| 새 컴포넌트/zone 추가 | `policy.enhanced.md` Sections에 새 `section` block + Page.tsx에 `data-zone` 마킹 |
+| 새 컴포넌트/zone 추가 | `policy.md` Sections에 새 `section` block + Page.tsx에 `data-zone` 마킹 |
 | 새 버튼/링크/액션 추가 | 해당 section의 `interactions[]` 추가 + Page.tsx에 `data-action` 마킹 |
 | props/콜백 signature 변경 | 영향받은 section의 `interactions[].result` 갱신 |
 | 새 상태 분기 (예: loading/error 추가) | 해당 section의 `states[]` 추가 (description 포함) + CSS overlay 추가 |
@@ -243,7 +242,7 @@ Page.tsx 수정 시 다음 항목들을 정책에 반영:
 
 ### 7.2 정책 → 코드 sync
 
-`policy.enhanced.md` 수정 시 다음 항목들을 코드에 반영:
+`policy.md` 수정 시 다음 항목들을 코드에 반영:
 
 | 정책 변경 | 코드에 반영할 곳 |
 |---|---|
