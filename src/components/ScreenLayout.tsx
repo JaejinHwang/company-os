@@ -95,7 +95,7 @@ export function ScreenLayout({
       <section
         aria-label="Prototype"
         className={cn(
-          "flex min-w-0 flex-1 overflow-hidden rounded-xl bg-cream shadow-sm ring-1 ring-charcoal/5",
+          "relative flex min-w-0 flex-1 overflow-hidden rounded-xl bg-cream shadow-sm ring-1 ring-charcoal/5",
           sectionHidden && "hidden"
         )}
       >

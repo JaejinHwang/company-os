@@ -112,7 +112,7 @@ export function NewSignalModal({ open, onClose, onCreate }: Props) {
   const currentSource = SOURCE_OPTIONS.find((s) => s.value === source);
 
   return (
-    <div className="fixed inset-0 z-50 flex items-start justify-center px-4 py-[10vh]">
+    <div className="absolute inset-0 z-50 flex items-start justify-center px-4 py-[10vh]">
       <div
         aria-hidden
         onClick={onClose}

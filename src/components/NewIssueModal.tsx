@@ -139,7 +139,7 @@ export function NewIssueModal({ open, onClose, seed, onCreate }: Props) {
   const currentStatus = STATUSES.find((s) => s.value === status) ?? STATUSES[0];
 
   return (
-    <div className="fixed inset-0 z-50 flex items-start justify-center px-4 py-[10vh]">
+    <div className="absolute inset-0 z-50 flex items-start justify-center px-4 py-[10vh]">
       <div
         aria-hidden
         onClick={onClose}

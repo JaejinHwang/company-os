@@ -300,14 +300,14 @@ export function Sidebar({
         aria-hidden={!mobileOpen}
         onClick={onCloseMobile}
         className={cn(
-          "fixed inset-0 z-30 bg-charcoal/30 backdrop-blur-[1px] transition-opacity duration-200 @5xl:hidden",
+          "absolute inset-0 z-30 bg-charcoal/30 backdrop-blur-[1px] transition-opacity duration-200 @5xl:hidden",
           mobileOpen ? "opacity-100" : "pointer-events-none opacity-0"
         )}
       />
 
       <aside
         className={cn(
-          "fixed inset-y-0 left-0 z-40 flex h-full w-[260px] flex-col border-r border-cream-light bg-cream text-charcoal transition-[width,transform] duration-300 ease-gentle",
+          "absolute inset-y-0 left-0 z-40 flex h-full w-[260px] flex-col border-r border-cream-light bg-cream text-charcoal transition-[width,transform] duration-300 ease-gentle",
           mobileOpen ? "translate-x-0" : "-translate-x-full @5xl:translate-x-0",
           "@5xl:static @5xl:translate-x-0",
           widthClass

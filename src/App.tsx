@@ -673,7 +673,6 @@ function App() {
           <Placeholder title={meta.title} description={meta.description} />
         )}
       </AppShell>
-      </ScreenLayout>
       <NewIssueModal
         open={newIssueOpen}
         onClose={() => setNewIssueOpen(false)}
@@ -695,6 +694,7 @@ function App() {
         onNavigate={navigate}
         onLoadSamples={handleLoadSamples}
       />
+      </ScreenLayout>
     </>
   );
 }
