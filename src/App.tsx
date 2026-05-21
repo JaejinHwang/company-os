@@ -10,7 +10,9 @@ import {
   Onboarding,
   type OnboardingResult,
 } from "./components/onboarding/Onboarding";
-import { Dashboard } from "./pages/Dashboard";
+import { Dashboard } from "./screens/dashboard";
+import { ScreenLayout } from "./components/ScreenLayout";
+import { enhancedPolicyForHash, policyForHash } from "./screens/_registry";
 import { Placeholder } from "./pages/Placeholder";
 import { ProjectDetail } from "./pages/ProjectDetail";
 import { Signals } from "./pages/Signals";
@@ -196,6 +198,7 @@ const WORKSPACE_KEY = "cream.workspace.name";
 const VISION_KEY = "cream.workspace.vision";
 const FIRST_AGENT_KEY = "cream.workspace.firstAgent";
 const SAMPLE_DATA_KEY = "cream.sample_data";
+const POLICY_OPEN_KEY = "cream.policy.open";
 
 const SAMPLE_BACKLOG_IDS = new Set(INITIAL_BACKLOGS.map((b) => b.id));
 
@@ -246,12 +249,41 @@ function App() {
   const [signals, setSignals] = useState<Signal[]>(() =>
     readSampleDataDefault() ? INITIAL_SIGNALS : []
   );
+  const [policyOpen, setPolicyOpen] = useState<boolean>(() => {
+    if (typeof window === "undefined") return true;
+    return window.localStorage.getItem(POLICY_OPEN_KEY) !== "0";
+  });
+  const [policyFullscreen, setPolicyFullscreen] = useState<boolean>(false);
+
+  const togglePolicy = () =>
+    setPolicyOpen((v) => {
+      const next = !v;
+      window.localStorage.setItem(POLICY_OPEN_KEY, next ? "1" : "0");
+      return next;
+    });
+
+  const togglePolicyFullscreen = () => setPolicyFullscreen((v) => !v);
 
   useEffect(() => {
     const onHashChange = () =>
       setHash(window.location.hash || "#dashboard");
     window.addEventListener("hashchange", onHashChange);
     return () => window.removeEventListener("hashchange", onHashChange);
+  }, []);
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === "\\") {
+        e.preventDefault();
+        setPolicyOpen((v) => {
+          const next = !v;
+          window.localStorage.setItem(POLICY_OPEN_KEY, next ? "1" : "0");
+          return next;
+        });
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
   }, []);
 
   const navigate = (href: string) => {
@@ -452,6 +484,15 @@ function App() {
 
   return (
     <>
+      <ScreenLayout
+        policy={policyForHash(hash)}
+        enhancedPolicy={enhancedPolicyForHash(hash)}
+        policyOpen={policyOpen}
+        policyFullscreen={policyFullscreen}
+        screenTitle={meta.title}
+        onTogglePolicy={togglePolicy}
+        onTogglePolicyFullscreen={togglePolicyFullscreen}
+      >
       <AppShell
         title={meta.title}
         activeHref={hash}
@@ -606,6 +647,7 @@ function App() {
           <Placeholder title={meta.title} description={meta.description} />
         )}
       </AppShell>
+      </ScreenLayout>
       <NewIssueModal
         open={newIssueOpen}
         onClose={() => setNewIssueOpen(false)}

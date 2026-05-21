@@ -25,13 +25,13 @@ import {
   AlertCircle,
   Layers,
 } from "lucide-react";
-import type { NewIssueSeed } from "../components/NewIssueModal";
+import type { NewIssueSeed } from "../../components/NewIssueModal";
 import type {
   BacklogItem,
   BacklogPriority,
   BacklogStatus,
-} from "../lib/backlog";
-import { cn } from "../lib/cn";
+} from "../../lib/backlog";
+import { cn } from "../../lib/cn";
 
 type IconType = ComponentType<{
   className?: string;
@@ -370,7 +370,7 @@ export function Dashboard({
         onNewIssue={onNewIssue}
       />
 
-      <section className="mt-6 grid grid-cols-2 gap-3 lg:grid-cols-4">
+      <section data-zone="pulse" className="mt-6 grid grid-cols-2 gap-3 lg:grid-cols-4">
         <PulseCard
           icon={Radio}
           label="Hot signals"
@@ -465,7 +465,7 @@ function Hero({
   ];
 
   return (
-    <section className="flex flex-wrap items-end justify-between gap-4">
+    <section data-zone="hero" className="flex flex-wrap items-end justify-between gap-4">
       <div className="min-w-0">
         <p className="text-[13px] uppercase tracking-[0.08em] text-charcoal-muted">
           {today}
@@ -491,6 +491,7 @@ function Hero({
       <div className="flex items-center gap-1.5">
         <button
           type="button"
+          data-action="new-issue"
           onClick={onNewIssue}
           className="btn-primary h-9 px-3 text-[13.5px]"
         >
@@ -565,7 +566,7 @@ function HotSignalsCard({
   onAll: () => void;
 }) {
   return (
-    <div className="card overflow-hidden lg:col-span-2">
+    <div data-zone="hot-signals" className="card overflow-hidden lg:col-span-2">
       <CardHeader
         title="Signals"
         hint="플래닝하면 Backlogs에 항목이 생깁니다"
@@ -647,7 +648,7 @@ function AgentsCard({
   onNavigate: (href: string) => void;
 }) {
   return (
-    <div className="card overflow-hidden">
+    <div data-zone="agents" className="card overflow-hidden">
       <CardHeader title="Agents" hint="실시간 작업 상태" />
       <ul className="divide-y divide-cream-light">
         {agents.map((a) => {
@@ -725,7 +726,7 @@ function ProjectsStrip({
   onNavigate: (href: string) => void;
 }) {
   return (
-    <div className="card overflow-hidden">
+    <div data-zone="projects" className="card overflow-hidden">
       <CardHeader
         title="Projects"
         hint="각 카드를 누르면 단계별 산출물로 이동합니다"
@@ -843,7 +844,7 @@ function BacklogTriageCard({
   }, [backlogs]);
 
   return (
-    <div className="card overflow-hidden lg:col-span-2">
+    <div data-zone="backlogs" className="card overflow-hidden lg:col-span-2">
       <CardHeader
         title="Backlogs"
         hint="Executing · Urgent · High 순"
@@ -970,7 +971,7 @@ function RoutinesDigestCard({
   onAll: () => void;
 }) {
   return (
-    <div className="card overflow-hidden">
+    <div data-zone="routines" className="card overflow-hidden">
       <CardHeader
         title="Routines · 24h"
         hint="자동 실행 결과"

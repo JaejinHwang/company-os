@@ -22,3 +22,10 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Playwright / dev screenshots (verification artifacts)
+.playwright-mcp/
+/v[0-9]*.png
+/split-*.png
+/dashboard-*.png
+/signals-stub.png

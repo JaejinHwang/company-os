@@ -69,3 +69,129 @@ body {
     @apply w-full rounded-md border border-cream-light bg-cream px-3 py-2 text-[15px] text-charcoal placeholder:text-charcoal-muted focus:outline-none focus:ring-2 focus:ring-blue-500/50;
   }
 }
+
+.markdown-view {
+  @apply text-[14px] leading-[1.65] text-charcoal/85;
+}
+.markdown-view > :first-child {
+  @apply mt-0;
+}
+.markdown-view > :last-child {
+  @apply mb-0;
+}
+.markdown-view h1 {
+  @apply mb-2 mt-0 text-[20px] font-semibold tracking-[-0.2px] text-charcoal;
+}
+.markdown-view h2 {
+  @apply mb-2 mt-8 border-b border-charcoal/10 pb-1.5 text-[16px] font-semibold tracking-[-0.1px] text-charcoal;
+}
+.markdown-view h3 {
+  @apply mb-1.5 mt-5 text-[13px] font-semibold uppercase tracking-[0.08em] text-charcoal/65;
+}
+.markdown-view p {
+  @apply my-2.5 text-charcoal/85;
+}
+.markdown-view ul {
+  @apply my-2.5 list-disc space-y-1 pl-5 marker:text-charcoal/35;
+}
+.markdown-view ol {
+  @apply my-2.5 list-decimal space-y-1 pl-5 marker:text-charcoal/35;
+}
+.markdown-view li {
+  @apply text-charcoal/85;
+}
+.markdown-view li > p {
+  @apply my-1;
+}
+.markdown-view blockquote {
+  @apply my-3 rounded-r-md border-l-2 border-charcoal/30 bg-charcoal/[0.04] px-3 py-2 text-[13.5px] text-charcoal/70;
+}
+.markdown-view blockquote p {
+  @apply my-0;
+}
+.markdown-view code {
+  @apply rounded bg-charcoal/10 px-[0.35em] py-[0.1em] text-[0.88em] font-medium text-charcoal;
+}
+.markdown-view pre {
+  @apply my-3 overflow-x-auto rounded-md bg-charcoal/90 p-3 text-[12.5px] leading-normal text-cream;
+}
+.markdown-view pre code {
+  @apply bg-transparent p-0 text-cream;
+}
+.markdown-view a {
+  @apply text-charcoal underline decoration-charcoal/30 underline-offset-2 hover:decoration-charcoal;
+}
+.markdown-view hr {
+  @apply my-6 border-charcoal/10;
+}
+.markdown-view table {
+  @apply my-3 w-full border-collapse text-left text-[13.5px];
+}
+.markdown-view th,
+.markdown-view td {
+  @apply border-b border-charcoal/10 px-2 py-1.5 align-top;
+}
+.markdown-view th {
+  @apply text-[11.5px] font-semibold uppercase tracking-[0.08em] text-charcoal/60;
+}
+.markdown-view strong {
+  @apply font-semibold text-charcoal;
+}
+
+.policy-zone-highlight {
+  outline: 2px solid #2563eb !important;
+  outline-offset: 4px;
+  border-radius: 6px;
+  background-color: rgba(37, 99, 235, 0.06);
+  transition: outline-color 120ms ease, background-color 120ms ease;
+}
+.policy-action-flash {
+  outline: 2px solid #2563eb !important;
+  outline-offset: 3px;
+  animation: policyActionFlash 600ms ease;
+}
+.policy-scenario-highlight {
+  outline: 2px solid #2563eb !important;
+  outline-offset: 2px;
+  background-color: rgba(37, 99, 235, 0.06) !important;
+  transition: outline-color 120ms ease, background-color 120ms ease;
+}
+
+/* State simulation overlays (driven by policy-side StateControl) */
+[data-load-state="loading"],
+[data-load-state="empty"],
+[data-load-state="error"] {
+  position: relative;
+}
+[data-load-state="loading"]::after,
+[data-load-state="empty"]::after,
+[data-load-state="error"]::after {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  z-index: 5;
+  pointer-events: none;
+  border-radius: inherit;
+  font-size: 14px;
+  font-weight: 500;
+}
+[data-load-state="loading"]::after {
+  content: "Loading…";
+  background: rgba(247, 244, 237, 0.88);
+  color: rgba(28, 28, 28, 0.6);
+}
+[data-load-state="empty"]::after {
+  content: "데이터 없음";
+  background: rgba(247, 244, 237, 0.88);
+  color: rgba(28, 28, 28, 0.45);
+}
+[data-load-state="error"]::after {
+  content: "⚠ 로드 실패";
+  background: rgba(220, 38, 38, 0.08);
+  color: rgb(185, 28, 28);
+}
+@keyframes policyActionFlash {
+  0% { background-color: rgba(37, 99, 235, 0.2); }
+  100% { background-color: transparent; }
+}
