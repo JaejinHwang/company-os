@@ -35,5 +35,8 @@ jobs:
       - name: Validate policy schema
         run: npm run check:policy
 
+      - name: Validate design tokens (strict)
+        run: npm run check:design -- --strict
+
       - name: Build (tsc + vite)
         run: npm run build
