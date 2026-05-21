@@ -15,13 +15,15 @@ src/
   App.tsx                       # hash → screen 라우팅 + policy panel state
   components/
     AppShell.tsx                # sidebar + topbar + main
-    ScreenLayout.tsx            # 최상위 split view (prototype | policy)
-    PolicyPanel.tsx             # 모드 토글, 탭 strip, 본문 라우팅
+    ScreenLayout.tsx            # 최상위 split view (prototype | policy), 폭 drag-resizable + localStorage 영속화
+    PolicyPanel.tsx             # 탭 strip + 본문 라우팅 + 검증 dot
     MarkdownView.tsx
     policy-blocks/
       SectionView.tsx           # 섹션 탭 페이지 (Components/Interactions/Rules/States)
-      ScenariosBlock.tsx        # GWT 카드
-      UxRequirementsBlock.tsx   # 요구사항 + scenarios cross-ref
+      ScenariosBlock.tsx        # GWT 카드 (User Stories)
+      UxRequirementsBlock.tsx   # 요구사항 카드
+      StateControl.tsx          # 단일 state control UI (재사용 단위)
+      ScreenStatesBlock.tsx     # screen-level fenced `states` 처리
       StatusDot.tsx             # selector 검증 상태 시각화
   lib/
     policy-parsing.ts           # md → ParsedPolicy { preface, overview, sections[], crossCutting }
@@ -44,7 +46,7 @@ src/
 1. `mkdir -p src/screens/<name>/`
 2. `git mv src/pages/<Name>.tsx src/screens/<name>/Page.tsx` (기존 페이지인 경우) 또는 신규 작성
 3. import 경로 2~3개 갱신 (상대 경로 한 단계 깊어짐)
-4. `policy.md` 작성 (3-tier 구조 + fenced block — § 3, § 4 schema 참고)
+4. **`docs/policy.template.md`** 를 복사해 `src/screens/<name>/policy.md`로 → 빈 골격 채우기 (3-tier 구조 + fenced block. § 3, § 4 schema 참고)
 5. `index.ts`:
    ```ts
    export { <Name> } from "./Page";
@@ -65,20 +67,20 @@ src/
 `policy.md`의 골격. fenced block들은 작성자가 선택적으로 채우며, 부족한 경우 일반 markdown으로 자유 작성해도 동작 (탭 안 그려지고 단일 페이지로 렌더):
 
 ```markdown
-> **목적 한 줄.** [TL;DR — Why this screen exists.]
+> [한 줄. 이 화면이 왜 존재하는가. prefix / 부연 설명 없이 핵심만.]
 
 ## Overview
 ### Audience
 [자유 텍스트 — 주 사용자 / 페르소나]
 
-### Scenarios
+### User Stories
 ```scenarios
 [GWT 시나리오 array — § 4.1 schema]
 ```
 
 ### UX Requirements
 ```ux-requirements
-[요구사항 array, scenarios cross-ref — § 4.2 schema]
+[요구사항 array — § 4.2 schema]
 ```
 
 ### Entry Points
@@ -88,8 +90,11 @@ src/
 [각 zone마다 ```section``` fenced block 하나 — § 4.3 schema]
 
 ## Cross-cutting
-### Data & State
-### Empty States
+### Screen States
+```states
+[화면-전체 차원의 state controls — § 4.4 schema]
+```
+
 ### Global Rules
 ### Future Work
 ### Related Screens
@@ -98,7 +103,9 @@ src/
 
 - **Overview**와 **Cross-cutting**은 PolicyPanel에서 같은 "Overview" 탭에 합쳐 렌더된다 (사이에 divider).
 - 각 `## Sections` 안 fenced `section` block은 독립 탭으로 분리된다.
-- 작성자는 두 H2를 명시적으로 분리해서 적어 *외부 시점(Audience/Entry)* 과 *내부 정책(Data/Rules/Future)* 의 의미를 구분한다.
+- Overview 탭 본문에는 작성자가 따로 안 적어도 **`SectionsOverview` 카드 리스트**가 자동 렌더된다 — 모든 sections를 한눈에 볼 수 있는 inventory + 클릭 시 그 탭으로 navigate.
+- 작성자는 두 H2를 명시적으로 분리해서 적어 *외부 시점(Audience/Entry/Stories/Requirements)* 과 *내부 정책(States/Rules/Future)* 의 의미를 구분한다.
+- 콜아웃 한 줄은 **prefix (예: `**목적 한 줄.**`) 없이** 진짜 한 문장만 쓴다.
 
 ---
 
@@ -133,7 +140,7 @@ src/
 ]
 ```
 
-`scenarios` 배열의 값은 같은 화면 `scenarios` 블록의 `id`와 정확히 일치해야 한다 (pill hover → 위 시나리오 카드 양방향 outline).
+`scenarios` 배열의 값은 같은 화면 `scenarios` 블록의 `id`와 정확히 일치한다 — 현 시점 UI에는 cross-ref pill이 렌더되지 않지만 schema는 추후 traceability 확장(예: trace matrix, coverage check)을 위해 유지한다.
 
 ### 4.3 `section`
 
@@ -175,6 +182,29 @@ src/
 - `interactions[].selector`: 좌측 element. **클릭은 실행하지 않고** hover로만 위치 표시 (정책-구현 매핑 확인 용도).
 - `rules[].kind`: `must`(✓ emerald) | `must-not`(✗ red). 카드 시각 구분.
 - `states[]`: § 6 state controls 참고.
+- **UI 표시 정책**: `selector` 문자열·`id` 식별자는 schema에 보존하지만 패널 UI에는 노출하지 않는다 (StatusDot의 색만 검증 시그널 제공). 사용자가 의도적 디버깅 모드를 도입하면 그때 같이 표시.
+
+### 4.4 `states` (screen-level)
+
+`section.states[]`와 동일한 schema지만 *Overview / Cross-cutting* md 본문에 단독 fenced 블록으로 들어가 화면 전체에 적용된다.
+
+```json
+[
+  {
+    "id": "workspace-state",
+    "label": "Workspace",
+    "selectorTarget": "[aria-label=\"Prototype\"]",
+    "options": [
+      { "value": "active", "label": "운영 중", "description": "..." },
+      { "value": "fresh", "label": "신규 워크스페이스", "description": "..." }
+    ],
+    "default": "active"
+  }
+]
+```
+
+- **`selectorTarget` 필수**: section-level과 달리 fallback이 없으므로 어디에 attribute를 부여할지 명시해야 한다. `[aria-label="Prototype"]`(전체) 또는 `[data-zone]`(모든 zone) 등 broad scope 권장.
+- 같은 schema이므로 `ScreenStatesBlock`은 내부에서 `StateControl`을 그대로 재사용한다.
 
 ---
 
@@ -199,26 +229,40 @@ selector 컨벤션:
 - action: `[data-action="new-issue"]`
 - 더 정밀한 위치: `[data-zone="pulse"] button:nth-child(2)` 같이 child selector 조합
 
+**selector 문자열은 schema에만 존재**한다. 패널 UI에서는 selector 텍스트를 노출하지 않고 StatusDot 색으로만 검증 시그널을 제공한다 (작성자 디버깅이 필요하면 코드/DevTools로 확인).
+
 ---
 
 ## 6. State Controls
 
-좌측 prototype을 다른 state로 시뮬레이션하는 UI. SectionView 헤더 아래 primary block으로 렌더.
+좌측 prototype을 다른 state로 시뮬레이션하는 UI. 두 레벨 지원:
 
-**동작**: state option 선택 시 좌측 DOM에 `data-<state.id>="<value>"` attribute가 부여된다. CSS attribute selector로 visual 효과 (overlay, skeleton 등) 시뮬레이션. `default` 값일 땐 attribute 제거.
+| 레벨 | 정의 위치 | 적용 범위 | 렌더 위치 |
+|---|---|---|---|
+| **Section-level** | `section.states[]` (§ 4.3) | section.selector (default) | 해당 섹션 탭 헤더 아래 |
+| **Screen-level** | fenced ```states``` 블록 (§ 4.4) | `selectorTarget` 명시 (전체 prototype 또는 다중 zone) | Overview 탭 본문 |
+
+**동작 (공통)**: state option 선택 시 좌측 DOM에 `data-<state.id>="<value>"` attribute 부여. CSS attribute selector로 visual 효과(overlay, skeleton 등) 시뮬레이션. `default` 값일 땐 attribute 제거.
+
+**컴포넌트 모듈**:
+- `StateControl.tsx`: 단일 state 카드 (재사용 단위)
+- `ScreenStatesBlock.tsx`: fenced ```states``` 가로채 StateControl을 다중 렌더 (screen-level)
+- `SectionView.tsx`: `section.states[]`를 StateControl로 렌더 (section-level)
 
 **작성 룰**:
-- `options[].description`은 *반드시* 작성. 단순 loading뿐 아니라 user role/permission/A-B variant 등 분기 의미가 복잡한 경우 description으로 명확히 한다.
-- 새 state 종류면 `src/index.css`에 해당 attribute selector 추가:
+- `options[].description`은 *반드시* 작성. 단순 loading뿐 아니라 user role / permission / A-B variant / workspace mode 등 의미가 복잡한 분기에서는 description 없이는 의미 분기를 잃는다.
+- 새 state 종류면 `src/index.css`에 해당 attribute selector + visual 효과 추가:
   ```css
   [data-<state.id>="<value>"]::after {
     content: "...";
     /* overlay style */
   }
   ```
-- state 변경은 React state 시스템과 격리되어 있다 (DOM attribute만). 실제 컴포넌트 분기 (props 변경)가 필요하면 별도 협의.
+- state 변경은 React state 시스템과 격리되어 있다 (DOM attribute만). 실제 컴포넌트 분기(props 변경)가 필요하면 store 도입 별도 협의.
 
-**cleanup**: 탭 전환/패널 close 시 attribute 자동 제거. side-effect 누수 없음.
+**cleanup**: 탭 전환 / 패널 close 시 attribute 자동 제거. side-effect 누수 없음.
+
+**Highlight overlay 패턴 (참고)**: 좌측 element를 하이라이트할 때는 element에 `background-color`를 직접 부여하지 않고 **`::before` pseudo-element overlay**로 덮는다 (`policy-zone-highlight` 등). 검정 버튼 같은 강한 색 element가 덧칠로 변색되는 사고를 막기 위함.
 
 ---
 
