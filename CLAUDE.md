@@ -60,6 +60,37 @@ src/
 7. `App.tsx`의 hash 분기에 새 컴포넌트 라우팅 추가
 8. **Page.tsx에 selector 마킹**: § 5 컨벤션에 따라 `data-zone`, `data-action` 부여
 
+### 2.1 Dynamic-hash 화면 (instance-shared policy)
+
+`#routine-<id>`, `#proj-<slug>`처럼 hash가 동적으로 생성되고 여러 instance가 같은 policy 문서를 공유하는 화면 패턴. 정적 hash 등록만으로는 커버 안 되므로 별도 절차가 필요하다.
+
+**필수 산출물**:
+- `screens/<name>/Page.tsx` — 리스트(static hash, 예: `#routines`)
+- `screens/<name>/Detail.tsx` — 개별 entity 페이지 컴포넌트
+- `screens/<name>/policy.md` — 리스트 화면 정책
+- `screens/<name>/policy-detail.md` — 개별 entity 정책 (모든 instance가 공유)
+- `screens/<name>/index.ts` — 두 policy + 두 컴포넌트 모두 export
+
+**`_registry.ts` — dynamic 분기**:
+```ts
+export function policyForHash(hash: string): string | null {
+  if (SCREEN_POLICIES[hash]) return SCREEN_POLICIES[hash];
+  if (hash.startsWith("#routine-")) return routineDetailPolicy;
+  return null;
+}
+```
+
+**App.tsx 라우팅 패턴**:
+- entity를 hash에서 lookup: `routines.find(r => "#routine-" + r.id === hash)`
+- 없으면 `<Placeholder>` (잘못된 링크 / 삭제된 entity)
+- 있으면 [`patchEntity`](#dynamic-hash-화면-helper--patchentity)로 [§ 6.5 real binding patch](#65-real-binding-default--state--실제-prop-연결)를 entity에 적용한 결과를 컴포넌트에 전달
+
+**topbar/policy panel title 규칙**:
+- `meta.title`은 **screen type 라벨**로 고정 (예: `"Routine detail"`)
+- entity 이름은 `meta.description`에 두고 화면 본문 h2에서 별도로 노출
+
+**Why**: entity 이름을 topbar에 쓰면 "어떤 screen인가"가 모호해진다. dynamic-hash 화면은 instance가 많아도 *어떤 종류의 화면*인지를 상단에 명시 — 이게 일반 product (GitHub/Linear가 entity 이름을 topbar에 쓰는 것)와 다른 점이며, 우리는 정책 도구라서 우측 정책 패널이 보여주는 "이 화면 종류의 정책"과 topbar가 맞물려야 한다.
+
 ---
 
 ## 3. 정책 작성 컨벤션 — 3-tier 구조
@@ -322,6 +353,82 @@ const dashboardSampleData = typeof patch.sampleData === "boolean" ? patch.sample
 - 화면이 아직 해당 분기를 구현하지 않았으면 일단 `"kind": "visual"`로 두고 description에 "real binding 미구현" 명시 → 후속 작업 시 real로 승격.
 - 정책 작성자가 valueMap을 적었는데 화면 코드가 그 prop을 안 받으면 → 화면이 무시. 양방향 sync 룰(§ 7)에 따라 화면 컴포넌트가 그 prop을 받도록 코드를 수정한다.
 
+### Dynamic-hash 화면 helper — `patchEntity`
+
+화면이 특정 entity 객체를 prop으로 받는 패턴(§ 2.1의 `#routine-<id>` 같은 detail 화면)에서는, App.tsx에서 `useScreenStateProps`의 patch를 entity에 직접 적용해야 한다. `patchEntity` 헬퍼가 그 boilerplate를 흡수한다:
+
+```tsx
+import { useScreenStateProps, patchEntity } from "./lib/screen-state";
+
+const patch = useScreenStateProps(hash, allStates);
+const patchedRoutine = patchEntity(routineForHash, patch);
+
+return <RoutineDetail routine={patchedRoutine} ... />;
+```
+
+`patchEntity`의 행동 (구현: `src/lib/screen-state.ts`):
+- entity가 null/undefined면 그대로 반환 (entity lookup이 아직 안 됐을 때 안전)
+- patch에서 값이 `undefined`인 key는 건너뜀 → 빈 `valueMap` entry (`{}`)는 자동 no-op이 되어 "원본 entity 그대로" 의미
+- 그 외 값(`null`, `[]`, `0`, `false` 포함)은 entity의 동명 필드를 override
+- 변경 0건이면 동일 reference 반환 → `React.memo` 친화
+
+이 helper 없이 매 dynamic-hash 화면마다 `Array.isArray` 타입 체크 + 수동 shallow merge를 반복하면, "옵션 토글했는데 화면이 안 바뀜" 버그의 가장 흔한 원인이 바로 이 merge 누락이다. patch 한 줄로 흡수.
+
+### 6.5.1 Real binding 추가 시 wire-up 체크리스트
+
+policy에 binding을 적었는데도 옵션을 토글해도 화면이 안 바뀌는 경우의 99%는 아래 중 하나가 빠진 것이다:
+
+1. [ ] **valueMap key가 컴포넌트 prop name과 정확히 일치하는가?** 오타(`run` vs `runs`)·case 차이·rename 후 sync 누락이 가장 흔한 원인. ⌘F로 코드에서 key 문자열을 찾아 prop으로 받는지 확인.
+2. [ ] **App.tsx(또는 screen 부모)가 patch를 prop에 흘려보내는가?** `useScreenStateProps`만 호출하고 결과를 안 쓰면 그냥 버려진다.
+   - Static-hash 화면 (예: dashboard): 개별 prop 단위로 fallback과 조합 — `typeof patch.sampleData === "boolean" ? patch.sampleData : sampleData`
+   - **Dynamic-hash 화면 (§ 2.1)**: `patchEntity(entityForHash, patch)`로 patch를 entity에 합쳐서 전달. 위 helper subsection 참고. **이 변환을 빼먹는 게 dynamic-hash에서 가장 흔한 누락이다.**
+3. [ ] **컴포넌트가 그 prop을 *읽어 분기 렌더*하는가?** prop은 받지만 내부 state만 쓰면 무시된다. props로 들어온 값을 default state 초기화로만 쓰는 패턴도 마찬가지로 functional하지 않다.
+
+**빈 valueMap entry (`{}`)의 의미**: 옵션 선택 시 어떤 prop도 override하지 않음 = "원본 데이터 그대로". 옵션 라벨은 의미 있게 두되 patch는 비워두는 패턴 — 예: `runs-state`의 `has-runs` 옵션은 `{}`로 두면 routine의 실제 `runs[]`가 그대로 보인다. `empty`/`has-failed`만 명시적으로 override. (`patchEntity`는 `undefined` 값을 무시하므로 빈 entry는 자동으로 no-op이 된다.)
+
+**예시 — dynamic-hash + real binding 전체 패턴**:
+
+```ts
+// policy-detail.md (#routine-* 공유)
+"states": [{
+  "id": "runs-state",
+  "binding": {
+    "kind": "real",
+    "valueMap": {
+      "empty":     { "runs": [] },
+      "has-runs":  {},   // no-op → 원본 routine.runs 유지
+      "has-failed":{ "runs": [/* preview RoutineRun[] */] }
+    }
+  },
+  "options": [
+    { "value": "empty", "label": "비어있음", "description": "..." },
+    { "value": "has-runs", "label": "이력 있음", "description": "..." },
+    { "value": "has-failed", "label": "실패 포함", "description": "..." }
+  ],
+  "default": "has-runs"
+}]
+```
+
+```tsx
+// App.tsx — patch를 dynamic entity에 한 줄로 적용
+import { useScreenStateProps, patchEntity } from "./lib/screen-state";
+
+const patch = useScreenStateProps(hash, allStates);
+const patchedRoutine = patchEntity(routineForHash, patch);
+
+return <RoutineDetail routine={patchedRoutine} ... />;
+```
+
+```tsx
+// Detail.tsx — 받은 prop을 그대로 분기 렌더
+const runs = routine.runs ?? [];
+return runs.length === 0
+  ? <EmptyState ... />
+  : <ul>{runs.map(r => <RunRow run={r} />)}</ul>;
+```
+
+세 파일이 모두 같은 prop name(`runs`)을 매개로 정렬되어 있어야 토글이 동작한다. 하나라도 어긋나면 옵션 클릭이 무시된다.
+
 ---
 
 ## 7. 양방향 Sync 룰 (가장 중요)
@@ -419,5 +526,6 @@ Page.tsx 수정 시 다음 항목들을 정책에 반영:
 - [ ] dev server에서 콘솔 에러 0
 - [ ] 정책 패널의 모든 StatusDot이 emerald (또는 의도된 sky/회색)
 - [ ] State controls 적용 시 좌측 visual이 의도대로 (overlay 정상)
+- [ ] **Real binding이 있다면** 옵션을 실제로 토글해서 화면이 바뀌는지 확인 — § 6.5.1 체크리스트 3항목 모두 통과
 - [ ] 양방향 sync 완료 — 코드와 정책 둘 다 같이 수정되었는가?
 - [ ] DESIGN.md / tailwind 토큰 외 임의 값 없는가?

@@ -110,3 +110,41 @@ export function useScreenStateProps(
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [hash, states, rev]);
 }
+
+/**
+ * Apply a `useScreenStateProps` patch to an entity, returning a new object
+ * with the patch keys overlaid on the entity. Used by dynamic-hash detail
+ * screens (§ 2.1) to wire policy state options into the actual entity
+ * passed to the detail component.
+ *
+ * Rules:
+ *   - If `entity` is null/undefined, return as-is (entity lookup may not
+ *     have resolved yet — e.g. invalid hash).
+ *   - Keys whose patch value is `undefined` are skipped — a missing key in
+ *     a `valueMap` entry means "leave the original entity field alone".
+ *     This is how an empty `{}` entry (e.g. the "has-runs" option keeping
+ *     the routine's real runs[]) becomes a no-op.
+ *   - Other values (including `null`, `[]`, `0`, `false`) override the
+ *     entity field — these are intentional overrides.
+ *   - Returns the *same reference* as `entity` when nothing was patched,
+ *     so React.memo / referential equality checks still work.
+ *
+ * Without this helper each dynamic-hash screen has to repeat the same
+ * type-checked merge dance in App.tsx; the manual version is forgettable
+ * and the "I added a binding but the toggle does nothing" bug is almost
+ * always missed merge logic. See CLAUDE.md § 6.5.1.
+ */
+export function patchEntity<T extends object>(
+  entity: T | null | undefined,
+  patch: Record<string, unknown>
+): T | null | undefined {
+  if (!entity) return entity;
+  let merged: T | null = null;
+  for (const key of Object.keys(patch)) {
+    const value = patch[key];
+    if (value === undefined) continue;
+    if (!merged) merged = { ...entity };
+    (merged as Record<string, unknown>)[key] = value;
+  }
+  return merged ?? entity;
+}
