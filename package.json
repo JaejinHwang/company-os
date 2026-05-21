@@ -8,7 +8,8 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "check:policy": "node scripts/check-policy.mjs"
+    "check:policy": "node scripts/check-policy.mjs",
+    "check:design": "node scripts/check-design-tokens.mjs"
   },
   "dependencies": {
     "clsx": "^2.1.1",
