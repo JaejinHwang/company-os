@@ -45,6 +45,21 @@ What makes Lovable's visual system distinctive is its opacity-driven depth model
 ### Inset Shadows
 - **Button Inset** (`rgba(255,255,255,0.2) 0px 0.5px 0px 0px inset, rgba(0,0,0,0.2) 0px 0px 0px 0.5px inset, rgba(0,0,0,0.05) 0px 1px 2px 0px`): The signature multi-layer inset shadow on dark buttons.
 
+### Semantic Status
+
+These four colors are the system's only saturated palette. They carry *state meaning*, not decoration — use them strictly when the UI needs to signal status to the user. The warm-neutral palette above is still the default; semantic colors enter only at moments where charcoal/cream would lose the message.
+
+- **Success** (`#1f8a4c`): Positive change, growth, completion. Trend indicators showing "up", shipped badges, success toasts, "sales" category color.
+- **Danger** (`#b8443a`): Errors, negative change, blocking issues. Trend indicators showing "down", error states, destructive action confirmation, "issue" category color.
+- **Warning** (`#c89211`): Caution, pending attention, soft alerts. "Competitor" signal flag, "review needed" badges.
+- **Info** (`#2563eb`): Interactive cues, action callouts, policy-tooling outlines. Acts as the system's "blue" — uses it sparingly to draw the eye to clickable or system-level elements (also used by the policy panel's overlay highlights at `rgba(37,99,235,0.12)`).
+
+Each color does double duty: it represents both a *status* (success / failure / caution / interactive) and a *category* (sales / issue / competitor / external). The category overload is intentional — keeping the saturated set to four colors prevents palette sprawl.
+
+### Categorical Accent
+
+- **Accent** (`#7c6cff`): Categorical purple reserved for "Market" / "Research" / external-insight classification across signals, routines, agents, and the onboarding splash. Not a brand accent and not a status — its only role is to give the market/research category a recognizable color that's distinct from the four semantic ones. If a fifth category appears, expand here rather than reaching for a new hex.
+
 ## 3. Typography Rules
 
 ### Font Family
@@ -174,15 +189,29 @@ What makes Lovable's visual system distinctive is its opacity-driven depth model
 
 ### Spacing System
 - Base unit: 8px
-- Scale: 8px, 10px, 12px, 16px, 24px, 32px, 40px, 56px, 80px, 96px, 128px, 176px, 192px, 208px
+- Scale: 8px, 10px, 12px, 16px, **18px** (icon-only), 24px, 32px, 40px, 56px, 80px, 96px, 128px, 176px, 192px, 208px
+- 18px is an icon-specific exception (Tailwind `4.5` / `1.125rem`). Use it only for icon sizing (`h-4.5`, `w-4.5`) where 16px feels too tight and 20px too prominent. Do not use 18px for padding, gap, or other layout spacing.
 - The scale expands generously at the top end — sections use 80px–208px vertical spacing for editorial breathing room
 
 ### Grid & Container
-- Max content width: approximately 1200px (centered)
 - Hero: centered single-column with massive vertical padding (96px+)
 - Feature sections: 2–3 column grids
 - Full-width footer with multi-column link layout
 - Showcase sections with centered card grids
+
+### Content Width Scale
+
+Pages pick one of these five widths rather than introducing arbitrary `max-w-[Npx]` values. Each width captures a distinct reading density — choose based on content shape, not aesthetic preference.
+
+| Token | Width | Use |
+|---|---|---|
+| `wide` | 1280px | Detail pages with rich side-by-side panels (AgentDetail, ProjectDetail, Experiments) |
+| `content` | 1200px | Standard page width — table-heavy or list-heavy views (Backlogs, Signals, OKRs, Routines, Connectors) |
+| `prose` | 760px | Single-column reading width (Goals, narrow forms, Onboarding confirm step) |
+| `narrow` | 640px | Constrained single-task screens (Onboarding text steps, focused dialogs) |
+| `card` | 420px | Small standalone cards, modal-like containers, sidebar panels |
+
+Bespoke widths (e.g. `w-[140px]` for a specific table column) remain warning-tier in the design-tokens scan and are accepted when the value is genuinely one-off. Anything that appears 3+ times should graduate to a token.
 
 ### Whitespace Philosophy
 - **Editorial generosity**: Lovable's spacing is lavish at section boundaries (80px–208px). The warm cream background makes these expanses feel cozy rather than empty.
@@ -225,16 +254,20 @@ What makes Lovable's visual system distinctive is its opacity-driven depth model
 - Keep the weight system narrow: 400 for body/UI, 600 for headings
 - Use full-pill radius (9999px) only for action pills and icon buttons
 - Apply opacity 0.8 on active states for responsive tactile feedback
+- Use semantic status tokens (`success` / `danger` / `warning` / `info`) only when the UI is signaling state — never as decoration
+- Use the `accent` token only for market/research categorization — don't repurpose it as a generic brand accent
+- Pick from the Content Width Scale (`max-w-wide` / `content` / `prose` / `narrow` / `card`) rather than introducing arbitrary `max-w-[Npx]` values
 
 ### Don't
 - Don't use pure white (`#ffffff`) as a page background — the cream is intentional
 - Don't use heavy box-shadows for cards — borders are the containment mechanism
-- Don't introduce saturated accent colors — the palette is intentionally warm-neutral
+- Don't introduce saturated accent colors as decoration — the palette is intentionally warm-neutral. Saturated colors enter the system *only* through the semantic status tokens (success/danger/warning/info) or the categorical `accent` token, both defined in §2. Picking a new saturated hex for "just this one badge" is a drift signal — extend the existing tokens or sit in the warm-neutral range
 - Don't use weight 700 (bold) — 600 is the maximum weight in the system
 - Don't apply 9999px radius on rectangular buttons — pills are for icon/action toggles
 - Don't use sharp focus outlines — the system uses soft shadow-based focus indicators
 - Don't mix border styles — `#eceae4` for passive, `rgba(28,28,28,0.4)` for interactive
 - Don't increase letter-spacing on headings — Camera Plain is designed to run tight at scale
+- Don't write raw hex (`#1c1c1c`) or arbitrary opacity (`bg-[rgba(28,28,28,0.04)]`) when a token exists — the `check:design` script enforces this
 
 ## 8. Responsive Behavior
 
@@ -280,6 +313,12 @@ What makes Lovable's visual system distinctive is its opacity-driven depth model
 - Border: `#eceae4` (passive), `rgba(28,28,28,0.4)` (interactive)
 - Focus: `rgba(0,0,0,0.1) 0px 4px 12px`
 - Button text on dark: `#fcfbf8`
+- Status success: `#1f8a4c` (trend up, positive change)
+- Status danger: `#b8443a` (trend down, error)
+- Status warning: `#c89211` (caution, pending)
+- Status info: `#2563eb` (interactive cue, link)
+- Categorical accent: `#7c6cff` (market/research category only)
+- Content width: `max-w-content` (1200px standard) or pick from wide/prose/narrow/card
 
 ### Example Component Prompts
 - "Create a hero section on cream background (#f7f4ed). Headline at 60px Camera Plain Variable weight 600, line-height 1.10, letter-spacing -1.5px, color #1c1c1c. Subtitle at 18px weight 400, line-height 1.38, color #5f5f5d. Dark CTA button (#1c1c1c bg, #fcfbf8 text, 6px radius, 8px 16px padding, inset shadow) and ghost button (transparent bg, 1px solid rgba(28,28,28,0.4) border, 6px radius)."
@@ -296,3 +335,31 @@ What makes Lovable's visual system distinctive is its opacity-driven depth model
 5. Two weights: 400 (everything except headings) and 600 (headings)
 6. The inset shadow on dark buttons is the signature detail — don't skip it
 7. Camera Plain Variable at weight 480 is for special display moments only
+
+## 10. Token Enforcement
+
+This file defines the design system; `tailwind.config.cjs` mirrors the tokens for use in code. The two must stay in sync — drift means either the system grew without documentation or the docs grew without implementation.
+
+### Where each token lives
+
+| Layer | File | What |
+|---|---|---|
+| Spec | `DESIGN.md` (this file) | Human-readable rationale + canonical values |
+| Implementation | `tailwind.config.cjs` | Machine-readable tokens for `bg-charcoal`, `max-w-content`, etc. |
+| Utility classes | `src/index.css` `@layer components` | Composite recipes (`btn-primary`, `card`, `input-base`) |
+| Static check | `scripts/check-design-tokens.mjs` | Flags arbitrary values that bypass the token system |
+
+### What the lint catches (and what it doesn't)
+
+`npm run check:design` enforces **layer 1**: source code uses tokens defined in `tailwind.config.cjs` rather than arbitrary hex / rgba / inline-hex values. It blocks:
+- Arbitrary hex in TW utility: `bg-[#ff0000]`, `text-[#1c1c1c]`
+- Arbitrary rgb/rgba/hsl in TW utility: `bg-[rgba(28,28,28,0.04)]`
+- Inline style with hex: `style={{ color: '#fff' }}`
+
+Length values (`p-[7px]`, `h-[18px]`) are warning-tier — accepted when genuinely bespoke, but anything appearing 3+ times should be tokenized.
+
+It does **not** enforce that `tailwind.config.cjs` matches `DESIGN.md`. If someone adds a new color to the config without updating §2, the lint stays silent. Token additions are a human review responsibility — when extending the palette or scale, update this doc in the same PR.
+
+### Escape hatches
+- Files in `src/components/policy-blocks/`, `PolicyPanel.tsx`, `MarkdownView.tsx`, `lib/policy-validation.ts` are allowlisted (policy tooling has its own visual language — see §2 *Info* role)
+- Per-line: add a `design-tokens-allow` comment to acknowledge a deliberate exception
