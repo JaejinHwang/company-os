@@ -26,11 +26,6 @@ function parseRequirements(src: string): Requirement[] {
   }
 }
 
-function highlightScenario(id: string, on: boolean) {
-  const el = document.querySelector(`[data-scenario-id="${id}"]`);
-  el?.classList.toggle("policy-scenario-highlight", on);
-}
-
 export function UxRequirementsBlock({ source }: Props) {
   const items = useMemo(() => parseRequirements(source), [source]);
   if (items.length === 0) {
@@ -62,22 +57,6 @@ export function UxRequirementsBlock({ source }: Props) {
                 <p className="mt-1 text-[12.5px] leading-snug text-charcoal/75">
                   {r.description}
                 </p>
-              )}
-              {r.scenarios && r.scenarios.length > 0 && (
-                <div className="mt-2 flex flex-wrap gap-1">
-                  {r.scenarios.map((sid) => (
-                    <button
-                      key={sid}
-                      type="button"
-                      onMouseEnter={() => highlightScenario(sid, true)}
-                      onMouseLeave={() => highlightScenario(sid, false)}
-                      className="inline-flex items-center gap-1 rounded-full border border-charcoal/15 bg-white px-2 py-0.5 text-[11px] text-charcoal/65 transition hover:border-[#2563eb]/40 hover:text-[#2563eb]"
-                    >
-                      <span aria-hidden>▸</span>
-                      <span>{sid}</span>
-                    </button>
-                  ))}
-                </div>
               )}
             </div>
           </div>

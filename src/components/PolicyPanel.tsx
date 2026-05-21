@@ -6,14 +6,20 @@ import {
   type ReactElement,
   type ReactNode,
 } from "react";
-import { Maximize2, Minimize2, PanelRightClose } from "lucide-react";
+import {
+  ArrowRight,
+  Crosshair,
+  Maximize2,
+  Minimize2,
+  PanelRightClose,
+} from "lucide-react";
 import type { Components } from "react-markdown";
 import { MarkdownView } from "./MarkdownView";
 import { SectionView } from "./policy-blocks/SectionView";
 import { ScenariosBlock } from "./policy-blocks/ScenariosBlock";
 import { ScreenStatesBlock } from "./policy-blocks/ScreenStatesBlock";
 import { UxRequirementsBlock } from "./policy-blocks/UxRequirementsBlock";
-import { parsePolicy } from "../lib/policy-parsing";
+import { parsePolicy, type SectionDef } from "../lib/policy-parsing";
 import { cn } from "../lib/cn";
 
 type Props = {
@@ -149,7 +155,7 @@ export function PolicyPanel({
           )}
         >
           {parsed
-            ? renderParsed(parsed, activeTab)
+            ? renderParsed(parsed, activeTab, setActiveTab)
             : renderEmpty()}
         </div>
       </div>
@@ -167,7 +173,8 @@ function renderEmpty(): ReactNode {
 
 function renderParsed(
   parsed: ReturnType<typeof parsePolicy>,
-  activeTab: TabId
+  activeTab: TabId,
+  onNavigateTab: (id: TabId) => void
 ): ReactNode {
   if (activeTab === "overview") {
     return (
@@ -177,6 +184,12 @@ function renderParsed(
           <MarkdownView
             source={parsed.overview}
             components={OVERVIEW_COMPONENTS}
+          />
+        )}
+        {parsed.sections.length > 0 && (
+          <SectionsOverview
+            sections={parsed.sections}
+            onNavigateTab={onNavigateTab}
           />
         )}
         {parsed.crossCutting && (
@@ -193,4 +206,86 @@ function renderParsed(
   const section = parsed.sections.find((s) => s.id === activeTab);
   if (!section) return null;
   return <SectionView section={section} />;
+}
+
+function SectionsOverview({
+  sections,
+  onNavigateTab,
+}: {
+  sections: SectionDef[];
+  onNavigateTab: (id: TabId) => void;
+}) {
+  return (
+    <section>
+      <header className="mb-2 flex items-baseline gap-2">
+        <h4 className="text-[11px] font-semibold uppercase tracking-[0.12em] text-charcoal/65">
+          Sections
+        </h4>
+        <span className="text-[11px] text-charcoal/45">
+          — 이 화면을 구성하는 영역 ({sections.length})
+        </span>
+      </header>
+      <ul className="space-y-2">
+        {sections.map((s) => (
+          <li key={s.id}>
+            <button
+              type="button"
+              onClick={() => onNavigateTab(s.id)}
+              onMouseEnter={() => highlightSelector(s.selector, true)}
+              onMouseLeave={() => highlightSelector(s.selector, false)}
+              className="group flex w-full items-start gap-2.5 rounded-md border border-charcoal/10 bg-charcoal/[0.02] px-3 py-2.5 text-left transition hover:border-[#2563eb]/40 hover:bg-[#2563eb]/[0.04]"
+            >
+              <Crosshair
+                className="mt-0.5 h-3.5 w-3.5 shrink-0 text-charcoal/35 group-hover:text-[#2563eb]"
+                strokeWidth={1.7}
+              />
+              <div className="min-w-0 flex-1">
+                <div className="flex items-center gap-1.5">
+                  <span className="text-[13px] font-semibold text-charcoal">
+                    {s.name}
+                  </span>
+                  <span className="text-[11px] text-charcoal/45">
+                    {sectionMetaLine(s)}
+                  </span>
+                </div>
+                {s.summary && (
+                  <p className="mt-0.5 text-[12.5px] leading-snug text-charcoal/65">
+                    {s.summary}
+                  </p>
+                )}
+              </div>
+              <ArrowRight
+                className="mt-0.5 h-3.5 w-3.5 shrink-0 text-charcoal/30 transition group-hover:translate-x-0.5 group-hover:text-[#2563eb]"
+                strokeWidth={1.8}
+              />
+            </button>
+          </li>
+        ))}
+      </ul>
+    </section>
+  );
+}
+
+function sectionMetaLine(s: SectionDef): string {
+  const parts: string[] = [];
+  const c = s.components?.length ?? 0;
+  const i = s.interactions?.length ?? 0;
+  const r = s.rules?.length ?? 0;
+  const st = s.states?.length ?? 0;
+  if (c) parts.push(`${c} 컴포넌트`);
+  if (i) parts.push(`${i} 인터랙션`);
+  if (r) parts.push(`${r} 룰`);
+  if (st) parts.push(`${st} state`);
+  return parts.length ? `· ${parts.join(" · ")}` : "";
+}
+
+function highlightSelector(selector: string | undefined, on: boolean) {
+  if (!selector) return;
+  try {
+    document
+      .querySelectorAll(selector)
+      .forEach((el) => el.classList.toggle("policy-zone-highlight", on));
+  } catch {
+    // invalid selector
+  }
 }
