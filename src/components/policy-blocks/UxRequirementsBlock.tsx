@@ -57,9 +57,6 @@ export function UxRequirementsBlock({ source }: Props) {
                 <span className="text-[13px] font-semibold text-charcoal">
                   {r.title}
                 </span>
-                <code className="rounded bg-charcoal/10 px-1 py-px text-[10.5px] text-charcoal/55">
-                  #{r.id}
-                </code>
               </div>
               {r.description && (
                 <p className="mt-1 text-[12.5px] leading-snug text-charcoal/75">

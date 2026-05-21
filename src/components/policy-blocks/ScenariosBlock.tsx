@@ -49,9 +49,6 @@ export function ScenariosBlock({ source }: Props) {
             <span className="text-[13.5px] font-semibold text-charcoal">
               {s.name ?? s.id}
             </span>
-            <code className="rounded bg-charcoal/10 px-1.5 py-px text-[10.5px] text-charcoal/55">
-              #{s.id}
-            </code>
           </div>
           <Step label="Given" text={s.given} />
           <Step label="When" text={s.when} />

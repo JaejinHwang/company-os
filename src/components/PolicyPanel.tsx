@@ -11,6 +11,7 @@ import type { Components } from "react-markdown";
 import { MarkdownView } from "./MarkdownView";
 import { SectionView } from "./policy-blocks/SectionView";
 import { ScenariosBlock } from "./policy-blocks/ScenariosBlock";
+import { ScreenStatesBlock } from "./policy-blocks/ScreenStatesBlock";
 import { UxRequirementsBlock } from "./policy-blocks/UxRequirementsBlock";
 import { parsePolicy } from "../lib/policy-parsing";
 import { cn } from "../lib/cn";
@@ -37,6 +38,7 @@ const OVERVIEW_COMPONENTS: Components = {
     if (lang === "scenarios") return <ScenariosBlock source={raw} />;
     if (lang === "ux-requirements")
       return <UxRequirementsBlock source={raw} />;
+    if (lang === "states") return <ScreenStatesBlock source={raw} />;
     return <pre {...rest}>{children}</pre>;
   },
 };
@@ -179,7 +181,10 @@ function renderParsed(
         )}
         {parsed.crossCutting && (
           <div className="border-t border-charcoal/10 pt-6">
-            <MarkdownView source={parsed.crossCutting} />
+            <MarkdownView
+              source={parsed.crossCutting}
+              components={OVERVIEW_COMPONENTS}
+            />
           </div>
         )}
       </div>

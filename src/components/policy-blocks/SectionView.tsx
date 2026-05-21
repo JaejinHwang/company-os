@@ -1,15 +1,14 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo } from "react";
 import {
   ArrowRight,
   Check,
   Crosshair,
   MousePointer2,
-  Sliders,
   X,
 } from "lucide-react";
 import { useSelectorValidation } from "../../lib/policy-validation";
-import type { SectionDef, StateDef } from "../../lib/policy-parsing";
-import { cn } from "../../lib/cn";
+import type { SectionDef } from "../../lib/policy-parsing";
+import { StateControl } from "./StateControl";
 import { StatusDot } from "./StatusDot";
 
 type Props = {
@@ -62,11 +61,6 @@ export function SectionView({ section }: Props) {
             {section.name}
           </h3>
           <StatusDot status={sectionStatus} tone="zone" />
-          {section.selector && (
-            <code className="ml-1 rounded bg-charcoal/10 px-1.5 py-0.5 text-[11px] text-charcoal/60">
-              {section.selector}
-            </code>
-          )}
         </div>
         {section.summary && (
           <p className="text-[13.5px] leading-relaxed text-charcoal/70">
@@ -145,11 +139,6 @@ export function SectionView({ section }: Props) {
                         <span className="rounded-full bg-charcoal/10 px-1.5 py-0.5 text-[10.5px] font-medium uppercase tracking-wider text-charcoal/55">
                           {it.component}
                         </span>
-                      )}
-                      {it.selector && (
-                        <code className="rounded bg-charcoal/10 px-1 py-px text-[10.5px] text-charcoal/55">
-                          {it.selector}
-                        </code>
                       )}
                     </div>
                     <p className="mt-1 flex items-start gap-1.5 text-[12.5px] leading-snug text-charcoal/75">
@@ -234,82 +223,3 @@ function Group({
   );
 }
 
-function StateControl({
-  state,
-  sectionSelector,
-}: {
-  state: StateDef;
-  sectionSelector?: string;
-}) {
-  const [value, setValue] = useState(state.default);
-  const target = state.selectorTarget ?? sectionSelector;
-  const attrKey = `data-${state.id}`;
-  const currentOption = state.options.find((o) => o.value === value);
-
-  useEffect(() => {
-    if (!target) return;
-    try {
-      document.querySelectorAll(target).forEach((el) => {
-        if (value === state.default) {
-          el.removeAttribute(attrKey);
-        } else {
-          el.setAttribute(attrKey, value);
-        }
-      });
-    } catch {
-      // invalid selector
-    }
-  }, [value, target, attrKey, state.default]);
-
-  useEffect(() => {
-    return () => {
-      if (!target) return;
-      try {
-        document
-          .querySelectorAll(target)
-          .forEach((el) => el.removeAttribute(attrKey));
-      } catch {
-        // ignore
-      }
-    };
-  }, [target, attrKey]);
-
-  return (
-    <div className="rounded-lg border border-charcoal/15 bg-white p-3 shadow-sm ring-1 ring-charcoal/[0.03]">
-      <div className="mb-2 flex flex-wrap items-center gap-x-2 gap-y-1">
-        <Sliders
-          className="h-3.5 w-3.5 shrink-0 text-charcoal/45"
-          strokeWidth={1.9}
-        />
-        <span className="text-[12.5px] font-semibold text-charcoal">
-          {state.label}
-        </span>
-        <span className="text-[11px] uppercase tracking-[0.1em] text-charcoal/40">
-          state
-        </span>
-      </div>
-      <div className="inline-flex flex-wrap items-center gap-0.5 rounded-md border border-charcoal/10 bg-cream p-0.5">
-        {state.options.map((opt) => (
-          <button
-            key={opt.value}
-            type="button"
-            onClick={() => setValue(opt.value)}
-            className={cn(
-              "rounded px-2.5 py-1 text-[12px] font-medium transition",
-              value === opt.value
-                ? "bg-charcoal text-cream"
-                : "text-charcoal/60 hover:bg-charcoal/5 hover:text-charcoal"
-            )}
-          >
-            {opt.label}
-          </button>
-        ))}
-      </div>
-      {currentOption?.description && (
-        <p className="mt-2.5 border-l-2 border-charcoal/15 pl-2.5 text-[12px] leading-snug text-charcoal/70">
-          {currentOption.description}
-        </p>
-      )}
-    </div>
-  );
-}
