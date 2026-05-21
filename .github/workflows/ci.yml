@@ -1,0 +1,45 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+# Cancel earlier runs on the same branch when a new commit comes in.
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    name: Lint · Policy · Build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      # NOTE: main currently has ~10 pre-existing lint errors
+      # (hooks-of-rules violations, fast-refresh export warnings, an unused
+      # var). Step is non-blocking until that backlog is cleared in a
+      # follow-up PR — at which point switch to `continue-on-error: false`
+      # (the default) so future regressions block merges.
+      - name: Lint (eslint) — non-blocking until backlog is cleared
+        run: npm run lint
+        continue-on-error: true
+
+      - name: Validate policy schema
+        run: npm run check:policy
+
+      - name: Build (tsc + vite)
+        run: npm run build
